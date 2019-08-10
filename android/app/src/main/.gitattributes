@@ -1,0 +1,2 @@
+AndroidManifest.xml filter=git-crypt diff=git-crypt
+.gitattributes !filter !diff
