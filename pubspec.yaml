@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
+  dynamic_theme: ^1.0.0
+  google_maps_flutter: ^0.5.20
 
 dev_dependencies:
   flutter_test:
