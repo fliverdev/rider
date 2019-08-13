@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/functions.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:location/location.dart';
+import 'package:flutter/services.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -36,7 +39,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             Padding(
               padding: EdgeInsets.only(
                 left: 10.0,
-                top: 50.0,
+                top: 40.0,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -68,7 +71,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           child: Icon(Icons.my_location),
           foregroundColor: invertInvertColorsTheme(context),
           backgroundColor: invertColorsTheme(context),
-          onPressed: doNothing),
+          onPressed: requestPermissions),
     );
   }
 }
