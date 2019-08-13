@@ -9,9 +9,10 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
+  Location location = new Location();
   GoogleMapController mapController;
-  final LatLng _center = const LatLng(18.9548, 72.7985); //malabar hill
-
+ // final LatLng _center = const LatLng(18.9548, 72.7985); //malabar hill
+  final LatLng _center = const LatLng(pos['latitude'],pos['langitude']); //to detect current location
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
@@ -71,4 +72,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           onPressed: doNothing),
     );
   }
+
+//To detect location - 13/8/19 (added)
+  _animateToUser() async{
+    var pos = await location.getLocation();
+    mapController.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(pos['latitude'], pos['longitude']),
+          zoom: 15.0,
+    )));
+
+  }
+
+
+
 }
