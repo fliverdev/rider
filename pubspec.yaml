@@ -13,6 +13,7 @@ dependencies:
   dynamic_theme: ^1.0.0
   permission_handler: ^3.2.2
   location: ^2.3.5
+  geolocator: ^4.0.3
   google_maps_flutter: ^0.5.20
 
 dev_dependencies:

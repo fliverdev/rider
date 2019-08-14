@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/functions.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -12,10 +14,43 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
-  Location location = new Location();
+
+
+  void getLocation() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(position);
+  }
+
+//  static var pos;
+//  var location = new Location();
+//  var currentLocation = LocationData;
+//  //To detect location - 13/8/19 (added)
+//  _animateToUser() async {
+//    currentLocation = await location.getLocation();
+//    mapController.animateCamera(
+//      CameraUpdate.newCameraPosition(
+//        CameraPosition(
+//          target: _center,
+//          zoom: 15.0,
+//        ),
+//      ),
+//    );
+//  }
+
+//  location.onLocationChanged().listen((LocationData currentLocation) {
+//  print(currentLocation.latitude);
+//  print(currentLocation.longitude);
+//  });
+
+//  LocationData currentLocation = new LocationData();
+//  final double latitude = location.latitude;
+//  final double longitude = location.long
   GoogleMapController mapController;
- // final LatLng _center = const LatLng(18.9548, 72.7985); //malabar hill
-  final LatLng _center = const LatLng(pos['latitude'],pos['langitude']); //to detect current location
+  final LatLng _center = const LatLng(18.9548, 72.7985); //malabar hill
+//  final LatLng _center = LatLng(currentLocation['latitude'],
+//      currentLocation['langitude']); //to detect current location
+
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
@@ -72,21 +107,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           child: Icon(Icons.my_location),
           foregroundColor: invertInvertColorsTheme(context),
           backgroundColor: invertColorsTheme(context),
-          onPressed: requestPermissions),
+          onPressed: getLocation),
     );
   }
-
-//To detect location - 13/8/19 (added)
-  _animateToUser() async{
-    var pos = await location.getLocation();
-    mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(pos['latitude'], pos['longitude']),
-          zoom: 15.0,
-    )));
-
-  }
-
-
-
 }
