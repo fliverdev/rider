@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rider/utils/colors.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rider/utils/colors.dart';
 
 void doNothing() {
   print('Nothing is happening here (yet)');

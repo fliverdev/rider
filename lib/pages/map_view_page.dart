@@ -88,7 +88,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     onPressed: doNothing,
                   ),
                   Text(
-                    'Fliver',
+                    'Fliver Rider',
                     style: TextStyle(
 //                    fontFamily: '',
                       fontWeight: FontWeight.w600,
