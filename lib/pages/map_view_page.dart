@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 //import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class MyMapViewPage extends StatefulWidget {
@@ -15,12 +16,65 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
 
+  var currentLocation;
 
-  void getLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);
+  GoogleMapController mapController;
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
   }
+//  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+//
+//  Marker marker = Marker(marker.clearMarkers())
+//  setState(() {
+//  markers[markerId] = marker;
+//  });
+//
+//
+//  var clients = [];
+  void initState()
+  {
+    super.initState();
+    Geolocator().getCurrentPosition().then((currloc){
+      setState(() {
+        currentLocation = currloc;
+//        populateClients();
+      }
+      );
+    });
+  }
+
+
+//  populateClients() {
+//    clients=[];
+//    Firestore.instance.collection('markers').getDocuments().then((docs){
+//      if(docs.documents.isNotEmpty){
+//        for(int i = 0;i<docs.documents.length;++i){
+//          clients.add(docs.documents[i].data);
+//          initMarker(docs.documents[i].data);
+//      }
+//      }
+//    });
+//
+//  }
+//
+//  initMarker(client) {
+//    mapController.clearMarkers().then((val) {
+//      mapController.addMarker(
+//        MarkerOptions(
+//          position: LatLng(latitude,)
+//        )
+//
+//      );
+//    });
+//  }
+
+//Geolocator Function
+//  void getLocation() async {
+//    Position position = await Geolocator()
+//        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+//    print(position);
+//  }
 
 //  static var pos;
 //  var location = new Location();
@@ -46,14 +100,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 //  LocationData currentLocation = new LocationData();
 //  final double latitude = location.latitude;
 //  final double longitude = location.long
-  GoogleMapController mapController;
-  final LatLng _center = const LatLng(18.9548, 72.7985); //malabar hill
+//  final LatLng _center = const LatLng(18.9548, 72.7985); //malabar hill
 //  final LatLng _center = LatLng(currentLocation['latitude'],
 //      currentLocation['langitude']); //to detect current location
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +119,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               myLocationButtonEnabled: false, //replace with a custom button
               compassEnabled: false,
               initialCameraPosition: CameraPosition(
-                target: _center,
+                target: LatLng(currentLocation.latitude,currentLocation.longitude),
                 zoom: 15.0,
               ),
             ),
@@ -107,7 +158,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           child: Icon(Icons.my_location),
           foregroundColor: invertInvertColorsTheme(context),
           backgroundColor: invertColorsTheme(context),
-          onPressed: getLocation),
+          onPressed: requestPermissions),
     );
   }
 }
