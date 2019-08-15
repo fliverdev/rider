@@ -23,51 +23,53 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
-//  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-//
-//  Marker marker = Marker(marker.clearMarkers())
-//  setState(() {
-//  markers[markerId] = marker;
-//  });
-//
-//
-//  var clients = [];
+
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  Marker marker = Marker(marker.clearMarkers())
+  setState(() {
+  markers[markerId] = marker;
+  });
+
+
+  var clients = [];
+
   void initState()
   {
     super.initState();
     Geolocator().getCurrentPosition().then((currloc){
       setState(() {
         currentLocation = currloc;
-//        populateClients();
+        populateClients();
       }
       );
     });
   }
 
 
-//  populateClients() {
-//    clients=[];
-//    Firestore.instance.collection('markers').getDocuments().then((docs){
-//      if(docs.documents.isNotEmpty){
-//        for(int i = 0;i<docs.documents.length;++i){
-//          clients.add(docs.documents[i].data);
-//          initMarker(docs.documents[i].data);
-//      }
-//      }
-//    });
-//
-//  }
-//
-//  initMarker(client) {
-//    mapController.clearMarkers().then((val) {
-//      mapController.addMarker(
-//        MarkerOptions(
-//          position: LatLng(latitude,)
-//        )
-//
-//      );
-//    });
-//  }
+  populateClients() {
+    clients=[];
+    Firestore.instance.collection('markers').getDocuments().then((docs){
+      if(docs.documents.isNotEmpty){
+        for(int i = 0;i<docs.documents.length;++i){
+          clients.add(docs.documents[i].data);
+          initMarker(docs.documents[i].data);
+      }
+      }
+    });
+
+  }
+
+  initMarker(client) {
+    mapController.clearMarkers().then((val) {
+      mapController.addMarker(
+        MarkerOptions(
+          position: LatLng(latitude,)
+        )
+
+      );
+    });
+  }
 
 //Geolocator Function
 //  void getLocation() async {
