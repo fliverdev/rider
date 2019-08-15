@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/functions.dart';
 import 'package:permission_handler/permission_handler.dart';
-//import 'package:location/location.dart';
+import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -15,7 +14,6 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
-
   var currentLocation;
 
   GoogleMapController mapController;
@@ -26,50 +24,45 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
-  Marker marker = Marker(marker.clearMarkers())
-  setState(() {
-  markers[markerId] = marker;
-  });
-
+//  Marker marker = Marker(marker.clearMarkers())
+//  setState(() {
+//  markers[markerId] = marker;
+//  });
 
   var clients = [];
 
-  void initState()
-  {
+  void initState() {
     super.initState();
-    Geolocator().getCurrentPosition().then((currloc){
+    Geolocator().getCurrentPosition().then((currloc) {
       setState(() {
         currentLocation = currloc;
         populateClients();
-      }
-      );
+      });
     });
   }
-
 
   populateClients() {
-    clients=[];
-    Firestore.instance.collection('markers').getDocuments().then((docs){
-      if(docs.documents.isNotEmpty){
-        for(int i = 0;i<docs.documents.length;++i){
+    clients = [];
+    Firestore.instance.collection('markers').getDocuments().then((docs) {
+      if (docs.documents.isNotEmpty) {
+        for (int i = 0; i < docs.documents.length; ++i) {
           clients.add(docs.documents[i].data);
-          initMarker(docs.documents[i].data);
-      }
+//          initMarker(docs.documents[i].data);
+        }
       }
     });
-
   }
 
-  initMarker(client) {
-    mapController.clearMarkers().then((val) {
-      mapController.addMarker(
-        MarkerOptions(
-          position: LatLng(latitude,)
-        )
-
-      );
-    });
-  }
+//  initMarker(client) {
+//    mapController.clearMarkers().then((val) {
+//      mapController.addMarker(
+//        MarkerOptions(
+//          position: LatLng(latitude,)
+//        )
+//
+//      );
+//    });
+//  }
 
 //Geolocator Function
 //  void getLocation() async {
@@ -106,8 +99,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 //  final LatLng _center = LatLng(currentLocation['latitude'],
 //      currentLocation['langitude']); //to detect current location
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,7 +112,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               myLocationButtonEnabled: false, //replace with a custom button
               compassEnabled: false,
               initialCameraPosition: CameraPosition(
-                target: LatLng(currentLocation.latitude,currentLocation.longitude),
+                target:
+                    LatLng(currentLocation.latitude, currentLocation.longitude),
                 zoom: 15.0,
               ),
             ),
@@ -153,14 +145,41 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ],
               ),
             ),
+            Positioned(
+              bottom: 10.0,
+              right: 15.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Button 1'),
+                    onPressed: doNothing,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  RaisedButton(
+                    child: Text('Button 2'),
+                    onPressed: doNothing,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  RaisedButton(
+                    child: Text('Button 3'),
+                    onPressed: doNothing,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.my_location),
-          foregroundColor: invertInvertColorsTheme(context),
-          backgroundColor: invertColorsTheme(context),
-          onPressed: requestPermissions),
+//      floatingActionButton: FloatingActionButton(
+//          child: Icon(Icons.my_location),
+//          foregroundColor: invertInvertColorsTheme(context),
+//          backgroundColor: invertColorsTheme(context),
+//          onPressed: doNothing),
     );
   }
 }
