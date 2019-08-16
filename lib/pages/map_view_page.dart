@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/functions.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,15 +15,18 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
 
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
-  var currentLocation;
-
   GoogleMapController mapController;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
+
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  var currentLocation;
+
+
+
 
   var clients = [];
 
@@ -33,7 +35,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
         currentLocation = currLoc;
-        populateClients();
       });
     });
   } // gets current user location when the app loads
@@ -44,12 +45,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; i++) {
           clients.add(docs.documents[i].data);
-//          initMarker(docs.documents[i].data);
+          initMarker(docs.documents[i].data);
         }
       }
     });
   } // gets client name and location from firestore
-
+//
 //  initMarker(client) {
 //    mapController.clearMarkers().then((val) {
 //      mapController.addMarker(
