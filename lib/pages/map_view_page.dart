@@ -13,7 +13,11 @@ class MyMapViewPage extends StatefulWidget {
   _MyMapViewPageState createState() => _MyMapViewPageState();
 }
 
+
 class _MyMapViewPageState extends State<MyMapViewPage> {
+
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
   var currentLocation;
 
   GoogleMapController mapController;
@@ -21,8 +25,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
-
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   var clients = [];
 
