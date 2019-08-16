@@ -24,34 +24,29 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
-//  Marker marker = Marker(marker.clearMarkers())
-//  setState(() {
-//  markers[markerId] = marker;
-//  });
-
   var clients = [];
 
   void initState() {
     super.initState();
-    Geolocator().getCurrentPosition().then((currloc) {
+    Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
-        currentLocation = currloc;
+        currentLocation = currLoc;
         populateClients();
       });
     });
-  }
+  } // gets current user location when the app loads
 
   populateClients() {
     clients = [];
     Firestore.instance.collection('markers').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
-        for (int i = 0; i < docs.documents.length; ++i) {
+        for (int i = 0; i < docs.documents.length; i++) {
           clients.add(docs.documents[i].data);
 //          initMarker(docs.documents[i].data);
         }
       }
     });
-  }
+  } // gets client name and location from firestore
 
 //  initMarker(client) {
 //    mapController.clearMarkers().then((val) {
