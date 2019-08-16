@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rider/services/firestore_crud.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
+  var firestoreCrudObj = new FirestoreCrud();
 
   GoogleMapController mapController;
 
@@ -34,6 +36,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         populateClients();
       });
     });
+    firestoreCrudObj.getData().then((results){
+    });
   } // gets current user location when the app loads
 
   populateClients() {
@@ -47,6 +51,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       }
     });
   } // gets client name and location from firestore
+
+  zoomInMarker(client) {
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: null, zoom: 15.0, bearing: 90.0, tilt: 45.0),
+      ),
+    );
+  } // cool animation when zooming into the user location
 
 //  initMarker(client) {
 //    mapController.clearMarkers().then((val) {
@@ -147,7 +159,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                    child: Text('Button 1'),
+                    child: Text('Save Location'),
                     onPressed: doNothing,
                   ),
                   SizedBox(
