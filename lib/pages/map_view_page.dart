@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/functions.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +12,7 @@ class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
 }
+
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
@@ -26,6 +26,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
+  var currentLocation;
+
+
+
+
   var clients = [];
 
   void initState() {
@@ -33,7 +38,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
         currentLocation = currLoc;
-        populateClients();
       });
     });
     firestoreCrudObj.getData().then((results){
@@ -46,7 +50,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; i++) {
           clients.add(docs.documents[i].data);
-//          initMarker(docs.documents[i].data);
+          initMarker(docs.documents[i].data);
         }
       }
     });
