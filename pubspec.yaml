@@ -11,6 +11,10 @@ dependencies:
 
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0
+  permission_handler: ^3.2.2
+  location: ^2.3.5
+  geolocator: ^4.0.3
+  cloud_firestore: ^0.12.9
   google_maps_flutter: ^0.5.20
 
 dev_dependencies:

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rider/utils/colors.dart';
 
 void doNothing() {
@@ -22,6 +23,14 @@ Color invertColorsTheme(BuildContext context) {
   }
 } //returns appropriate theme colors for ui elements
 
+Color invertInvertColorsTheme(BuildContext context) {
+  if (isThemeCurrentlyDark(context)) {
+    return MyColors.accentColor;
+  } else {
+    return MyColors.primaryColor;
+  }
+} //keeps the same colors lol
+
 Color invertColorsMild(BuildContext context) {
   if (isThemeCurrentlyDark(context)) {
     return MyColors.light;
@@ -29,6 +38,14 @@ Color invertColorsMild(BuildContext context) {
     return MyColors.dark;
   }
 } //returns appropriate mild colors for text visibility
+
+Color invertInvertColorsMild(BuildContext context) {
+  if (isThemeCurrentlyDark(context)) {
+    return MyColors.dark;
+  } else {
+    return MyColors.light;
+  }
+} //keeps the same colors lol
 
 Color invertColorsStrong(BuildContext context) {
   if (isThemeCurrentlyDark(context)) {
@@ -38,7 +55,7 @@ Color invertColorsStrong(BuildContext context) {
   }
 } //returns appropriate strong colors for text visibility
 
-Color invertInvertColors(BuildContext context) {
+Color invertInvertColorsStrong(BuildContext context) {
   if (isThemeCurrentlyDark(context)) {
     return MyColors.black;
   } else {
@@ -53,3 +70,20 @@ Color shadowColor(BuildContext context) {
     return ShadowColors.light;
   }
 } //returns appropriate colors for raised element shadows
+
+void requestPermissions() async {
+  Map<PermissionGroup, PermissionStatus> permissions =
+      await PermissionHandler().requestPermissions([PermissionGroup.location]);
+  print(permissions);
+}
+
+void checkPermissions() async {
+  PermissionStatus permissions =
+      await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
+
+  ServiceStatus serviceStatus =
+      await PermissionHandler().checkServiceStatus(PermissionGroup.location);
+
+  print(permissions);
+  print(serviceStatus);
+}
