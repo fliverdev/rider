@@ -13,25 +13,18 @@ class MyMapViewPage extends StatefulWidget {
   _MyMapViewPageState createState() => _MyMapViewPageState();
 }
 
-
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
   var firestoreCrudObj = new FirestoreCrud();
-
+//  var currentLocation;
+  var clients = [];
   GoogleMapController mapController;
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  QuerySnapshot items;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
-
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
-  var currentLocation;
-
-
-
-
-  var clients = [];
 
   void initState() {
     super.initState();
@@ -40,7 +33,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         currentLocation = currLoc;
       });
     });
-    firestoreCrudObj.getData().then((results){
+    firestoreCrudObj.getData().then((QuerySnapshot results) {
+      setState(() {
+        items = results;
+      });
     });
   } // gets current user location when the app loads
 
@@ -50,7 +46,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; i++) {
           clients.add(docs.documents[i].data);
-          initMarker(docs.documents[i].data);
+//          initMarker(docs.documents[i].data);
         }
       }
     });
