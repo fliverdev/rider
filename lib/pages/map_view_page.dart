@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rider/services/firestore_crud.dart';
 import 'package:rider/utils/functions.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -13,51 +11,47 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
-  var clients = [];
-  var firestoreCrudObj = new FirestoreCrud();
-  QuerySnapshot items;
   GoogleMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   void initState() {
     super.initState();
-    Geolocator().getCurrentPosition().then((currLoc) {
-      setState(() {
-        currentLocation = currLoc;
-      });
-    });
-//    firestoreCrudObj.getData().then(
-//      (QuerySnapshot results) {
-//        setState(() {
-//          items = results;
-//        });
-//      },
-//    );
+    _getCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  populateClients() {
-    clients = [];
-    Firestore.instance.collection('markers2').getDocuments().then((docs) {
-      if (docs.documents.isNotEmpty) {
-        for (int i = 0; i < docs.documents.length; i++) {
-          clients.add(docs.documents[i].data);
-//          initMarker(docs.documents[i].data);
-        }
-      }
+  _getCurrentLocation() {
+    Geolocator().getCurrentPosition().then((currLoc) {
+      setState(() {
+        currentLocation = currLoc;
+      });
     });
-  } // gets client name and location from firestore
+    return currentLocation;
+  }
 
-  zoomInMarker(client) {
+  void _addMarker() {
+    var marker = Marker(
+      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snipper'),
+    );
+  }
+
+  void _animateToUser() async {
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: null, zoom: 15.0, bearing: 90.0, tilt: 45.0),
+        CameraPosition(
+          target: LatLng(currentLocation.latitude, currentLocation.longitude),
+          zoom: 17.0,
+          bearing: 90.0,
+          tilt: 45.0,
+        ),
       ),
     );
-  } // cool animation when zooming into the user location
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,18 +106,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                    child: Text('Write'),
-                    onPressed: () {
-                      Map locationData = {'coordinates': 12345};
-                      firestoreCrudObj.addDataVideo(locationData);
-                    },
+                    child: Text('Button 1'),
+                    onPressed: doNothing,
                   ),
                   SizedBox(
                     width: 10.0,
                   ),
                   RaisedButton(
-                    child: Text('Button 2'),
-                    onPressed: doNothing,
+                    child: Text('Get location'),
+                    onPressed: _animateToUser,
                   ),
                   SizedBox(
                     width: 10.0,
