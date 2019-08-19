@@ -10,7 +10,14 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
+  var currentLocation;
   GoogleMapController mapController;
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  } // gets current user location when the app loads
 
   final Set<Circle> _circle = {};
 
@@ -18,14 +25,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     mapController = controller;
   }
 
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
-  static var currentLocation;
-
-  var clients = [];
-
-  void initState() {
-    super.initState();
+  _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
         currentLocation = currLoc;
@@ -41,65 +41,29 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ));
       });
     });
-  } // gets current user location when the app loads
+    return currentLocation;
+  }
 
-//  populateClients() {
-//    clients = [];
-//    Firestore.instance.collection('markers').getDocuments().then((docs) {
-//      if (docs.documents.isNotEmpty) {
-//        for (int i = 0; i < docs.documents.length; i++) {
-//          clients.add(docs.documents[i].data);
-//          initMarker(docs.documents[i].data);
-//        }
-//      }
-//    });
-//  } // gets client name and location from firestore
-//
-//  initMarker(client) {
-//    mapController.clearMarkers().then((val) {
-//      mapController.addMarker(
-//        MarkerOptions(
-//          position: LatLng(latitude,)
-//        )
-//
-//      );
-//    });
-//  }
+  void _addMarker() {
+    var marker = Marker(
+      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snipper'),
+    );
+  }
 
-//Geolocator Function
-//  void getLocation() async {
-//    Position position = await Geolocator()
-//        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-//    print(position);
-//  }
-
-//  static var pofas;
-//  var location = new Location();
-//  var currentLocation = LocationData;
-//  //To detect location - 13/8/19 (added)
-//  _animateToUser() async {
-//    currentLocation = await location.getLocation();
-//    mapController.animateCamera(
-//      CameraUpdate.newCameraPosition(
-//        CameraPosition(
-//          target: _center,
-//          zoom: 15.0,
-//        ),
-//      ),
-//    );
-//  }
-
-//  location.onLocationChanged().listen((LocationData currentLocation) {
-//  print(currentLocation.latitude);
-//  print(currentLocation.longitude);
-//  });
-
-//  LocationData currentLocation = new LocationData();
-//  final double latitude = location.latitude;
-//  final double longitude = location.long
-//  final LatLng _center = const LatLng(); //malabar hill
-//  final LatLng _center = LatLng(currentLocation['latitude'],
-//      currentLocation['longitude']); //to detect current location
+  void _animateToUser() async {
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(currentLocation.latitude, currentLocation.longitude),
+          zoom: 17.0,
+          bearing: 90.0,
+          tilt: 45.0,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +129,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     width: 10.0,
                   ),
                   RaisedButton(
-                    child: Text('Button 2'),
-                    onPressed: doNothing,
+                    child: Text('Get location'),
+                    onPressed: _animateToUser,
                   ),
                   SizedBox(
                     width: 10.0,
@@ -181,11 +145,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           ],
         ),
       ),
-//      floatingActionButton: FloatingActionButton(
-//          child: Icon(Icons.my_location),
-//          foregroundColor: invertInvertColorsTheme(context),
-//          backgroundColor: invertColorsTheme(context),
-//          onPressed: doNothing),
     );
   }
 }
