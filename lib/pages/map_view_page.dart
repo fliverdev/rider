@@ -48,7 +48,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     var marker = Marker(
       position: LatLng(currentLocation.latitude, currentLocation.longitude),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snipper'),
+      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
     );
   }
 
