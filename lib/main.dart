@@ -2,6 +2,8 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:rxdart/rxdart.dart';
 
 void main() => runApp(MyApp());
 

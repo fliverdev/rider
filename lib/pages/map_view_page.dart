@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/functions.dart';
+import  'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'dart:async';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -14,9 +17,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   GoogleMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
+  Firestore firestore = Firestore.instance;
+  Geoflutterfire geo = Geoflutterfire();
+
   void initState() {
     super.initState();
-    _getCurrentLocation();
+      _getCurrentLocation();
   } // gets current user location when the app loads
 
   final Set<Circle> _circle = {};
@@ -64,6 +70,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       ),
     );
   }
+
+  Future<DocumentReference> _addGeoPoint() async {
+    var pos = await LatLng(currentLocation.latitude,currentLocation.longitude);
+    GeoFirePoint point = geo.point(latitude: pos['currentLocation.latitude'], longitude: pos['longitude'])
+
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
