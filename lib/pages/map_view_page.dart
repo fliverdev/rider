@@ -77,8 +77,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               myLocationEnabled: true,
               myLocationButtonEnabled: false, //replace with a custom button
               compassEnabled: false,
-              mapType: MapType.hybrid,
-
               initialCameraPosition: CameraPosition(
                 target:
                     LatLng(currentLocation.latitude, currentLocation.longitude),
