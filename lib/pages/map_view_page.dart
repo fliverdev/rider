@@ -73,9 +73,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   Future<DocumentReference> _addGeoPoint() async {
     var pos = await LatLng(currentLocation.latitude,currentLocation.longitude);
-    GeoFirePoint point = geo.point(latitude: pos['currentLocation.latitude'], longitude: pos['longitude'])
-
-
+    GeoFirePoint point = geo.point(latitude: currentLocation.latitude, longitude: currentLocation.longitude);
+    return firestore.collection('locations').add({
+      'position':point.data,
+      'name': 'I can be queried!'
+    });
   }
 
 
@@ -149,7 +151,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   ),
                   RaisedButton(
                     child: Text('Button 3'),
-                    onPressed: doNothing,
+                    onPressed: _addGeoPoint,
                   ),
                 ],
               ),
