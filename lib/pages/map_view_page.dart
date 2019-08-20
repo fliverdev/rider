@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
@@ -9,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/functions.dart';
+import 'package:rider/utils/map_style.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -31,6 +33,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    mapController
+        .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine); //buggy
   }
 
   void _getCurrentLocation() {
@@ -124,7 +128,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   IconButton(
                     icon: Icon(Icons.menu),
                     tooltip: 'Menu',
-                    color: invertColorsMild(context),
+                    color: invertColorsStrong(context),
                     iconSize: 22.0,
                     onPressed: doNothing,
                   ),
@@ -135,7 +139,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       fontWeight: FontWeight.w600,
                       fontSize: 24.0,
                       fontStyle: FontStyle.italic,
-                      color: invertColorsMild(context),
+                      color: invertColorsStrong(context),
                     ),
                   ),
                 ],
@@ -158,12 +162,31 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     child: Text('Get location'),
                     onPressed: _animateToCurrentLocation,
                   ),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 60.0,
+              right: 15.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Write to DB'),
+                    onPressed: _writeGeoPointToDb,
+                  ),
                   SizedBox(
                     width: 10.0,
                   ),
                   RaisedButton(
-                    child: Text('Write to db'),
-                    onPressed: _writeGeoPointToDb,
+                    child: Text('Dark mode'),
+                    onPressed: () {
+                      DynamicTheme.of(context).setBrightness(
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Brightness.light
+                              : Brightness.dark);
+                      _onMapCreated(mapController); //buggy
+                    },
                   ),
                 ],
               ),
