@@ -6,15 +6,16 @@ Alternatively, you can contribute to resolve any of the [open issues](https://gi
 
 ## Pull Requests
 
+**Important:** this project contains certain files that are encrypted due to the use of API keys, which is why it will not build directly on your machine. Please refer to [ENCRYPTION.md](ENCRYPTION.md) for more information.
+
 Please follow these steps for sending us a pull request:
 
 -   Make sure that an issue regarding your proposal is open (by you or someone else).
 -   Fork this repository and clone it on your local machine.
 -   Checkout the `dev` branch for the latest development progress using `git checkout dev`.
+-   Replace all the encrypted files with your own as explained in [ENCRYPTION.md](ENCRYPTION.md).
 -   Commit your changes to `your-username:dev` and send us a pull request to `fliverdev:dev`.
 -   Your pull request will be merged if satisfactory.
-
-**Important:** this project contains certain files that are encrypted due to the use of API keys, which is why it will not build directly on your machine. Please refer to [ENCRYPTION.md](ENCRYPTION.md) for more information.
 
 ### Our Pledge
 
