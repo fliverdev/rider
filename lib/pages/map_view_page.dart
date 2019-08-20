@@ -1,13 +1,14 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rider/utils/functions.dart';
-import 'package:rider/utils/colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'dart:async';
 import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/functions.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -16,11 +17,10 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
-  GoogleMapController mapController;
-
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   final Set<Circle> _circle = {};
 
+  GoogleMapController mapController;
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
 
@@ -53,11 +53,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   void _addMarker() {
-    var markerIdVal = Random().toString(); // TODO: using Random() isn't very
-    // efficient, try and generate proper markers
-    const primaryColor = 0xff1de9b6;
-    print(primaryColor.toDouble());
-    print(markerIdVal);
+    var markerIdVal = Random().toString(); // TODO: don't use Random()
     final MarkerId markerId = MarkerId(markerIdVal);
 
     var marker = Marker(
