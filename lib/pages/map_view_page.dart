@@ -1,114 +1,101 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rider/utils/functions.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/services.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rider/services/firestore_crud.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/functions.dart';
+import 'package:rider/utils/map_style.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
 }
 
-
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
-  var firestoreCrudObj = new FirestoreCrud();
+  final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  final Set<Circle> _circle = {};
 
   GoogleMapController mapController;
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
-  var currentLocation;
-
-
-
-
-  var clients = [];
+  Firestore firestore = Firestore.instance;
+  Geoflutterfire geo = Geoflutterfire();
 
   void initState() {
     super.initState();
+    _getCurrentLocation();
+  } // gets current user location when the app loads
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    mapController
+        .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine); //buggy
+  }
+
+  void _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
         currentLocation = currLoc;
+        _circle.add(Circle(
+          circleId: CircleId(
+              LatLng(currentLocation.latitude, currentLocation.longitude)
+                  .toString()),
+          center: LatLng(currentLocation.latitude, currentLocation.longitude),
+          radius: 75,
+          fillColor: MyColors.translucentColor,
+          strokeColor: MyColors.primaryColor,
+          visible: true,
+        ));
       });
     });
-    firestoreCrudObj.getData().then((results){
-    });
-  } // gets current user location when the app loads
+    return currentLocation;
+  }
 
-  populateClients() {
-    clients = [];
-    Firestore.instance.collection('markers').getDocuments().then((docs) {
-      if (docs.documents.isNotEmpty) {
-        for (int i = 0; i < docs.documents.length; i++) {
-          clients.add(docs.documents[i].data);
-          initMarker(docs.documents[i].data);
-        }
-      }
-    });
-  } // gets client name and location from firestore
+  void _addMarker() {
+    var markerIdVal = Random().toString(); // TODO: don't use Random()
+    final MarkerId markerId = MarkerId(markerIdVal);
 
-  zoomInMarker(client) {
+    var marker = Marker(
+      markerId: markerId,
+      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+      icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
+      // could get
+      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+      onTap: doNothing,
+    );
+
+    setState(() {
+      markers[markerId] = marker;
+    });
+  }
+
+  void _animateToCurrentLocation() async {
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: null, zoom: 15.0, bearing: 90.0, tilt: 45.0),
+        CameraPosition(
+          target: LatLng(currentLocation.latitude, currentLocation.longitude),
+          zoom: 17.5,
+          bearing: 90.0,
+          tilt: 45.0,
+        ),
       ),
     );
-  } // cool animation when zooming into the user location
+  }
 
-//  initMarker(client) {
-//    mapController.clearMarkers().then((val) {
-//      mapController.addMarker(
-//        MarkerOptions(
-//          position: LatLng(latitude,)
-//        )
-//
-//      );
-//    });
-//  }
-
-//Geolocator Function
-//  void getLocation() async {
-//    Position position = await Geolocator()
-//        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-//    print(position);
-//  }
-
-//  static var pos;
-//  var location = new Location();
-//  var currentLocation = LocationData;
-//  //To detect location - 13/8/19 (added)
-//  _animateToUser() async {
-//    currentLocation = await location.getLocation();
-//    mapController.animateCamera(
-//      CameraUpdate.newCameraPosition(
-//        CameraPosition(
-//          target: _center,
-//          zoom: 15.0,
-//        ),
-//      ),
-//    );
-//  }
-
-//  location.onLocationChanged().listen((LocationData currentLocation) {
-//  print(currentLocation.latitude);
-//  print(currentLocation.longitude);
-//  });
-
-//  LocationData currentLocation = new LocationData();
-//  final double latitude = location.latitude;
-//  final double longitude = location.long
-//  final LatLng _center = const LatLng(18.9548, 72.7985); //malabar hill
-//  final LatLng _center = LatLng(currentLocation['latitude'],
-//      currentLocation['langitude']); //to detect current location
+  Future<DocumentReference> _writeGeoPointToDb() async {
+    var pos = await LatLng(currentLocation.latitude, currentLocation.longitude);
+    GeoFirePoint point = geo.point(
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude);
+    return firestore.collection('locations').add({
+      'position': point.data,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +114,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     LatLng(currentLocation.latitude, currentLocation.longitude),
                 zoom: 15.0,
               ),
+              markers: Set<Marker>.of(markers.values),
+              circles: _circle,
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -139,7 +128,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   IconButton(
                     icon: Icon(Icons.menu),
                     tooltip: 'Menu',
-                    color: invertColorsMild(context),
+                    color: invertColorsStrong(context),
                     iconSize: 22.0,
                     onPressed: doNothing,
                   ),
@@ -150,7 +139,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       fontWeight: FontWeight.w600,
                       fontSize: 24.0,
                       fontStyle: FontStyle.italic,
-                      color: invertColorsMild(context),
+                      color: invertColorsStrong(context),
                     ),
                   ),
                 ],
@@ -163,22 +152,41 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                    child: Text('Save Location'),
-                    onPressed: doNothing,
+                    child: Text('Add marker'),
+                    onPressed: _addMarker,
                   ),
                   SizedBox(
                     width: 10.0,
                   ),
                   RaisedButton(
-                    child: Text('Button 2'),
-                    onPressed: doNothing,
+                    child: Text('Get location'),
+                    onPressed: _animateToCurrentLocation,
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 60.0,
+              right: 15.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Write to DB'),
+                    onPressed: _writeGeoPointToDb,
                   ),
                   SizedBox(
                     width: 10.0,
                   ),
                   RaisedButton(
-                    child: Text('Button 3'),
-                    onPressed: doNothing,
+                    child: Text('Dark mode'),
+                    onPressed: () {
+                      DynamicTheme.of(context).setBrightness(
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Brightness.light
+                              : Brightness.dark);
+                      _onMapCreated(mapController); //buggy
+                    },
                   ),
                 ],
               ),
@@ -186,11 +194,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           ],
         ),
       ),
-//      floatingActionButton: FloatingActionButton(
-//          child: Icon(Icons.my_location),
-//          foregroundColor: invertInvertColorsTheme(context),
-//          backgroundColor: invertColorsTheme(context),
-//          onPressed: doNothing),
     );
   }
 }
