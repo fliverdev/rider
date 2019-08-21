@@ -1,5 +1,5 @@
 name: rider
-description: Fliver Rider app
+description: The Fliver Rider app
 version: 1.0.0+1
 
 environment:
@@ -9,14 +9,14 @@ dependencies:
   flutter:
     sdk: flutter
 
+  cloud_firestore: ^0.12.9
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0
-  permission_handler: ^3.2.2
-  location: ^2.3.5
-  geolocator: ^4.0.3
-  cloud_firestore: ^0.12.9
-  google_maps_flutter: ^0.5.20
   geoflutterfire: ^2.0.3
+  geolocator: ^4.0.3
+  google_maps_flutter: ^0.5.20
+  location: ^2.3.5
+  permission_handler: ^3.2.2
   rxdart: ^0.22.1
 
 dev_dependencies:
