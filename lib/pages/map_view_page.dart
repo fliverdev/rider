@@ -8,10 +8,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'dart:async';
 import 'dart:math';
+import 'package:rxdart/rxdart.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
+
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
@@ -24,12 +26,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
 
+  //Stateful Data
+  BehaviorSubject<double> radius = BehaviorSubject.seeded(100.0);
+  Stream<dynamic> query;
+
+  //Subscription
+  StreamSubscription subscription;
+
   void initState() {
     super.initState();
     _getCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
+    _startQuery();
     mapController = controller;
   }
 
@@ -85,6 +95,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ),
       ),
     );
+  }
+
+   void _updateMarkers(List<DocumentSnapshot> documentList) {
+    print(documentList);
+    //mapController.clearMarkers(); Change as per updated Marker API
+    documentList.forEach((DocumentSnapshot document) {
+      GeoPoint pos = document.data['position']['geopoint'];
+      //double distance = document.data['distance']; use after implementing driver app
+      var marker = Marker(
+          position:LatLng(pos.latitude, pos.longitude),
+          icon:BitmapDescriptor.defaultMarkerWithHue(147.5),
+         // infoWindow: InfoWindow('Taxi','$distance kilometers from taxi')  use after implementing driver app
+      );
+    });
   }
 
   Future<DocumentReference> _writeGeoPointToDb() async {
@@ -169,6 +193,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     child: Text('Write to db'),
                     onPressed: _writeGeoPointToDb,
                   ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  RaisedButton(
+                    child: Text('Update Markers'),
+                    onPressed:  _startQuery,
+                  ),
                 ],
               ),
             ),
@@ -177,4 +208,36 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       ),
     );
   }
+
+  _startQuery() async {
+    //Get user's location
+
+    var pos = await LatLng(currentLocation.latitude, currentLocation.longitude);
+    double lat = currentLocation.latitude;
+    double lng = currentLocation.longitude;
+
+    //Make a reference to firestore
+    var ref = firestore.collection('locations');
+    GeoFirePoint center = geo.point(latitude: lat, longitude: lng);
+
+    //subscribe to query
+    subscription = radius.switchMap((rad) {
+      return geo.collection(collectionRef: ref).within(center: center, radius: rad, field: 'position',strictMode: true);
+    }).listen(_updateMarkers);
+  }
+
+  _updateQuery(value)
+  {
+    setState((){
+      radius.add(value);
+    });
+  }
+
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
+
 }
