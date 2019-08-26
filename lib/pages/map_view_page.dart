@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -130,7 +131,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               onMapCreated: _onMapCreated,
               mapToolbarEnabled: true,
               myLocationEnabled: true,
-              myLocationButtonEnabled: false, //replace with a custom button
+              myLocationButtonEnabled: false,
               compassEnabled: false,
               initialCameraPosition: CameraPosition(
                 target:
@@ -168,61 +169,47 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ],
               ),
             ),
-            Positioned(
-              bottom: 10.0,
-              right: 15.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text('Add marker'),
-                    onPressed: _addMarker,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  RaisedButton(
-                    child: Text('Get location'),
-                    onPressed: _animateToCurrentLocation,
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              bottom: 60.0,
-              right: 15.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text('Write to DB'),
-                    onPressed: _writeGeoPointToDb,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  RaisedButton(
-                    child: Text('Dark mode'),
-                    onPressed: () {
-                      DynamicTheme.of(context).setBrightness(
-                          Theme.of(context).brightness == Brightness.dark
-                              ? Brightness.light
-                              : Brightness.dark);
-                      _onMapCreated(mapController); //buggy
-                    },
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  RaisedButton(
-                    child: Text('Update Markers'),
-                    onPressed:  _startQuery,
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
+      ),
+      floatingActionButton: SpeedDial(
+        heroTag: 'speedDial',
+        closeManually: false,
+        foregroundColor: invertInvertColorsTheme(context),
+        backgroundColor: invertColorsTheme(context),
+        animatedIcon: AnimatedIcons.menu_close,
+        elevation: 5.0,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.location_on),
+            foregroundColor: invertColorsTheme(context),
+            backgroundColor: invertInvertColorsTheme(context),
+            label: 'Mark location',
+            labelStyle: TextStyle(
+                color: MyColors.accentColor, fontWeight: FontWeight.w500),
+            onTap: () {
+              _animateToCurrentLocation();
+              _addMarker();
+              _writeGeoPointToDb();
+              _startQuery();
+            },
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.lightbulb_outline),
+            foregroundColor: invertColorsTheme(context),
+            backgroundColor: invertInvertColorsTheme(context),
+            label: 'Toggle lights',
+            labelStyle: TextStyle(
+                color: MyColors.accentColor, fontWeight: FontWeight.w500),
+            onTap: () {
+              DynamicTheme.of(context).setBrightness(
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Brightness.light
+                      : Brightness.dark);
+              _onMapCreated(mapController); //buggy
+            },
+          ),
+        ],
       ),
     );
   }

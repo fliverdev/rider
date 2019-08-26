@@ -12,6 +12,7 @@ dependencies:
   cloud_firestore: ^0.12.9
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0
+  flutter_speed_dial: ^1.2.1
   geoflutterfire: ^2.0.3
   geolocator: ^4.0.3
   google_maps_flutter: ^0.5.20
