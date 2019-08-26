@@ -9,6 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/rto_complaint.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
@@ -176,6 +177,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             },
           ),
           SpeedDialChild(
+            child: Icon(Icons.phone),
+            foregroundColor: invertColorsTheme(context),
+            backgroundColor: invertInvertColorsTheme(context),
+            label: 'RTO Complaint',
+            labelStyle: TextStyle(
+                color: MyColors.accentColor, fontWeight: FontWeight.w500),
+            onTap: () {
+              showRtoPopup(context);
+            },
+          ),
+          SpeedDialChild(
             child: Icon(Icons.lightbulb_outline),
             foregroundColor: invertColorsTheme(context),
             backgroundColor: invertInvertColorsTheme(context),
@@ -191,14 +203,16 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             },
           ),
           SpeedDialChild(
-            child: Icon(Icons.phone),
+            child: Icon(Icons.info_outline),
             foregroundColor: invertColorsTheme(context),
             backgroundColor: invertInvertColorsTheme(context),
-            label: 'RTO Complaint',
+            label: 'About',
             labelStyle: TextStyle(
                 color: MyColors.accentColor, fontWeight: FontWeight.w500),
             onTap: () {
-              showRtoPopup(context);
+              Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                return MyAboutPage();
+              }));
             },
           ),
         ],
