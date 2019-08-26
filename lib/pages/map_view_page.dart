@@ -61,8 +61,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         currentLocation =  currLoc;
         _circle.add(Circle(
           circleId: CircleId(
-              LatLng(currentLocation.latitude, currentLocation.longitude)
-                  .toString()),
+              LatLng(currentLocation.latitude, currentLocation.longitude).toString()),
           center: LatLng(currentLocation.latitude, currentLocation.longitude),
           radius: 75,
           fillColor: MyColors.translucentColor,
