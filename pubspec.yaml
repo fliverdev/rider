@@ -9,6 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  call_number: ^0.0.1
   cloud_firestore: ^0.12.9
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0

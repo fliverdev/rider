@@ -9,9 +9,10 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rider/services/rto_complaint.dart';
 import 'package:rider/utils/colors.dart';
-import 'package:rider/utils/functions.dart';
 import 'package:rider/utils/map_style.dart';
+import 'package:rider/utils/ui_helpers.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -184,6 +185,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       : Brightness.dark);
               _onMapCreated(mapController); //buggy
             },
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.phone),
+            foregroundColor: invertColorsTheme(context),
+            backgroundColor: invertInvertColorsTheme(context),
+            label: 'RTO Complaint',
+            labelStyle: TextStyle(
+                color: MyColors.accentColor, fontWeight: FontWeight.w500),
+            onTap: callRto,
           ),
         ],
       ),

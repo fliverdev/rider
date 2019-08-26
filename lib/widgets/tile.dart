@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rider/utils/functions.dart';
+import 'package:rider/utils/ui_helpers.dart';
 
 Widget buildTile(
     BuildContext context, Color color, Color splashColor, Widget child,
