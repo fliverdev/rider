@@ -9,6 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  call_number: ^0.0.1
   cloud_firestore: ^0.12.9
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0
@@ -19,7 +20,9 @@ dependencies:
   location: ^2.3.5
   permission_handler: ^3.2.2
   rxdart: ^0.22.1
+  flutter_staggered_grid_view: ^0.3.0
   random_string: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:

@@ -8,11 +8,17 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rider/pages/about_page.dart';
+import 'package:rider/services/rto_complaint.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/map_style.dart';
+import 'package:rider/utils/ui_helpers.dart';
+import 'package:random_string/random_string.dart';
+import 'package:rider/widgets/swipe_button.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rider/utils/functions.dart';
-import 'package:rider/utils/map_style.dart';
-import 'package:random_string/random_string.dart';
+
+
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -167,21 +173,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               markers: Set<Marker>.of(markers.values),
               circles: _circle,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: 10.0,
-                top: 40.0,
-              ),
+            Positioned(
+              top: 40.0,
+              left: 20.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.menu),
-                    tooltip: 'Menu',
-                    color: invertColorsStrong(context),
-                    iconSize: 22.0,
-                    onPressed: doNothing,
-                  ),
                   Text(
                     'Fliver Rider',
                     style: TextStyle(
@@ -193,6 +190,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Positioned(
+              bottom: 100.0, // 15.0 to align with the fab
+              child: SwipeButton(
+                thumb: Icon(Icons.arrow_forward_ios),
+                content: Center(
+                  child: Text('Swipe to mark location'),
+                ),
+                onChanged: (result) {
+                  print('Button swiped: $result');
+                },
               ),
             ),
           ],
@@ -220,6 +229,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             },
           ),
           SpeedDialChild(
+            child: Icon(Icons.phone),
+            foregroundColor: invertColorsTheme(context),
+            backgroundColor: invertInvertColorsTheme(context),
+            label: 'RTO Complaint',
+            labelStyle: TextStyle(
+                color: MyColors.accentColor, fontWeight: FontWeight.w500),
+            onTap: () {
+              showRtoPopup(context);
+            },
+          ),
+          SpeedDialChild(
             child: Icon(Icons.lightbulb_outline),
             foregroundColor: invertColorsTheme(context),
             backgroundColor: invertInvertColorsTheme(context),
@@ -234,11 +254,24 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               _onMapCreated(mapController); //buggy
             },
           ),
+          SpeedDialChild(
+            child: Icon(Icons.info_outline),
+            foregroundColor: invertColorsTheme(context),
+            backgroundColor: invertInvertColorsTheme(context),
+            label: 'About',
+            labelStyle: TextStyle(
+                color: MyColors.accentColor, fontWeight: FontWeight.w500),
+            onTap: () {
+              Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                return MyAboutPage();
+              }));
+            },
+          ),
         ],
       ),
     );
   }
-  
+
   @override
   void dispose() {
     subscription.cancel();
