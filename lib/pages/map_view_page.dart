@@ -16,8 +16,6 @@ import 'package:rider/utils/ui_helpers.dart';
 import 'package:random_string/random_string.dart';
 import 'package:rider/widgets/swipe_button.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rider/utils/functions.dart';
-
 
 
 class MyMapViewPage extends StatefulWidget {
