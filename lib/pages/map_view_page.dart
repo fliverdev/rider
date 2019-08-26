@@ -13,6 +13,7 @@ import 'package:rider/services/rto_complaint.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
+import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -119,11 +120,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               markers: Set<Marker>.of(markers.values),
               circles: _circle,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: 20.0,
-                top: 40.0,
-              ),
+            Positioned(
+              top: 40.0,
+              left: 20.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -138,6 +137,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Positioned(
+              bottom: 100.0, // 15.0 to align with the fab
+              child: SwipeButton(
+                thumb: Icon(Icons.arrow_forward_ios),
+                content: Center(
+                  child: Text('Swipe to mark location'),
+                ),
+                onChanged: (result) {
+                  print('Button swiped: $result');
+                },
               ),
             ),
           ],
