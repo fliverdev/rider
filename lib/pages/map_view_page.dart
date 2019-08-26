@@ -12,6 +12,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rider/utils/functions.dart';
 import 'package:rider/utils/map_style.dart';
+import 'package:random_string/random_string.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -22,8 +23,9 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  final Set<Circle> _circle = {};
 
+  final Set<Circle> _circle = {};
+  var clients = [];
   GoogleMapController mapController;
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
@@ -38,10 +40,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
-    _startQuery();
     mapController = controller;
     mapController
         .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine); //buggy
@@ -61,9 +63,46 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           strokeColor: MyColors.primaryColor,
           visible: true,
         ));
+      populateClients();
       });
     });
     return currentLocation;
+  }
+
+  void initMarker(client)
+  {
+
+
+  var markerIdVal = randomString(7); // TODO: don't use Random()
+  final MarkerId markerId = MarkerId(markerIdVal);
+
+  var marker = Marker(
+  markerId: markerId,
+  position: LatLng(client['position']['geopoint'].latitude, client['position']['geopoint'].longitude),
+  icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
+  // could get
+  infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+  onTap: doNothing,
+  );
+
+  setState(() {
+  markers[markerId] = marker;
+  });
+  }
+
+  void populateClients(){
+    clients = [];
+    Firestore.instance.collection('locations').getDocuments().then((docs){
+      print("did we get all the clients ? " + docs.documents.toString());
+      if(docs.documents.isNotEmpty)
+        {
+          for(int i = 0;i<docs.documents.length;i++)
+            {
+              clients.add(docs.documents[i].data);
+              initMarker(docs.documents[i].data);
+            }
+        }
+    });
   }
 
   void _addMarker() {
@@ -97,19 +136,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     );
   }
 
-   void _updateMarkers(List<DocumentSnapshot> documentList) {
-    print(documentList);
-    //mapController.clearMarkers(); Change as per updated Marker API
-    documentList.forEach((DocumentSnapshot document) {
-      GeoPoint pos = document.data['position']['geopoint'];
-      //double distance = document.data['distance']; use after implementing driver app
-      var marker = Marker(
-          position:LatLng(pos.latitude, pos.longitude),
-          icon:BitmapDescriptor.defaultMarkerWithHue(147.5),
-         // infoWindow: InfoWindow('Taxi','$distance kilometers from taxi')  use after implementing driver app
-      );
-    });
-  }
 
   Future<DocumentReference> _writeGeoPointToDb() async {
     var pos = await LatLng(currentLocation.latitude, currentLocation.longitude);
@@ -191,7 +217,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               _animateToCurrentLocation();
               _addMarker();
               _writeGeoPointToDb();
-              _startQuery();
             },
           ),
           SpeedDialChild(
@@ -213,33 +238,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       ),
     );
   }
-
-  _startQuery() async {
-    //Get user's location
-
-    var pos = await LatLng(currentLocation.latitude, currentLocation.longitude);
-    double lat = currentLocation.latitude;
-    double lng = currentLocation.longitude;
-
-    //Make a reference to firestore
-    var ref = firestore.collection('locations');
-    GeoFirePoint center = geo.point(latitude: lat, longitude: lng);
-
-    //subscribe to query
-    subscription = radius.switchMap((rad) {
-      return geo.collection(collectionRef: ref).within(center: center, radius: rad, field: 'position',strictMode: true);
-    }).listen(_updateMarkers);
-  }
-
-
-  _updateQuery(value)
-  {
-    setState((){
-      radius.add(value);
-    });
-  }
-
-
+  
   @override
   void dispose() {
     subscription.cancel();

@@ -19,6 +19,7 @@ dependencies:
   location: ^2.3.5
   permission_handler: ^3.2.2
   rxdart: ^0.22.1
+  random_string: ^1.1.0
 
 dev_dependencies:
   flutter_test:
