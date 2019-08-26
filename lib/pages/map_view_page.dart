@@ -121,19 +121,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             Padding(
               padding: EdgeInsets.only(
-                left: 10.0,
+                left: 20.0,
                 top: 40.0,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.menu),
-                    tooltip: 'Menu',
-                    color: invertColorsStrong(context),
-                    iconSize: 22.0,
-                    onPressed: doNothing,
-                  ),
                   Text(
                     'Fliver Rider',
                     style: TextStyle(
@@ -193,7 +186,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             label: 'RTO Complaint',
             labelStyle: TextStyle(
                 color: MyColors.accentColor, fontWeight: FontWeight.w500),
-            onTap: callRto,
+            onTap: () {
+              showRtoPopup(context);
+            },
           ),
         ],
       ),
