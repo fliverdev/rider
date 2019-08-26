@@ -49,7 +49,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
-        currentLocation = currLoc;
+        currentLocation =  currLoc;
         _circle.add(Circle(
           circleId: CircleId(
               LatLng(currentLocation.latitude, currentLocation.longitude)
@@ -243,6 +243,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       return geo.collection(collectionRef: ref).within(center: center, radius: rad, field: 'position',strictMode: true);
     }).listen(_updateMarkers);
   }
+
 
   _updateQuery(value)
   {
