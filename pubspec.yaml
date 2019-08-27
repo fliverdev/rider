@@ -21,6 +21,8 @@ dependencies:
   permission_handler: ^3.2.2
   rxdart: ^0.22.1
   flutter_staggered_grid_view: ^0.3.0
+  random_string: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:

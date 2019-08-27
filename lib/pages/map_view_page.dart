@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,25 +13,38 @@ import 'package:rider/services/rto_complaint.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
+import 'package:random_string/random_string.dart';
 import 'package:rider/widgets/swipe_button.dart';
+import 'package:rxdart/rxdart.dart';
+
 
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
+
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  final Set<Circle> _circle = {};
 
+  final Set<Circle> _circle = {};
+  var clients = [];
   GoogleMapController mapController;
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
 
+  //Stateful Data
+  BehaviorSubject<double> radius = BehaviorSubject.seeded(100.0);
+  Stream<dynamic> query;
+
+  //Subscription
+  StreamSubscription subscription;
+
   void initState() {
     super.initState();
     _getCurrentLocation();
+
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
@@ -44,20 +56,56 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
-        currentLocation = currLoc;
+        currentLocation =  currLoc;
         _circle.add(Circle(
           circleId: CircleId(
-              LatLng(currentLocation.latitude, currentLocation.longitude)
-                  .toString()),
+              LatLng(currentLocation.latitude, currentLocation.longitude).toString()),
           center: LatLng(currentLocation.latitude, currentLocation.longitude),
           radius: 75,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
           visible: true,
         ));
+      populateClients();
       });
     });
     return currentLocation;
+  }
+
+  void initMarker(client)
+  {
+
+
+  var markerIdVal = randomString(7); // TODO: don't use Random()
+  final MarkerId markerId = MarkerId(markerIdVal);
+
+  var marker = Marker(
+  markerId: markerId,
+  position: LatLng(client['position']['geopoint'].latitude, client['position']['geopoint'].longitude),
+  icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
+  // could get
+  infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+  onTap: doNothing,
+  );
+
+  setState(() {
+  markers[markerId] = marker;
+  });
+  }
+
+  void populateClients(){
+    clients = [];
+    Firestore.instance.collection('locations').getDocuments().then((docs){
+      print("did we get all the clients ? " + docs.documents.toString());
+      if(docs.documents.isNotEmpty)
+        {
+          for(int i = 0;i<docs.documents.length;i++)
+            {
+              clients.add(docs.documents[i].data);
+              initMarker(docs.documents[i].data);
+            }
+        }
+    });
   }
 
   void _addMarker() {
@@ -90,6 +138,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       ),
     );
   }
+
 
   Future<DocumentReference> _writeGeoPointToDb() async {
     var pos = await LatLng(currentLocation.latitude, currentLocation.longitude);
@@ -219,4 +268,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
+
 }
