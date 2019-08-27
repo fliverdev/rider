@@ -155,7 +155,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ),
       ),
       floatingActionButton: SpeedDial(
-        heroTag: 'speedDial',
+        heroTag: 'fab',
+        tooltip: 'Actions menu',
         closeManually: false,
         foregroundColor: invertInvertColorsTheme(context),
         backgroundColor: invertColorsTheme(context),

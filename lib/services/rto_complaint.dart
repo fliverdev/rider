@@ -29,7 +29,7 @@ void showRtoPopup(BuildContext context) {
               },
             ),
             RaisedButton(
-              child: Text('CALL'),
+              child: Text('Call'),
               color: MyColors.primaryColor,
               textColor: MyColors.accentColor,
               elevation: 3.0,
