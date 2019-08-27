@@ -37,7 +37,6 @@ class _MyAboutPageState extends State<MyAboutPage> {
                   Text(
                     'About',
                     style: TextStyle(
-//                    fontFamily: '',
                       fontWeight: FontWeight.w600,
                       fontSize: 24.0,
                       fontStyle: FontStyle.italic,

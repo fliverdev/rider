@@ -130,7 +130,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   Text(
                     'Fliver Rider',
                     style: TextStyle(
-//                    fontFamily: '',
                       fontWeight: FontWeight.w600,
                       fontSize: 24.0,
                       fontStyle: FontStyle.italic,

@@ -14,7 +14,11 @@ class MyApp extends StatelessWidget {
         primaryColor: MyColors.primaryColor,
         accentColor: MyColors.accentColor,
         brightness: brightness,
-//        fontFamily: '',
+        fontFamily: 'Nunito',
+        textTheme: TextTheme(
+          title: TextStyle(fontWeight: FontWeight.w700),
+          body1: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
