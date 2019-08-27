@@ -50,6 +50,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     mapController.setMapStyle(isThemeCurrentlyDark(context)
         ? retro
         : aubergine); // TODO: fix this bug
+    _updateMarkers(controller);
   } // recreates map
 
   void _getCurrentLocation() {
@@ -66,14 +67,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           strokeColor: MyColors.primaryColor,
           visible: true,
         ));
-        _populateClients();
       });
     });
     return currentLocation;
   }
 
   void _initMarkersFromFirestore(client) {
-    var markerIdVal = randomString(7); // TODO: don't use Random()
+    var markerIdVal = randomString(7);
     final MarkerId markerId = MarkerId(markerIdVal);
 
     var marker = Marker(
@@ -120,6 +120,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       }
     });
   } // renders markers from firestore on the map
+
+  Future _updateMarkers(controller) {
+    while (true) {
+      return new Future.delayed(const Duration(seconds: 5), () {
+        _populateClients();
+        initState();
+      });
+    }
+  } // fetches data from firestore after each 5 seconds
 
   void _animateToCurrentLocation() async {
     mapController.animateCamera(
