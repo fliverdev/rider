@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,20 +9,18 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:random_string/random_string.dart';
 import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/rto_complaint.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
-import 'package:random_string/random_string.dart';
 import 'package:rider/widgets/swipe_button.dart';
 import 'package:rxdart/rxdart.dart';
-
 
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
-
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
@@ -44,72 +43,56 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
     _getCurrentLocation();
-
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    mapController
-        .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine); //buggy
-  }
+    mapController.setMapStyle(isThemeCurrentlyDark(context)
+        ? retro
+        : aubergine); // TODO: fix this bug
+  } // recreates map
 
   void _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
-        currentLocation =  currLoc;
+        currentLocation = currLoc;
         _circle.add(Circle(
           circleId: CircleId(
-              LatLng(currentLocation.latitude, currentLocation.longitude).toString()),
+              LatLng(currentLocation.latitude, currentLocation.longitude)
+                  .toString()),
           center: LatLng(currentLocation.latitude, currentLocation.longitude),
           radius: 75,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
           visible: true,
         ));
-      populateClients();
+        _populateClients();
       });
     });
     return currentLocation;
   }
 
-  void initMarker(client)
-  {
+  void _initMarkersFromFirestore(client) {
+    var markerIdVal = randomString(7); // TODO: don't use Random()
+    final MarkerId markerId = MarkerId(markerIdVal);
 
+    var marker = Marker(
+      markerId: markerId,
+      position: LatLng(client['position']['geopoint'].latitude,
+          client['position']['geopoint'].longitude),
+      icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
+      // could get
+      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+      onTap: doNothing,
+    );
 
-  var markerIdVal = randomString(7); // TODO: don't use Random()
-  final MarkerId markerId = MarkerId(markerIdVal);
-
-  var marker = Marker(
-  markerId: markerId,
-  position: LatLng(client['position']['geopoint'].latitude, client['position']['geopoint'].longitude),
-  icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
-  // could get
-  infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
-  onTap: doNothing,
-  );
-
-  setState(() {
-  markers[markerId] = marker;
-  });
-  }
-
-  void populateClients(){
-    clients = [];
-    Firestore.instance.collection('locations').getDocuments().then((docs){
-      print("did we get all the clients ? " + docs.documents.toString());
-      if(docs.documents.isNotEmpty)
-        {
-          for(int i = 0;i<docs.documents.length;i++)
-            {
-              clients.add(docs.documents[i].data);
-              initMarker(docs.documents[i].data);
-            }
-        }
+    setState(() {
+      markers[markerId] = marker;
     });
-  }
+  } // creates markers from firestore on the map
 
-  void _addMarker() {
-    var markerIdVal = Random().toString(); // TODO: don't use Random()
+  void _addCurrentLocationMarker() {
+    var markerIdVal = Random().toString();
     final MarkerId markerId = MarkerId(markerIdVal);
 
     var marker = Marker(
@@ -124,7 +107,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     setState(() {
       markers[markerId] = marker;
     });
-  }
+  } //adds current location as a marker to map and db
+
+  void _populateClients() {
+    clients = [];
+    Firestore.instance.collection('locations').getDocuments().then((docs) {
+      if (docs.documents.isNotEmpty) {
+        for (int i = 0; i < docs.documents.length; i++) {
+          clients.add(docs.documents[i].data);
+          _initMarkersFromFirestore(docs.documents[i].data);
+        }
+      }
+    });
+  } // renders markers from firestore on the map
 
   void _animateToCurrentLocation() async {
     mapController.animateCamera(
@@ -138,7 +133,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       ),
     );
   }
-
 
   Future<DocumentReference> _writeGeoPointToDb() async {
     var pos = await LatLng(currentLocation.latitude, currentLocation.longitude);
@@ -221,7 +215,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 color: MyColors.accentColor, fontWeight: FontWeight.w500),
             onTap: () {
               _animateToCurrentLocation();
-              _addMarker();
+              _addCurrentLocationMarker();
               _writeGeoPointToDb();
             },
           ),
@@ -274,5 +268,4 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     subscription.cancel();
     super.dispose();
   }
-
 }
