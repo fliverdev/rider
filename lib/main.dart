@@ -14,7 +14,11 @@ class MyApp extends StatelessWidget {
         primaryColor: MyColors.primaryColor,
         accentColor: MyColors.accentColor,
         brightness: brightness,
-//        fontFamily: '',
+//        fontFamily: 'Rubik',
+        textTheme: TextTheme(
+          title: TextStyle(fontWeight: FontWeight.w700),
+          body1: TextStyle(fontWeight: FontWeight.w500),
+        ),
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
