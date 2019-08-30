@@ -26,6 +26,10 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
   var clients = [];
+  var zoom = [15.0, 17.5];
+  var bearing = [0.0, 90.0];
+  var tilt = [0.0, 45.0];
+  var locationAnimation = 0;
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   final Set<Circle> _circle = {};
   bool isSwipeButtonVisible = true;
@@ -122,14 +126,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } // renders markers from firestore on the map
 
-  void _animateToCurrentLocation() async {
+  void _animateToCurrentLocation(locationAnimation) async {
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: 17.5,
-          bearing: 90.0,
-          tilt: 45.0,
+          zoom: zoom[locationAnimation],
+          bearing: bearing[locationAnimation],
+          tilt: tilt[locationAnimation],
         ),
       ),
     );
@@ -165,7 +169,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               initialCameraPosition: CameraPosition(
                 target:
                     LatLng(currentLocation.latitude, currentLocation.longitude),
-                zoom: 15.0,
+                zoom: zoom[0],
+                bearing: bearing[0],
+                tilt: tilt[0],
               ),
               markers: Set<Marker>.of(markers.values),
               circles: _circle,
@@ -203,7 +209,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         isSwipeButtonVisible = false;
                         isFabVisible = true;
                       });
-                      _animateToCurrentLocation();
+                      locationAnimation = 1;
+                      _animateToCurrentLocation(locationAnimation);
                       _addCurrentLocationMarker();
                       _writeGeoPointToDb();
                     }
@@ -224,19 +231,22 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           animatedIcon: AnimatedIcons.menu_close,
           elevation: 5.0,
           children: [
-//          SpeedDialChild(
-//            child: Icon(Icons.location_on),
-//            foregroundColor: invertColorsTheme(context),
-//            backgroundColor: invertInvertColorsTheme(context),
-//            label: 'Mark location',
-//            labelStyle: TextStyle(
-//                color: MyColors.accentColor, fontWeight: FontWeight.w500),
-//            onTap: () {
-//              _animateToCurrentLocation();
-//              _addCurrentLocationMarker();
-//              _writeGeoPointToDb();
-//            },
-//          ),
+            SpeedDialChild(
+              child: Icon(Icons.my_location),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'Recenter',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                if (locationAnimation == 0) {
+                  locationAnimation = 1;
+                } else if (locationAnimation == 1) {
+                  locationAnimation = 0;
+                }
+                _animateToCurrentLocation(locationAnimation);
+              },
+            ),
             SpeedDialChild(
               child: Icon(Icons.phone),
               foregroundColor: invertColorsTheme(context),
