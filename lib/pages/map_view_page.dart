@@ -26,7 +26,6 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
   final Set<Circle> _circle = {};
   var clients = [];
   GoogleMapController mapController;
@@ -146,6 +145,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    Icon toggleLightsIcon = isThemeCurrentlyDark(context)
+        ? Icon(Icons.brightness_7)
+        : Icon(Icons.brightness_2);
+    String toggleLightsText =
+        isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return Scaffold(
       body: Container(
         child: Stack(
@@ -199,7 +203,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       ),
       floatingActionButton: SpeedDial(
         heroTag: 'fab',
-        tooltip: 'Actions menu',
         closeManually: false,
         foregroundColor: invertInvertColorsTheme(context),
         backgroundColor: invertColorsTheme(context),
@@ -223,7 +226,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             child: Icon(Icons.phone),
             foregroundColor: invertColorsTheme(context),
             backgroundColor: invertInvertColorsTheme(context),
-            label: 'RTO Complaint',
+            label: 'RTO complaint',
             labelStyle: TextStyle(
                 color: MyColors.accentColor, fontWeight: FontWeight.w500),
             onTap: () {
@@ -231,10 +234,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             },
           ),
           SpeedDialChild(
-            child: Icon(Icons.lightbulb_outline),
+            child: toggleLightsIcon,
             foregroundColor: invertColorsTheme(context),
             backgroundColor: invertInvertColorsTheme(context),
-            label: 'Toggle lights',
+            label: toggleLightsText,
             labelStyle: TextStyle(
                 color: MyColors.accentColor, fontWeight: FontWeight.w500),
             onTap: () {
