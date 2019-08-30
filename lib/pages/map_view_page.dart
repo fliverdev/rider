@@ -30,20 +30,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var bearing = [0.0, 90.0];
   var tilt = [0.0, 45.0];
   var locationAnimation = 0;
+
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   final Set<Circle> _circle = {};
+
+  bool isFirstLaunch = true;
   bool isSwipeButtonVisible = true;
   bool isFabVisible = false;
+
   GoogleMapController mapController;
   Firestore firestore = Firestore.instance;
+  StreamSubscription subscription;
   Geoflutterfire geo = Geoflutterfire();
 
-  //Stateful Data
   BehaviorSubject<double> radius = BehaviorSubject.seeded(100.0);
   Stream<dynamic> query;
-
-  //Subscription
-  StreamSubscription subscription;
 
   void initState() {
     super.initState();
@@ -52,10 +53,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    mapController.setMapStyle(isThemeCurrentlyDark(context)
-        ? retro
-        : aubergine); // TODO: fix this bug
-    _updateMarkers(controller);
+    if (isFirstLaunch) {
+      mapController.setMapStyle(isThemeCurrentlyDark(context)
+          ? aubergine
+          : retro); // TODO: improve this
+      isFirstLaunch = false;
+    } else {
+      mapController
+          .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine);
+    }
   } // recreates map
 
   void _getCurrentLocation() {
@@ -257,17 +263,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.phone),
-              foregroundColor: invertColorsTheme(context),
-              backgroundColor: invertInvertColorsTheme(context),
-              label: 'RTO complaint',
-              labelStyle: TextStyle(
-                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
-              onTap: () {
-                showRtoPopup(context);
-              },
-            ),
-            SpeedDialChild(
               child: toggleLightsIcon,
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
@@ -280,6 +275,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ? Brightness.light
                         : Brightness.dark);
                 _onMapCreated(mapController); //buggy
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.phone),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'RTO complaint',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                showRtoPopup(context);
               },
             ),
             SpeedDialChild(
