@@ -25,9 +25,11 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
+  var clients = [];
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   final Set<Circle> _circle = {};
-  var clients = [];
+  bool isSwipeButtonVisible = true;
+  bool isFabVisible = false;
   GoogleMapController mapController;
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
@@ -186,82 +188,96 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ],
               ),
             ),
-            Positioned(
-              bottom: 100.0, // 15.0 to align with the fab
-              child: SwipeButton(
-                thumb: Icon(Icons.arrow_forward_ios),
-                content: Center(
-                  child: Text('Swipe to mark location'),
+            Visibility(
+              visible: isSwipeButtonVisible,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SwipeButton(
+                  thumb: Icon(Icons.arrow_forward_ios),
+                  content: Center(
+                    child: Text('Swipe to mark location'),
+                  ),
+                  onChanged: (result) {
+                    if (result == SwipePosition.SwipeRight) {
+                      setState(() {
+                        isSwipeButtonVisible = false;
+                        isFabVisible = true;
+                      });
+                      _animateToCurrentLocation();
+                      _addCurrentLocationMarker();
+                      _writeGeoPointToDb();
+                    }
+                  },
                 ),
-                onChanged: (result) {
-                  print('Button swiped: $result');
-                },
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: SpeedDial(
-        heroTag: 'fab',
-        closeManually: false,
-        foregroundColor: invertInvertColorsTheme(context),
-        backgroundColor: invertColorsTheme(context),
-        animatedIcon: AnimatedIcons.menu_close,
-        elevation: 5.0,
-        children: [
-          SpeedDialChild(
-            child: Icon(Icons.location_on),
-            foregroundColor: invertColorsTheme(context),
-            backgroundColor: invertInvertColorsTheme(context),
-            label: 'Mark location',
-            labelStyle: TextStyle(
-                color: MyColors.accentColor, fontWeight: FontWeight.w500),
-            onTap: () {
-              _animateToCurrentLocation();
-              _addCurrentLocationMarker();
-              _writeGeoPointToDb();
-            },
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.phone),
-            foregroundColor: invertColorsTheme(context),
-            backgroundColor: invertInvertColorsTheme(context),
-            label: 'RTO complaint',
-            labelStyle: TextStyle(
-                color: MyColors.accentColor, fontWeight: FontWeight.w500),
-            onTap: () {
-              showRtoPopup(context);
-            },
-          ),
-          SpeedDialChild(
-            child: toggleLightsIcon,
-            foregroundColor: invertColorsTheme(context),
-            backgroundColor: invertInvertColorsTheme(context),
-            label: toggleLightsText,
-            labelStyle: TextStyle(
-                color: MyColors.accentColor, fontWeight: FontWeight.w500),
-            onTap: () {
-              DynamicTheme.of(context).setBrightness(
-                  Theme.of(context).brightness == Brightness.dark
-                      ? Brightness.light
-                      : Brightness.dark);
-              _onMapCreated(mapController); //buggy
-            },
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.info_outline),
-            foregroundColor: invertColorsTheme(context),
-            backgroundColor: invertInvertColorsTheme(context),
-            label: 'About',
-            labelStyle: TextStyle(
-                color: MyColors.accentColor, fontWeight: FontWeight.w500),
-            onTap: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                return MyAboutPage();
-              }));
-            },
-          ),
-        ],
+      floatingActionButton: Visibility(
+        visible: isFabVisible,
+        child: SpeedDial(
+          heroTag: 'fab',
+          closeManually: false,
+          foregroundColor: invertInvertColorsTheme(context),
+          backgroundColor: invertColorsTheme(context),
+          animatedIcon: AnimatedIcons.menu_close,
+          elevation: 5.0,
+          children: [
+//          SpeedDialChild(
+//            child: Icon(Icons.location_on),
+//            foregroundColor: invertColorsTheme(context),
+//            backgroundColor: invertInvertColorsTheme(context),
+//            label: 'Mark location',
+//            labelStyle: TextStyle(
+//                color: MyColors.accentColor, fontWeight: FontWeight.w500),
+//            onTap: () {
+//              _animateToCurrentLocation();
+//              _addCurrentLocationMarker();
+//              _writeGeoPointToDb();
+//            },
+//          ),
+            SpeedDialChild(
+              child: Icon(Icons.phone),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'RTO complaint',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                showRtoPopup(context);
+              },
+            ),
+            SpeedDialChild(
+              child: toggleLightsIcon,
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: toggleLightsText,
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                DynamicTheme.of(context).setBrightness(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Brightness.light
+                        : Brightness.dark);
+                _onMapCreated(mapController); //buggy
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.info_outline),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'About',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                  return MyAboutPage();
+                }));
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
