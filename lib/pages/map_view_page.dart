@@ -51,7 +51,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     _getCurrentLocation();
   } // gets current user location when the app loads
 
-  void _onMapCreated(GoogleMapController controller) {
+  _onMapCreated(GoogleMapController controller) {
     mapController = controller;
     if (isFirstLaunch) {
       mapController.setMapStyle(isThemeCurrentlyDark(context)
@@ -62,6 +62,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine);
     }
+
+    const interval = const Duration(seconds: 1);
+    new Timer.periodic(interval, (Timer t) {
+      _populateClients();
+    });
+//    while (true) {
+//      print('Fetching data...');
+//      return new Future.delayed(const Duration(seconds: 5), () {
+//
+//      });
+//    }
   } // recreates map
 
   void _getCurrentLocation() {
@@ -121,6 +132,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } //adds current location as a marker to map and db
 
   void _populateClients() {
+    print('Populating clients...');
     clients = [];
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
@@ -131,15 +143,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       }
     });
   } // renders markers from firestore on the map
-
-  Future _updateMarkers(controller) {
-    while (true) {
-      return new Future.delayed(const Duration(seconds: 5), () {
-        _populateClients();
-        initState();
-      });
-    }
-  } // fetches data from firestore after each 5 seconds
 
   void _animateToCurrentLocation(locationAnimation) async {
     mapController.animateCamera(
