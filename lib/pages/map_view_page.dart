@@ -79,16 +79,22 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
         currentLocation = currLoc;
-        _circle.add(Circle(
-          circleId: CircleId(
-              LatLng(currentLocation.latitude, currentLocation.longitude)
-                  .toString()),
-          center: LatLng(currentLocation.latitude, currentLocation.longitude),
-          radius: 75,
-          fillColor: MyColors.translucentColor,
-          strokeColor: MyColors.primaryColor,
-          visible: true,
-        ));
+        //if(in radius 100 make a circle otherwise dont
+        if(clients.length == 1)
+          {
+            _circle.add(Circle(
+              circleId: CircleId(
+                  LatLng(currentLocation.latitude, currentLocation.longitude)
+                      .toString()),
+              center: LatLng(currentLocation.latitude, currentLocation.longitude),
+              radius: 75,
+              fillColor: MyColors.translucentColor,
+              strokeColor: MyColors.primaryColor,
+              visible: true,
+            ));
+          }
+
+
       });
     });
     return currentLocation;
