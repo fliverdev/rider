@@ -46,6 +46,6 @@ void showRtoPopup(BuildContext context) {
 
 void callRto() {
   final String rtoNumber = "1800220110";
-  requestPermissionsPhone();
+  requestPhonePermission();
   CallNumber().callNumber(rtoNumber);
 }

@@ -1,28 +1,35 @@
 import 'package:permission_handler/permission_handler.dart';
 
-void requestPermissionsLocation() async {
+void requestLocationPermission() async {
   Map<PermissionGroup, PermissionStatus> permissions =
       await PermissionHandler().requestPermissions([PermissionGroup.location]);
-  print(permissions);
 }
 
-void requestPermissionsPhone() async {
+void requestPhonePermission() async {
   Map<PermissionGroup, PermissionStatus> permissions =
       await PermissionHandler().requestPermissions([PermissionGroup.phone]);
-  print(permissions);
 }
 
-void checkPermissions() async {
+void checkLocationPermission() async {
   PermissionStatus locationPermission =
       await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
+  ServiceStatus locationService =
+      await PermissionHandler().checkServiceStatus(PermissionGroup.location);
 
+  if (locationPermission == PermissionStatus.granted) {
+    print('Permission granted');
+  } else {
+    print('Permission denied');
+  }
+}
+
+void checkPhonePermission() async {
   PermissionStatus phonePermission =
       await PermissionHandler().checkPermissionStatus(PermissionGroup.phone);
 
-  ServiceStatus serviceStatus =
-      await PermissionHandler().checkServiceStatus(PermissionGroup.location);
-
-  print(locationPermission);
-  print(phonePermission);
-  print(serviceStatus);
+  if (phonePermission == PermissionStatus.granted) {
+    print('Permission granted');
+  } else {
+    print('Permission denied');
+  }
 }

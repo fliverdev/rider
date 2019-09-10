@@ -51,29 +51,23 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     _getCurrentLocation();
   } // gets current user location when the app loads
 
-  _onMapCreated(GoogleMapController controller) {
+  void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    const interval = const Duration(seconds: 10);
+
     if (isFirstLaunch) {
-      mapController.setMapStyle(isThemeCurrentlyDark(context)
-          ? aubergine
-          : retro); // TODO: improve this
+      mapController
+          .setMapStyle(isThemeCurrentlyDark(context) ? aubergine : retro);
       isFirstLaunch = false;
     } else {
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine);
     }
 
-    const interval = const Duration(seconds: 1);
     new Timer.periodic(interval, (Timer t) {
-      _populateClients();
+      _populateClients(); // updates markers every 10 seconds
     });
-//    while (true) {
-//      print('Fetching data...');
-//      return new Future.delayed(const Duration(seconds: 5), () {
-//
-//      });
-//    }
-  } // recreates map
+  }
 
   void _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
@@ -102,8 +96,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markerId: markerId,
       position: LatLng(client['position']['geopoint'].latitude,
           client['position']['geopoint'].longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
-      // could get
+      icon: BitmapDescriptor.defaultMarkerWithHue(
+          147.5), // closest to primaryColor
       infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
       onTap: doNothing,
     );
@@ -129,7 +123,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     setState(() {
       markers[markerId] = marker;
     });
-  } //adds current location as a marker to map and db
+  } //adds current location as a marker to map and writes to db
 
   void _populateClients() {
     print('Populating clients...');
