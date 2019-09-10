@@ -53,16 +53,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    const interval = const Duration(seconds: 10);
+
     if (isFirstLaunch) {
-      mapController.setMapStyle(isThemeCurrentlyDark(context)
-          ? aubergine
-          : retro); // TODO: improve this
+      mapController
+          .setMapStyle(isThemeCurrentlyDark(context) ? aubergine : retro);
       isFirstLaunch = false;
     } else {
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine);
     }
-  } // recreates map
+
+    new Timer.periodic(interval, (Timer t) {
+      _populateClients(); // updates markers every 10 seconds
+    });
+  }
 
   void _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
@@ -91,8 +96,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markerId: markerId,
       position: LatLng(client['position']['geopoint'].latitude,
           client['position']['geopoint'].longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
-      // could get
+      icon: BitmapDescriptor.defaultMarkerWithHue(
+          147.5), // closest to primaryColor
       infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
       onTap: doNothing,
     );
@@ -118,9 +123,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     setState(() {
       markers[markerId] = marker;
     });
-  } //adds current location as a marker to map and db
+  } //adds current location as a marker to map and writes to db
 
   void _populateClients() {
+    print('Populating clients...');
     clients = [];
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
@@ -131,15 +137,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       }
     });
   } // renders markers from firestore on the map
-
-  Future _updateMarkers(controller) {
-    while (true) {
-      return new Future.delayed(const Duration(seconds: 5), () {
-        _populateClients();
-        initState();
-      });
-    }
-  } // fetches data from firestore after each 5 seconds
 
   void _animateToCurrentLocation(locationAnimation) async {
     mapController.animateCamera(
