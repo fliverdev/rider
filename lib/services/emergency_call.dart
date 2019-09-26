@@ -4,20 +4,20 @@ import 'package:rider/utils/permission_helper.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-void showRtoPopup(BuildContext context) {
+void showEmergencyPopup(BuildContext context) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          title: Text('RTO Complaint'),
-          content: Text('This will directly call the Regional Transport '
-              'Office of India. You can then file a complaint in case of '
-              'accident, rude behaviour of drivers, etc.\n\nPlease note that '
-              'we, the Developers of Fliver, do not guarantee your '
-              'complaint being recorded as we have no affiliation with the '
-              'Regional Transport Office of India.'),
+          title: Text('Emergency Helpline'),
+          content: Text('You can choose to call Emergency Services or the '
+              'Regional Transport Office of India. You can then file a '
+              'complaint in case of accident, rude behaviour of drivers, etc.'
+              '\n\nPlease note that we, the Developers of Fliver, do not '
+              'guarantee your complaint being recorded as we have no '
+              'affiliation with these government organizations.'),
           actions: <Widget>[
             FlatButton(
               child: Text('Cancel'),
@@ -29,14 +29,25 @@ void showRtoPopup(BuildContext context) {
               },
             ),
             RaisedButton(
-              child: Text('Call'),
+              child: Text('Emergency'),
+              color: MaterialColors.red,
+              textColor: MyColors.white,
+              elevation: 3.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              onPressed: () {
+                callNumber(context, '112');
+              },
+            ),
+            RaisedButton(
+              child: Text('RTO'),
               color: MyColors.primaryColor,
               textColor: MyColors.accentColor,
               elevation: 3.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               onPressed: () {
-                callRto(context);
+                callNumber(context, '1800220110');
               },
             ),
           ],
@@ -44,9 +55,8 @@ void showRtoPopup(BuildContext context) {
       });
 }
 
-void callRto(BuildContext context) {
-  final String rtoNumber = "1800220110";
+void callNumber(BuildContext context, String number) {
   requestPhonePermission();
-  launch('tel:$rtoNumber');
+  launch('tel:$number');
   Navigator.pop(context);
 }

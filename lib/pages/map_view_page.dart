@@ -10,7 +10,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/pages/about_page.dart';
-import 'package:rider/services/rto_complaint.dart';
+import 'package:rider/services/emergency_call.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
@@ -219,12 +219,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     Icons.warning,
                     size: 20.0,
                   ),
-                  tooltip: 'RTO complaint',
+                  tooltip: 'Emergency',
                   foregroundColor: invertInvertColorsTheme(context),
                   backgroundColor: invertColorsTheme(context),
                   elevation: 5.0,
                   onPressed: () {
-                    showRtoPopup(context);
+                    showEmergencyPopup(context);
                   },
                 ),
               ),
@@ -299,13 +299,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             SpeedDialChild(
               child: Icon(Icons.warning),
-              foregroundColor: invertColorsTheme(context),
-              backgroundColor: invertInvertColorsTheme(context),
-              label: 'RTO complaint',
+              foregroundColor: MyColors.white,
+              backgroundColor: MaterialColors.red,
+              label: 'Emergency',
               labelStyle: TextStyle(
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
-                showRtoPopup(context);
+                showEmergencyPopup(context);
               },
             ),
             SpeedDialChild(
