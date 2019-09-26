@@ -25,7 +25,6 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
-  var clients = [];
   var zoom = [15.0, 17.5];
   var bearing = [0.0, 90.0];
   var tilt = [0.0, 45.0];
@@ -88,23 +87,26 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     return currentLocation;
   }
 
-  void _initMarkersFromFirestore(client) {
-    var markerIdVal = randomString(7);
-    final MarkerId markerId = MarkerId(markerIdVal);
+  void _initMarkersFromFirestore(clients) {
+    for (int i = 0; i < clients.length; i++) {
+      var markerIdVal = randomString(7);
+      final MarkerId markerId = MarkerId(markerIdVal);
+      var clientData = clients[i].data;
 
-    var marker = Marker(
-      markerId: markerId,
-      position: LatLng(client['position']['geopoint'].latitude,
-          client['position']['geopoint'].longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(
-          147.5), // closest to primaryColor
-      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
-      onTap: doNothing,
-    );
+      var marker = Marker(
+        markerId: markerId,
+        position: LatLng(clientData['position']['geopoint'].latitude,
+            clientData['position']['geopoint'].longitude),
+        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+        infoWindow:
+            InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+        onTap: doNothing,
+      );
 
-    setState(() {
-      markers[markerId] = marker;
-    });
+      setState(() {
+        markers[markerId] = marker;
+      });
+    }
   } // creates markers from firestore on the map
 
   void _addCurrentLocationMarker() {
@@ -126,14 +128,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } //adds current location as a marker to map and writes to db
 
   void _populateClients() {
-    print('Populating clients...');
-    clients = [];
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
-        for (int i = 0; i < docs.documents.length; i++) {
-          clients.add(docs.documents[i].data);
-          _initMarkersFromFirestore(docs.documents[i].data);
+        var docLength = docs.documents.length;
+        var clients = new List(docLength);
+        for (int i = 0; i < docLength; i++) {
+          clients[i] = docs.documents[i];
         }
+        print('Reopulated $docLength clients');
+        _initMarkersFromFirestore(clients);
       }
     });
   } // renders markers from firestore on the map
