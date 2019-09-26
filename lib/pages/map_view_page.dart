@@ -9,7 +9,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:random_string/random_string.dart';
 import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/rto_complaint.dart';
 import 'package:rider/utils/colors.dart';
@@ -211,6 +210,27 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             Visibility(
               visible: isSwipeButtonVisible,
+              child: Positioned(
+                top: 40.0,
+                right: 20.0,
+                child: FloatingActionButton(
+                  mini: true,
+                  child: Icon(
+                    Icons.warning,
+                    size: 20.0,
+                  ),
+                  tooltip: 'RTO complaint',
+                  foregroundColor: invertInvertColorsTheme(context),
+                  backgroundColor: invertColorsTheme(context),
+                  elevation: 5.0,
+                  onPressed: () {
+                    showRtoPopup(context);
+                  },
+                ),
+              ),
+            ),
+            Visibility(
+              visible: isSwipeButtonVisible,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SwipeButton(
@@ -278,7 +298,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.phone),
+              child: Icon(Icons.warning),
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
               label: 'RTO complaint',
