@@ -36,7 +36,7 @@ void showRtoPopup(BuildContext context) {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               onPressed: () {
-                callRto();
+                callRto(context);
               },
             ),
           ],
@@ -44,8 +44,9 @@ void showRtoPopup(BuildContext context) {
       });
 }
 
-void callRto() {
+void callRto(BuildContext context) {
   final String rtoNumber = "1800220110";
-  requestPermissionsPhone();
+  requestPhonePermission();
   CallNumber().callNumber(rtoNumber);
+  Navigator.pop(context);
 }
