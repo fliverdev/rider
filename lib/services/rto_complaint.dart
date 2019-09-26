@@ -1,8 +1,8 @@
-import 'package:call_number/call_number.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/permission_helper.dart';
 import 'package:rider/utils/ui_helpers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void showRtoPopup(BuildContext context) {
   showDialog(
@@ -47,6 +47,6 @@ void showRtoPopup(BuildContext context) {
 void callRto(BuildContext context) {
   final String rtoNumber = "1800220110";
   requestPhonePermission();
-  CallNumber().callNumber(rtoNumber);
+  launch('tel:$rtoNumber');
   Navigator.pop(context);
 }
