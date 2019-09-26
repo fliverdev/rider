@@ -2,22 +2,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/ui_helpers.dart';
 
-Widget sexyTile(BuildContext context, Widget child, {Function() onTap}) {
-  return Container(
-    margin: EdgeInsets.all(10.0),
-    child: Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(10.0),
-      shadowColor: shadowColor(context),
-      child: InkWell(
-        child: child,
-        borderRadius: BorderRadius.circular(10.0),
-        onTap: onTap != null
-            ? () => onTap()
-            : () {
-                print('Nothing set yet!');
-              },
+class SexyTile extends StatelessWidget {
+  const SexyTile({
+    this.child,
+    this.color,
+    this.splashColor,
+    this.onTap,
+  });
+  final Widget child;
+  final Color color;
+  final Color splashColor;
+  final Function() onTap;
+
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(15.0),
+      child: Material(
+        color: color,
+        elevation: 10.0,
+        borderRadius: BorderRadius.circular(15.0),
+        shadowColor: shadowColor(context),
+        child: InkWell(
+          child: child,
+          splashColor: splashColor,
+          borderRadius: BorderRadius.circular(15.0),
+          onTap: onTap == null ? doNothing : () => onTap(),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
