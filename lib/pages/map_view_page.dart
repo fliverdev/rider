@@ -55,6 +55,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     const interval = const Duration(seconds: 10);
 
     if (isFirstLaunch) {
+      _populateClients();
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? aubergine : retro);
       isFirstLaunch = false;
@@ -89,17 +90,16 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _initMarkersFromFirestore(clients) {
     for (int i = 0; i < clients.length; i++) {
-      var markerIdVal = randomString(7);
-      final MarkerId markerId = MarkerId(markerIdVal);
-      var clientData = clients[i].data;
+      final markerId = MarkerId(clients[i].documentID);
+      final markerData = clients[i].data;
 
       var marker = Marker(
         markerId: markerId,
-        position: LatLng(clientData['position']['geopoint'].latitude,
-            clientData['position']['geopoint'].longitude),
+        position: LatLng(markerData['position']['geopoint'].latitude,
+            markerData['position']['geopoint'].longitude),
         icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
         infoWindow:
-            InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+            InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
         onTap: doNothing,
       );
 
@@ -118,7 +118,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       position: LatLng(currentLocation.latitude, currentLocation.longitude),
       icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
       // could get
-      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
       onTap: doNothing,
     );
 
