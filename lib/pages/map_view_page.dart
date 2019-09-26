@@ -298,17 +298,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.warning),
-              foregroundColor: MyColors.white,
-              backgroundColor: MaterialColors.red,
-              label: 'Emergency',
-              labelStyle: TextStyle(
-                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
-              onTap: () {
-                showEmergencyPopup(context);
-              },
-            ),
-            SpeedDialChild(
               child: Icon(Icons.info_outline),
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
@@ -319,6 +308,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
                   return MyAboutPage();
                 }));
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.warning),
+              foregroundColor: MyColors.white,
+              backgroundColor: MaterialColors.red,
+              label: 'Emergency',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                showEmergencyPopup(context);
               },
             ),
           ],

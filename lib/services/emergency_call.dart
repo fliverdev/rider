@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
-import 'package:rider/utils/permission_helper.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -36,7 +35,8 @@ void showEmergencyPopup(BuildContext context) {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               onPressed: () {
-                callNumber(context, '112');
+                launch('tel:112');
+                Navigator.pop(context);
               },
             ),
             RaisedButton(
@@ -47,16 +47,11 @@ void showEmergencyPopup(BuildContext context) {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               onPressed: () {
-                callNumber(context, '1800220110');
+                launch('tel:1800220110');
+                Navigator.pop(context);
               },
             ),
           ],
         );
       });
-}
-
-void callNumber(BuildContext context, String number) {
-  requestPhonePermission();
-  launch('tel:$number');
-  Navigator.pop(context);
 }
