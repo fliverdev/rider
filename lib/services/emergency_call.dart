@@ -15,7 +15,7 @@ void showEmergencyPopup(BuildContext context) {
               'Regional Transport Office of India. You can then file a '
               'complaint in case of accident, rude behaviour of drivers, etc.'
               '\n\nPlease note that we, the Developers of Fliver, do not '
-              'guarantee your complaint being recorded as we have no '
+              'guarantee your complaint being lodged as we have no '
               'affiliation with these government organizations.'),
           actions: <Widget>[
             FlatButton(
@@ -28,18 +28,6 @@ void showEmergencyPopup(BuildContext context) {
               },
             ),
             RaisedButton(
-              child: Text('Emergency'),
-              color: MaterialColors.red,
-              textColor: MyColors.white,
-              elevation: 3.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              onPressed: () {
-                launch('tel:112');
-                Navigator.pop(context);
-              },
-            ),
-            RaisedButton(
               child: Text('RTO'),
               color: MyColors.primaryColor,
               textColor: MyColors.accentColor,
@@ -48,6 +36,18 @@ void showEmergencyPopup(BuildContext context) {
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               onPressed: () {
                 launch('tel:1800220110');
+                Navigator.pop(context);
+              },
+            ),
+            RaisedButton(
+              child: Text('SOS'),
+              color: MaterialColors.red,
+              textColor: MyColors.white,
+              elevation: 3.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              onPressed: () {
+                launch('tel:112');
                 Navigator.pop(context);
               },
             ),
