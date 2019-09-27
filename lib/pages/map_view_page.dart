@@ -9,9 +9,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:random_string/random_string.dart';
 import 'package:rider/pages/about_page.dart';
-import 'package:rider/services/rto_complaint.dart';
+import 'package:rider/services/emergency_call.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
@@ -25,7 +24,6 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
-  var clients = [];
   var zoom = [15.0, 17.5];
   var bearing = [0.0, 90.0];
   var tilt = [0.0, 45.0];
@@ -56,6 +54,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     const interval = const Duration(seconds: 10);
 
     if (isFirstLaunch) {
+      _populateClients();
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? aubergine : retro);
       isFirstLaunch = false;
@@ -88,23 +87,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     return currentLocation;
   }
 
-  void _initMarkersFromFirestore(client) {
-    var markerIdVal = randomString(7);
-    final MarkerId markerId = MarkerId(markerIdVal);
+  void _initMarkersFromFirestore(clients) {
+    for (int i = 0; i < clients.length; i++) {
+      final markerId = MarkerId(clients[i].documentID);
+      final markerData = clients[i].data;
 
-    var marker = Marker(
-      markerId: markerId,
-      position: LatLng(client['position']['geopoint'].latitude,
-          client['position']['geopoint'].longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(
-          147.5), // closest to primaryColor
-      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
-      onTap: doNothing,
-    );
+      var marker = Marker(
+        markerId: markerId,
+        position: LatLng(markerData['position']['geopoint'].latitude,
+            markerData['position']['geopoint'].longitude),
+        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+        infoWindow:
+            InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
+        onTap: doNothing,
+      );
 
-    setState(() {
-      markers[markerId] = marker;
-    });
+      setState(() {
+        markers[markerId] = marker;
+      });
+    }
   } // creates markers from firestore on the map
 
   void _addCurrentLocationMarker() {
@@ -116,7 +117,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       position: LatLng(currentLocation.latitude, currentLocation.longitude),
       icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
       // could get
-      infoWindow: InfoWindow(title: 'Marker Title', snippet: 'Marker Snippet'),
+      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
       onTap: doNothing,
     );
 
@@ -126,14 +127,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } //adds current location as a marker to map and writes to db
 
   void _populateClients() {
-    print('Populating clients...');
-    clients = [];
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
-        for (int i = 0; i < docs.documents.length; i++) {
-          clients.add(docs.documents[i].data);
-          _initMarkersFromFirestore(docs.documents[i].data);
+        var docLength = docs.documents.length;
+        var clients = new List(docLength);
+        for (int i = 0; i < docLength; i++) {
+          clients[i] = docs.documents[i];
         }
+        print('Reopulated $docLength clients');
+        _initMarkersFromFirestore(clients);
       }
     });
   } // renders markers from firestore on the map
@@ -208,6 +210,27 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             Visibility(
               visible: isSwipeButtonVisible,
+              child: Positioned(
+                top: 40.0,
+                right: 20.0,
+                child: FloatingActionButton(
+                  mini: true,
+                  child: Icon(
+                    Icons.warning,
+                    size: 20.0,
+                  ),
+                  tooltip: 'Emergency',
+                  foregroundColor: invertInvertColorsTheme(context),
+                  backgroundColor: invertColorsTheme(context),
+                  elevation: 5.0,
+                  onPressed: () {
+                    showEmergencyPopup(context);
+                  },
+                ),
+              ),
+            ),
+            Visibility(
+              visible: isSwipeButtonVisible,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SwipeButton(
@@ -275,17 +298,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.phone),
-              foregroundColor: invertColorsTheme(context),
-              backgroundColor: invertInvertColorsTheme(context),
-              label: 'RTO complaint',
-              labelStyle: TextStyle(
-                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
-              onTap: () {
-                showRtoPopup(context);
-              },
-            ),
-            SpeedDialChild(
               child: Icon(Icons.info_outline),
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
@@ -296,6 +308,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
                   return MyAboutPage();
                 }));
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.warning),
+              foregroundColor: MyColors.white,
+              backgroundColor: MaterialColors.red,
+              label: 'Emergency',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                showEmergencyPopup(context);
               },
             ),
           ],
