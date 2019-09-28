@@ -76,19 +76,28 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     for (int i = 0; i < clients.length; i++) {
       final markerId = MarkerId(clients[i].documentID);
       final markerData = clients[i].data;
+      final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
+          markerData['position']['geopoint'].longitude);
 
       var marker = Marker(
         markerId: markerId,
-        position: LatLng(markerData['position']['geopoint'].latitude,
-            markerData['position']['geopoint'].longitude),
+        position: markerPosition,
         icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
         infoWindow:
             InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
-        onTap: doNothing,
       );
 
       setState(() {
         markers[markerId] = marker;
+
+        circle.add(Circle(
+          circleId: CircleId(markerId.toString()),
+          center: markerPosition,
+          radius: 75,
+          fillColor: MyColors.translucentColor,
+          strokeColor: MyColors.primaryColor,
+          visible: isHotspotVisible,
+        ));
       });
     }
   } // creates markers from firestore on the map
@@ -252,6 +261,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
                   return MyAboutPage();
                 }));
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.bug_report),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'Toggle hotspots',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                setState(() {
+                  isHotspotVisible
+                      ? isHotspotVisible = false
+                      : isHotspotVisible = true;
+                });
               },
             ),
             SpeedDialChild(
