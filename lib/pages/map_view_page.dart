@@ -6,17 +6,16 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:random_string/random_string.dart';
 import 'package:rider/pages/about_page.dart';
-import 'package:rider/services/rto_complaint.dart';
+import 'package:rider/services/emergency_call.dart';
+import 'package:rider/services/map.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
+import 'package:rider/utils/variables.dart';
 import 'package:rider/widgets/swipe_button.dart';
-import 'package:rxdart/rxdart.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -24,27 +23,6 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
-  var currentLocation;
-  var zoom = [15.0, 17.5];
-  var bearing = [0.0, 90.0];
-  var tilt = [0.0, 45.0];
-  var locationAnimation = 0;
-
-  final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  final Set<Circle> _circle = {};
-
-  bool isFirstLaunch = true;
-  bool isSwipeButtonVisible = true;
-  bool isFabVisible = false;
-
-  GoogleMapController mapController;
-  Firestore firestore = Firestore.instance;
-  StreamSubscription subscription;
-  Geoflutterfire geo = Geoflutterfire();
-
-  BehaviorSubject<double> radius = BehaviorSubject.seeded(100.0);
-  Stream<dynamic> query;
-
   void initState() {
     super.initState();
     _getCurrentLocation();
@@ -52,10 +30,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    const interval = const Duration(seconds: 10);
 
     if (isFirstLaunch) {
-      _populateClients();
+      _populateMarkers();
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? aubergine : retro);
       isFirstLaunch = false;
@@ -65,57 +42,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
 
     new Timer.periodic(interval, (Timer t) {
-      _populateClients(); // updates markers every 10 seconds
+      _populateMarkers(); // updates markers every 10 seconds
     });
   }
 
   void _getCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
-      setState(() {
-        currentLocation = currLoc;
-        //if(in radius 100 make a circle otherwise dont
-        if(clients.length == 1)
-          {
-            _circle.add(Circle(
-              circleId: CircleId(
-                  LatLng(currentLocation.latitude, currentLocation.longitude)
-                      .toString()),
-              center: LatLng(currentLocation.latitude, currentLocation.longitude),
-              radius: 75,
-              fillColor: MyColors.translucentColor,
-              strokeColor: MyColors.primaryColor,
-              visible: true,
-            ));
-          }
-
-
-      });
+      currentLocation = currLoc;
+      setState(() {});
     });
     return currentLocation;
   }
 
-  void _initMarkersFromFirestore(clients) {
-    for (int i = 0; i < clients.length; i++) {
-      final markerId = MarkerId(clients[i].documentID);
-      final markerData = clients[i].data;
-
-      var marker = Marker(
-        markerId: markerId,
-        position: LatLng(markerData['position']['geopoint'].latitude,
-            markerData['position']['geopoint'].longitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-        infoWindow:
-            InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
-        onTap: doNothing,
-      );
-
-      setState(() {
-        markers[markerId] = marker;
-      });
-    }
-  } // creates markers from firestore on the map
-
-  void _addCurrentLocationMarker() {
+  void _markCurrentLocation() {
     var markerIdVal = Random().toString();
     final MarkerId markerId = MarkerId(markerIdVal);
 
@@ -133,7 +72,37 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } //adds current location as a marker to map and writes to db
 
-  void _populateClients() {
+  void _getMarkersFromDb(clients) {
+    for (int i = 0; i < clients.length; i++) {
+      final markerId = MarkerId(clients[i].documentID);
+      final markerData = clients[i].data;
+      final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
+          markerData['position']['geopoint'].longitude);
+
+      var marker = Marker(
+        markerId: markerId,
+        position: markerPosition,
+        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+        infoWindow:
+            InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
+      );
+
+      setState(() {
+        markers[markerId] = marker;
+
+        circle.add(Circle(
+          circleId: CircleId(markerId.toString()),
+          center: markerPosition,
+          radius: 75,
+          fillColor: MyColors.translucentColor,
+          strokeColor: MyColors.primaryColor,
+          visible: isHotspotVisible,
+        ));
+      });
+    }
+  } // creates markers from firestore on the map
+
+  void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         var docLength = docs.documents.length;
@@ -142,33 +111,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           clients[i] = docs.documents[i];
         }
         print('Reopulated $docLength clients');
-        _initMarkersFromFirestore(clients);
+        _getMarkersFromDb(clients);
       }
     });
   } // renders markers from firestore on the map
-
-  void _animateToCurrentLocation(locationAnimation) async {
-    mapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: zoom[locationAnimation],
-          bearing: bearing[locationAnimation],
-          tilt: tilt[locationAnimation],
-        ),
-      ),
-    );
-  }
-
-  Future<DocumentReference> _writeGeoPointToDb() async {
-    var pos = await LatLng(currentLocation.latitude, currentLocation.longitude);
-    GeoFirePoint point = geo.point(
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude);
-    return firestore.collection('locations').add({
-      'position': point.data,
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +141,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 tilt: tilt[0],
               ),
               markers: Set<Marker>.of(markers.values),
-              circles: _circle,
+              circles: circle,
             ),
             Positioned(
               top: 40.0,
@@ -217,6 +163,27 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             Visibility(
               visible: isSwipeButtonVisible,
+              child: Positioned(
+                top: 40.0,
+                right: 20.0,
+                child: FloatingActionButton(
+                  mini: true,
+                  child: Icon(
+                    Icons.warning,
+                    size: 20.0,
+                  ),
+                  tooltip: 'Emergency',
+                  foregroundColor: invertInvertColorsTheme(context),
+                  backgroundColor: invertColorsTheme(context),
+                  elevation: 5.0,
+                  onPressed: () {
+                    showEmergencyPopup(context);
+                  },
+                ),
+              ),
+            ),
+            Visibility(
+              visible: isSwipeButtonVisible,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SwipeButton(
@@ -231,9 +198,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         isFabVisible = true;
                       });
                       locationAnimation = 1;
-                      _animateToCurrentLocation(locationAnimation);
-                      _addCurrentLocationMarker();
-                      _writeGeoPointToDb();
+                      animateToCurrentLocation(locationAnimation);
+                      _markCurrentLocation();
+                      writeToDb();
                     }
                   },
                 ),
@@ -265,7 +232,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 } else if (locationAnimation == 1) {
                   locationAnimation = 0;
                 }
-                _animateToCurrentLocation(locationAnimation);
+                animateToCurrentLocation(locationAnimation);
               },
             ),
             SpeedDialChild(
@@ -284,17 +251,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.phone),
-              foregroundColor: invertColorsTheme(context),
-              backgroundColor: invertInvertColorsTheme(context),
-              label: 'RTO complaint',
-              labelStyle: TextStyle(
-                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
-              onTap: () {
-                showRtoPopup(context);
-              },
-            ),
-            SpeedDialChild(
               child: Icon(Icons.info_outline),
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
@@ -305,6 +261,32 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
                   return MyAboutPage();
                 }));
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.bug_report),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'Toggle hotspots',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                setState(() {
+                  isHotspotVisible
+                      ? isHotspotVisible = false
+                      : isHotspotVisible = true;
+                });
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.warning),
+              foregroundColor: MyColors.white,
+              backgroundColor: MaterialColors.red,
+              label: 'Emergency',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                showEmergencyPopup(context);
               },
             ),
           ],

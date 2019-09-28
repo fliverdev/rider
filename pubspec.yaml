@@ -9,7 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  call_number: ^0.0.1
   cloud_firestore: ^0.12.9
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0
@@ -17,10 +16,8 @@ dependencies:
   geoflutterfire: ^2.0.3
   geolocator: ^4.0.3
   google_maps_flutter: ^0.5.20
-  location: ^2.3.5
   permission_handler: ^3.2.2
-  random_string: ^1.1.0
-  rxdart: ^0.22.1
+  url_launcher: ^5.1.3
 
 dev_dependencies:
   flutter_test:
@@ -29,35 +26,15 @@ dev_dependencies:
 
 flutter_icons:
   android: 'launcher_icon'
-  image_path_android: 'assets/images/icon/icon-nobg.png'
-  adaptive_icon_foreground: 'assets/images/icon/icon-nobg.png'
+  image_path_android: 'assets/images/icon/icon-legacy.png'
+  adaptive_icon_foreground: 'assets/images/icon/icon-adaptive.png'
   adaptive_icon_background: '#1de9b6'
 
   ios: true
-  image_path_ios: 'assets/images/icon/icon-bg.png'
+  image_path_ios: 'assets/images/icon/icon-ios.png'
 
 flutter:
   uses-material-design: true
 
   assets:
      - assets/images/
-
-  fonts:
-    - family: Rubik
-      fonts:
-        - asset: assets/fonts/Rubik/Rubik-Regular.ttf
-        - asset: assets/fonts/Rubik/Rubik-Medium.ttf
-        - asset: assets/fonts/Rubik/Rubik-Bold.ttf
-        - asset: assets/fonts/Rubik/Rubik-Italic.ttf
-          style: italic
-
-    - family: RobotoMono
-      fonts:
-        - asset: assets/fonts/RobotoMono/RobotoMono-Regular.ttf
-        - asset: assets/fonts/RobotoMono/RobotoMono-Medium.ttf
-        - asset: assets/fonts/RobotoMono/RobotoMono-Bold.ttf
-
-    - family: Nunito
-      fonts:
-        - asset: assets/fonts/Nunito/Nunito-Regular.ttf
-        - asset: assets/fonts/Nunito/Nunito-Bold.ttf
