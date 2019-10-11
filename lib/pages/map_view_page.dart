@@ -96,6 +96,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           radius: 75,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
+          strokeWidth: 8,
           visible: isHotspotVisible,
         ));
       });

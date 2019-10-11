@@ -16,6 +16,7 @@ dependencies:
   geoflutterfire: ^2.0.3
   geolocator: ^4.0.3
   google_maps_flutter: ^0.5.20
+  liquid_swipe: ^1.2.0
   permission_handler: ^3.2.2
   url_launcher: ^5.1.3
 

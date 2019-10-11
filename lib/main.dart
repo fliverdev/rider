@@ -1,5 +1,6 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:rider/pages/intro_page.dart';
 import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Fliver Rider',
           theme: theme,
-          home: MyMapViewPage(),
+          home: MyIntroPage(),
         );
       },
     );
