@@ -15,57 +15,61 @@ In order to resolve this, you must replace the encrypted files with files contai
 
 Replace the encrypted `AndroidManifest.xml` with the following contents:
 
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="dev.fliver.rider">
-        <application
-            android:name="io.flutter.app.FlutterApplication"
-            android:label="Fliver Rider"
-            android:icon="@mipmap/ic_launcher"
-            tools:ignore="GoogleAppIndexingWarning">
-            <activity
-                android:name=".MainActivity"
-                android:launchMode="singleTop"
-                android:theme="@style/LaunchTheme"
-                android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-                android:hardwareAccelerated="true"
-                android:windowSoftInputMode="adjustResize">
-                <meta-data
-                    android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
-                    android:value="true" />
-                <intent-filter>
-                    <action android:name="android.intent.action.MAIN"/>
-                    <category android:name="android.intent.category.LAUNCHER"/>
-                </intent-filter>
-            </activity>
+```
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="dev.fliver.rider">
+    <application
+        android:name="io.flutter.app.FlutterApplication"
+        android:label="Fliver Rider"
+        android:icon="@mipmap/launcher_icon"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY"/>
-        </application>
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-    </manifest>
+                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
+                android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="YOUR_API_KEY"/>
+    </application>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+</manifest>
+```
 
 ### iOS App Delegate
 
 Replace the encrypted `AppDelegate.swift` with the following contents:
 
-    import UIKit
-    import Flutter
-    import Firebase
-    import GoogleMaps
+```
+import UIKit
+import Flutter
+import Firebase
+import GoogleMaps
 
-    @UIApplicationMain
-    @objc class AppDelegate: FlutterAppDelegate {
-        override func application(
-            _ application: UIApplication,
-            didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
-            ) -> Bool {
-            GeneratedPluginRegistrant.register(with: self)
-            FirebaseApp.configure()
-            GMSServices.provideAPIKey("YOUR_API_KEY")
-            return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-        }
+@UIApplicationMain
+@objc class AppDelegate: FlutterAppDelegate {
+    override func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
+        ) -> Bool {
+        FirebaseApp.configure()
+        GeneratedPluginRegistrant.register(with: self)
+        GMSServices.provideAPIKey("YOUR_API_KEY")
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
+}
+```
 
 ### Google Services for Firebase
 
