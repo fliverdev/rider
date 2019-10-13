@@ -133,18 +133,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       });
     }
   }
-  // creates markers from firestore on the map
-//
-//  void _deleteMarkers(clients) {
-//    for (int i = 0; i < clients.length; i++) {
-//      final markerId = MarkerId(clients[i].documentID);
-//      final markerData = clients[i].data;
-//      final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
-//          markerData['position']['geopoint'].longitude);
-//      Firestore.instance.collection('locations').document(docs.documentID).();
-//    }
-
-
 var clients;
   void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
