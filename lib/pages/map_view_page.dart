@@ -74,18 +74,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
-      final markerId = MarkerId(clients[i].documentID);
+      final documentId = clients[i].documentID;
+      final markerId = MarkerId(documentId);
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
 
       var marker = Marker(
-        markerId: markerId,
-        position: markerPosition,
-        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-        infoWindow:
-            InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
-      );
+          markerId: markerId,
+          position: markerPosition,
+          icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+          infoWindow:
+              InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
+          onTap: () {
+            _deleteMarker(documentId);
+          });
 
       setState(() {
         markers[markerId] = marker;
@@ -115,6 +118,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       }
     });
   } // renders markers from firestore on the map
+
+  void _deleteMarker(documentId) {
+    print('Deleting marker $documentId...');
+    _clearMap();
+    Firestore.instance.collection('locations').document(documentId).delete();
+  }
+
+  void _clearMap() {
+    setState(() {
+      print('Clearing items from map...');
+      markers.clear();
+      hotspots.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,11 +288,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               labelStyle: TextStyle(
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
-                setState(() {
-                  print('Clearing items...');
-                  markers.clear();
-                  hotspots.clear();
-                });
+                _clearMap();
               },
             ),
             SpeedDialChild(
