@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:great_circle_distance/great_circle_distance.dart';
-import 'package:rider/utils/variables.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/emergency_call.dart';
 import 'package:rider/services/map.dart';
@@ -16,19 +16,15 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
-import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
-
 
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
-
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
-  void initState()  {
-
+  void initState() {
     super.initState();
     _setCurrentLocation();
   } // gets current user location when the app loads
@@ -59,11 +55,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
+  static final currentLocation1 = getCurrentLocation();
+
+  var gcd = new GreatCircleDistance.fromDegrees(
+      latitude1: currentLocation1.latitude,
+      longitude1: currentLocation1.longitude,
+      latitude2: 19.1077678,
+      longitude2: 72.8362055);
+
+  Color colorMarker;
+  double radius = 75.0;
+
   void _markCurrentLocation() {
     var currentLocation = getCurrentLocation();
     var markerIdVal = Random().toString();
     final MarkerId markerId = MarkerId(markerIdVal);
-
     var marker = Marker(
       markerId: markerId,
       position: LatLng(currentLocation.latitude, currentLocation.longitude),
@@ -77,15 +83,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } //adds current location as a marker to map and writes to db
 
-      var gcd = new GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude,
-          longitude1: currentLocation.longitude,
-          latitude2:
-          longitude2: _mapPostion.longitude );
-
-
-
   void _getMarkersFromDb(clients) {
+    if (radius >= gcd.haversineDistance()) {
+      colorMarker = Colors.green;
+    } else {
+      colorMarker = Colors.red;
+    }
     for (int i = 0; i < clients.length; i++) {
       final documentId = clients[i].documentID;
       final markerId = MarkerId(documentId);
@@ -96,7 +99,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+          icon: colorMarker == Colors.green
+              ? BitmapDescriptor.defaultMarkerWithHue(130.0)
+              : BitmapDescriptor.defaultMarker,
           infoWindow:
               InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
           onTap: () {
@@ -117,12 +122,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       });
     }
   }
-var clients;
+
   void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         var docLength = docs.documents.length;
-        clients = new List(docLength);
+        var clients = new List(docLength);
         for (int i = 0; i < docLength; i++) {
           clients[i] = docs.documents[i];
         }
