@@ -27,33 +27,35 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() async {
 
-    //  Initialize SharedPreferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+//    //  Initialize SharedPreferences
+//    SharedPreferences prefs = await SharedPreferences.getInstance();
+//
+//    //  Create a new boolean and preference and set it to true
+//    bool isFirstStart = prefs.getBool("firstStart");
+//
+//    //  If the activity has never started before...
+//    if (isFirstStart) {
+//
+//      //  Launch app intro
+//      final Intent i = new Intent(MainActivity.this, DefaultIntro.class);
+//
+//      runOnUiThread(new Runnable() {
+//      @Override public void run() {
+//      startActivity(i);
+//      }
+//      });
+//
+//      //  Make a new preferences editor
+//      SharedPreferences.Editor e = getPrefs.edit();
+//
+//      //  Edit preference to make it false because we don't want this to run again
+//      e.putBoolean("firstStart", false);
+//
+//      //  Apply changes
+//      e.apply();
+//    }
 
-    //  Create a new boolean and preference and set it to true
-    bool isFirstStart = prefs.getBool("firstStart");
 
-    //  If the activity has never started before...
-    if (isFirstStart) {
-
-      //  Launch app intro
-      final Intent i = new Intent(MainActivity.this, DefaultIntro.class);
-
-      runOnUiThread(new Runnable() {
-      @Override public void run() {
-      startActivity(i);
-      }
-      });
-
-      //  Make a new preferences editor
-      SharedPreferences.Editor e = getPrefs.edit();
-
-      //  Edit preference to make it false because we don't want this to run again
-      e.putBoolean("firstStart", false);
-
-      //  Apply changes
-      e.apply();
-    }
 
 
     super.initState();
@@ -316,6 +318,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               foregroundColor: MyColors.white,
               backgroundColor: MaterialColors.red,
               label: 'Emergency',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                showEmergencyPopup(context);
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.delete),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'Delete Markers from Database',
               labelStyle: TextStyle(
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
