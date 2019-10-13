@@ -25,7 +25,7 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    _setCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
@@ -46,23 +46,23 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-  void _getCurrentLocation() {
+  void _setCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
-      currentLocation = currLoc;
-      setState(() {});
+      setState(() {
+        currentLocation = currLoc;
+      });
     });
-    return currentLocation;
   }
 
   void _markCurrentLocation() {
+    var currentLocation = getCurrentLocation();
     var markerIdVal = Random().toString();
     final MarkerId markerId = MarkerId(markerIdVal);
 
     var marker = Marker(
       markerId: markerId,
       position: LatLng(currentLocation.latitude, currentLocation.longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
-      // could get
+      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
       infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
       onTap: doNothing,
     );
@@ -272,7 +272,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
                 setState(() {
-                  print('Clearing items');
+                  print('Clearing items...');
                   markers.clear();
                   hotspots.clear();
                 });
