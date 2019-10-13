@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
@@ -25,7 +26,7 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
-  void initState() async {
+  void initState()  {
 
 //    //  Initialize SharedPreferences
 //    SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,10 +55,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 //      //  Apply changes
 //      e.apply();
 //    }
-
-
-
-
     super.initState();
     _getCurrentLocation();
   } // gets current user location when the app loads
@@ -135,13 +132,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ));
       });
     }
-  } // creates markers from firestore on the map
+  }
+  // creates markers from firestore on the map
+//
+//  void _deleteMarkers(clients) {
+//    for (int i = 0; i < clients.length; i++) {
+//      final markerId = MarkerId(clients[i].documentID);
+//      final markerData = clients[i].data;
+//      final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
+//          markerData['position']['geopoint'].longitude);
+//      Firestore.instance.collection('locations').document(docs.documentID).();
+//    }
 
+
+var clients;
   void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         var docLength = docs.documents.length;
-        var clients = new List(docLength);
+        clients = new List(docLength);
         for (int i = 0; i < docLength; i++) {
           clients[i] = docs.documents[i];
         }
@@ -332,7 +341,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               labelStyle: TextStyle(
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
-                showEmergencyPopup(context);
+//                _deleteMarkers(clients);
               },
             ),
           ],

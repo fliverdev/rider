@@ -26,3 +26,4 @@ Future<DocumentReference> writeToDb() async {
     'position': point.data,
   });
 }
+
