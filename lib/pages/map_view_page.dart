@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:rider/utils/variables.dart' as prefix0;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:great_circle_distance/great_circle_distance.dart';
+import 'package:rider/utils/variables.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,45 +16,19 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
+
 
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
-
 
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState()  {
 
-//    //  Initialize SharedPreferences
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//
-//    //  Create a new boolean and preference and set it to true
-//    bool isFirstStart = prefs.getBool("firstStart");
-//
-//    //  If the activity has never started before...
-//    if (isFirstStart) {
-//
-//      //  Launch app intro
-//      final Intent i = new Intent(MainActivity.this, DefaultIntro.class);
-//
-//      runOnUiThread(new Runnable() {
-//      @Override public void run() {
-//      startActivity(i);
-//      }
-//      });
-//
-//      //  Make a new preferences editor
-//      SharedPreferences.Editor e = getPrefs.edit();
-//
-//      //  Edit preference to make it false because we don't want this to run again
-//      e.putBoolean("firstStart", false);
-//
-//      //  Apply changes
-//      e.apply();
-//    }
     super.initState();
     _getCurrentLocation();
   } // gets current user location when the app loads
@@ -102,6 +76,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markers[markerId] = marker;
     });
   } //adds current location as a marker to map and writes to db
+
+      var gcd = new GreatCircleDistance.fromDegrees(
+          latitude1: currentLocation.latitude,
+          longitude1: currentLocation.longitude,
+          latitude2:
+          longitude2: _mapPostion.longitude );
+
+
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
@@ -319,17 +301,6 @@ var clients;
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
                 showEmergencyPopup(context);
-              },
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.delete),
-              foregroundColor: invertColorsTheme(context),
-              backgroundColor: invertInvertColorsTheme(context),
-              label: 'Delete Markers from Database',
-              labelStyle: TextStyle(
-                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
-              onTap: () {
-//                _deleteMarkers(clients);
               },
             ),
           ],
