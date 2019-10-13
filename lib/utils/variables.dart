@@ -15,13 +15,12 @@ var locationAnimation = 0;
 const interval = const Duration(seconds: 10);
 
 final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-final Set<Circle> circle = {};
+final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true;
 bool isFirstLaunchSinceInstall = true;
 bool isSwipeButtonVisible = true;
 bool isFabVisible = false;
-bool isHotspotVisible = true;
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;

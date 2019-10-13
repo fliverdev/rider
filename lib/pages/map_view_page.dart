@@ -89,15 +89,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
       setState(() {
         markers[markerId] = marker;
-
-        circle.add(Circle(
+        hotspots.add(Circle(
           circleId: CircleId(markerId.toString()),
           center: markerPosition,
           radius: 75,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
           strokeWidth: 8,
-          visible: isHotspotVisible,
+          visible: true,
         ));
       });
     }
@@ -142,7 +141,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 tilt: tilt[0],
               ),
               markers: Set<Marker>.of(markers.values),
-              circles: circle,
+              circles: hotspots,
             ),
             Positioned(
               top: 40.0,
@@ -268,14 +267,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               child: Icon(Icons.bug_report),
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
-              label: 'Toggle hotspots',
+              label: 'Debug',
               labelStyle: TextStyle(
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
                 setState(() {
-                  isHotspotVisible
-                      ? isHotspotVisible = false
-                      : isHotspotVisible = true;
+                  print('Clearing items');
+                  markers.clear();
+                  hotspots.clear();
                 });
               },
             ),
