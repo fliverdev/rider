@@ -30,7 +30,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState()  {
 
     super.initState();
-    _getCurrentLocation();
+    _setCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
@@ -51,23 +51,23 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-  void _getCurrentLocation() {
+  void _setCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
-      currentLocation = currLoc;
-      setState(() {});
+      setState(() {
+        currentLocation = currLoc;
+      });
     });
-    return currentLocation;
   }
 
   void _markCurrentLocation() {
+    var currentLocation = getCurrentLocation();
     var markerIdVal = Random().toString();
     final MarkerId markerId = MarkerId(markerIdVal);
 
     var marker = Marker(
       markerId: markerId,
       position: LatLng(currentLocation.latitude, currentLocation.longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
-      // could get
+      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
       infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
       onTap: doNothing,
     );
@@ -87,30 +87,32 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
-      final markerId = MarkerId(clients[i].documentID);
+      final documentId = clients[i].documentID;
+      final markerId = MarkerId(documentId);
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
 
       var marker = Marker(
-        markerId: markerId,
-        position: markerPosition,
-        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-        infoWindow:
-            InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
-      );
+          markerId: markerId,
+          position: markerPosition,
+          icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+          infoWindow:
+              InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
+          onTap: () {
+            _deleteMarker(documentId);
+          });
 
       setState(() {
         markers[markerId] = marker;
-
-        circle.add(Circle(
+        hotspots.add(Circle(
           circleId: CircleId(markerId.toString()),
           center: markerPosition,
           radius: 75,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
           strokeWidth: 8,
-          visible: isHotspotVisible,
+          visible: true,
         ));
       });
     }
@@ -129,6 +131,20 @@ var clients;
       }
     });
   } // renders markers from firestore on the map
+
+  void _deleteMarker(documentId) {
+    print('Deleting marker $documentId...');
+    _clearMap();
+    Firestore.instance.collection('locations').document(documentId).delete();
+  }
+
+  void _clearMap() {
+    setState(() {
+      print('Clearing items from map...');
+      markers.clear();
+      hotspots.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +171,7 @@ var clients;
                 tilt: tilt[0],
               ),
               markers: Set<Marker>.of(markers.values),
-              circles: circle,
+              circles: hotspots,
             ),
             Positioned(
               top: 40.0,
@@ -281,15 +297,11 @@ var clients;
               child: Icon(Icons.bug_report),
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
-              label: 'Toggle hotspots',
+              label: 'Debug',
               labelStyle: TextStyle(
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
-                setState(() {
-                  isHotspotVisible
-                      ? isHotspotVisible = false
-                      : isHotspotVisible = true;
-                });
+                _clearMap();
               },
             ),
             SpeedDialChild(
