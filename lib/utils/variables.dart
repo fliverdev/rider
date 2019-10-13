@@ -19,6 +19,7 @@ final Set<Circle> circle = {};
 bool isFirstLaunch = true;
 bool isSwipeButtonVisible = true;
 bool isFabVisible = false;
+bool isHotspotVisible = true;
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;
