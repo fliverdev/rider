@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,10 +20,42 @@ import 'package:rider/widgets/swipe_button.dart';
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
+
+
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
-  void initState() {
+  void initState() async {
+
+    //  Initialize SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    //  Create a new boolean and preference and set it to true
+    bool isFirstStart = prefs.getBool("firstStart");
+
+    //  If the activity has never started before...
+    if (isFirstStart) {
+
+      //  Launch app intro
+      final Intent i = new Intent(MainActivity.this, DefaultIntro.class);
+
+      runOnUiThread(new Runnable() {
+      @Override public void run() {
+      startActivity(i);
+      }
+      });
+
+      //  Make a new preferences editor
+      SharedPreferences.Editor e = getPrefs.edit();
+
+      //  Edit preference to make it false because we don't want this to run again
+      e.putBoolean("firstStart", false);
+
+      //  Apply changes
+      e.apply();
+    }
+
+
     super.initState();
     _getCurrentLocation();
   } // gets current user location when the app loads

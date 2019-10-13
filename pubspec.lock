@@ -137,6 +137,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.20+2"
+  great_circle_distance:
+    dependency: "direct main"
+    description:
+      name: great_circle_distance
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   image:
     dependency: transitive
     description:
@@ -215,7 +222,7 @@ packages:
     source: hosted
     version: "0.22.1+1"
   shared_preferences:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
