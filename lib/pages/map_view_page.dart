@@ -204,9 +204,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SwipeButton(
-                  thumb: Icon(Icons.arrow_forward_ios),
+                  thumb: Icon(
+                    Icons.arrow_forward_ios,
+                    color: MyColors.black,
+                  ),
                   content: Center(
-                    child: Text('Swipe to mark location', style: TextStyle(color: invertInvertColorsStrong(context)),),
+                    child: Text(
+                      'Swipe to mark location',
+                      style: TextStyle(color: MyColors.white),
+                    ),
                   ),
                   onChanged: (result) {
                     if (result == SwipePosition.SwipeRight) {
