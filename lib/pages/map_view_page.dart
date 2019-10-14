@@ -20,7 +20,7 @@ import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
 
-var gcd;
+
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
@@ -89,7 +89,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
-      gcd = new GreatCircleDistance.fromDegrees(
+      var gcd = new GreatCircleDistance.fromDegrees(
       latitude1: getCurrentLocation().latitude.toDouble(),
       longitude1: getCurrentLocation().longitude.toDouble(),
       latitude2: markerPosition.latitude.toDouble(),
