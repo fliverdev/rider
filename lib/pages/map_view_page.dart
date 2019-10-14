@@ -16,8 +16,11 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
+
+var gcd;
 class MyMapViewPage extends StatefulWidget {
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
@@ -55,16 +58,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-  static final currentLocation1 = getCurrentLocation();
-
-  var gcd = new GreatCircleDistance.fromDegrees(
-      latitude1: currentLocation1.latitude,
-      longitude1: currentLocation1.longitude,
-      latitude2: 19.1077678,
-      longitude2: 72.8362055);
 
   Color colorMarker;
-  double radius = 75.0;
+  double radius = 100.0;
 
   void _markCurrentLocation() {
     var currentLocation = getCurrentLocation();
@@ -83,18 +79,27 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } //adds current location as a marker to map and writes to db
 
+
+
+
   void _getMarkersFromDb(clients) {
-    if (radius >= gcd.haversineDistance()) {
-      colorMarker = Colors.green;
-    } else {
-      colorMarker = Colors.red;
-    }
     for (int i = 0; i < clients.length; i++) {
       final documentId = clients[i].documentID;
       final markerId = MarkerId(documentId);
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
+      gcd = new GreatCircleDistance.fromDegrees(
+      latitude1: getCurrentLocation().latitude.toDouble(),
+      longitude1: getCurrentLocation().longitude.toDouble(),
+      latitude2: markerPosition.latitude.toDouble(),
+      longitude2: markerPosition.longitude.toDouble());
+
+      if( radius <= gcd.haversineDistance()) {
+        colorMarker = Colors.green;
+      } else {
+        colorMarker = Colors.red;
+      }
 
       var marker = Marker(
           markerId: markerId,
@@ -150,6 +155,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       hotspots.clear();
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
