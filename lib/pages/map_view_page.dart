@@ -219,12 +219,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             Visibility(
               visible: isSwipeButtonVisible,
-              child: Align(
-                alignment: Alignment.bottomCenter,
+              child: Positioned(
+                left: 15.0,
+                right: 15.0,
+                bottom: 15.0,
                 child: SwipeButton(
-                  thumb: Icon(Icons.arrow_forward_ios),
+                  thumb: Icon(
+                    Icons.arrow_forward_ios,
+                    color: MyColors.black,
+                  ),
                   content: Center(
-                    child: Text('Swipe to mark location'),
+                    child: Text(
+                      'Swipe to mark location',
+                      style: TextStyle(
+                        color: MyColors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
                   onChanged: (result) {
                     if (result == SwipePosition.SwipeRight) {
