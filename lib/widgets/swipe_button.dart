@@ -65,21 +65,21 @@ class SwipeButtonState extends State<SwipeButton>
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: widget.height,
+      height: widget.height * 1.15,
       child: Stack(
         key: _containerKey,
         children: <Widget>[
           DecoratedBox(
             decoration: BoxDecoration(
               color: MyColors.accentColor,
-              borderRadius: widget.borderRadius,
+              borderRadius: BorderRadius.all(Radius.circular(50.0)),
             ),
             child: ClipRRect(
               clipper: _SwipeButtonClipper(
                 animation: _controller,
-                borderRadius: widget.borderRadius,
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
               ),
-              borderRadius: widget.borderRadius,
+              borderRadius: BorderRadius.all(Radius.circular(50.0)),
               child: SizedBox.expand(
                 child: Padding(
                   padding: EdgeInsets.only(left: widget.height),
@@ -107,9 +107,10 @@ class SwipeButtonState extends State<SwipeButton>
                 key: _positionedKey,
                 width: widget.height,
                 height: widget.height,
+                margin: EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: MyColors.primaryColor,
-                  borderRadius: widget.borderRadius,
+                  borderRadius: BorderRadius.all(Radius.circular(50.0)),
                 ),
                 child: widget.thumb,
               ),
