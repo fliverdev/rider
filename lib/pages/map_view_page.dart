@@ -95,7 +95,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       latitude2: markerPosition.latitude.toDouble(),
       longitude2: markerPosition.longitude.toDouble());
 
-      if( radius >= gcd.haversineDistance()) {
+      if( radius >=gcd.haversineDistance()) {
         colorMarker = Colors.green;
       } else {
         colorMarker = Colors.red;
