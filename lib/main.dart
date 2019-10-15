@@ -1,7 +1,6 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/pages/intro_page.dart';
-import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
 
 void main() => runApp(MyApp());
@@ -15,7 +14,6 @@ class MyApp extends StatelessWidget {
         primaryColor: MyColors.primaryColor,
         accentColor: MyColors.accentColor,
         brightness: brightness,
-//        fontFamily: 'Rubik',
         textTheme: TextTheme(
           title: TextStyle(fontWeight: FontWeight.w700),
           body1: TextStyle(fontWeight: FontWeight.w500),

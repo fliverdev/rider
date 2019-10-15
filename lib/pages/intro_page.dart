@@ -276,7 +276,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
       pages: pages,
       fullTransitionValue: 350.0,
       enableLoop: false,
-      waveType: WaveType.liquidReveal, // two types available
+      waveType: WaveType.circularReveal, // two types available
     );
   }
 }

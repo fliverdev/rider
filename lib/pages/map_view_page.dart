@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/emergency_call.dart';
 import 'package:rider/services/map.dart';
@@ -25,7 +25,7 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    _setCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
@@ -46,62 +46,74 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-  void _getCurrentLocation() {
+  void _setCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
-      currentLocation = currLoc;
-      setState(() {});
+      setState(() {
+        currentLocation = currLoc;
+      });
     });
-    return currentLocation;
   }
 
-  void _markCurrentLocation() {
-    var markerIdVal = Random().toString();
-    final MarkerId markerId = MarkerId(markerIdVal);
-
-    var marker = Marker(
-      markerId: markerId,
-      position: LatLng(currentLocation.latitude, currentLocation.longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(147.5), // closest color i
-      // could get
-      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
-      onTap: doNothing,
-    );
-
-    setState(() {
-      markers[markerId] = marker;
-    });
-  } //adds current location as a marker to map and writes to db
+//  void _markCurrentLocation() {
+//    var currentLocation = getCurrentLocation();
+//    var markerIdVal = Random().toString();
+//    final MarkerId markerId = MarkerId(markerIdVal);
+//    var marker = Marker(
+//      markerId: markerId,
+//      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+//      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+//      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
+//      onTap: doNothing,
+//    );
+//
+//    setState(() {
+//      markers[markerId] = marker;
+//    });
+//  } //adds current location as a marker to map and writes to db
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
-      final markerId = MarkerId(clients[i].documentID);
+      final documentId = clients[i].documentID;
+      final markerId = MarkerId(documentId);
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
+      var gcd = new GreatCircleDistance.fromDegrees(
+          latitude1: getCurrentLocation().latitude.toDouble(),
+          longitude1: getCurrentLocation().longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble());
+
+      radius >= gcd.haversineDistance()
+          ? isMarkerWithinRadius = true
+          : isMarkerWithinRadius = false;
 
       var marker = Marker(
-        markerId: markerId,
-        position: markerPosition,
-        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-        infoWindow:
-            InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
-      );
+          markerId: markerId,
+          position: markerPosition,
+          icon: isMarkerWithinRadius
+              ? BitmapDescriptor.defaultMarkerWithHue(147.5)
+              : BitmapDescriptor.defaultMarkerWithHue(25.0),
+          infoWindow:
+              InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
+          onTap: () {
+            _deleteMarker(documentId);
+          });
 
       setState(() {
         markers[markerId] = marker;
-
-        circle.add(Circle(
+        hotspots.add(Circle(
           circleId: CircleId(markerId.toString()),
           center: markerPosition,
-          radius: 75,
+          radius: 100,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
           strokeWidth: 8,
-          visible: isHotspotVisible,
+          visible: true,
         ));
       });
     }
-  } // creates markers from firestore on the map
+  }
 
   void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
@@ -116,6 +128,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       }
     });
   } // renders markers from firestore on the map
+
+  void _deleteMarker(documentId) {
+    print('Deleting marker $documentId...');
+    _clearMap();
+    Firestore.instance.collection('locations').document(documentId).delete();
+  }
+
+  void _clearMap() {
+    setState(() {
+      print('Clearing items from map...');
+      markers.clear();
+      hotspots.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +168,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 tilt: tilt[0],
               ),
               markers: Set<Marker>.of(markers.values),
-              circles: circle,
+              circles: hotspots,
             ),
             Positioned(
               top: 40.0,
@@ -185,12 +211,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             Visibility(
               visible: isSwipeButtonVisible,
-              child: Align(
-                alignment: Alignment.bottomCenter,
+              child: Positioned(
+                left: 15.0,
+                right: 15.0,
+                bottom: 15.0,
                 child: SwipeButton(
-                  thumb: Icon(Icons.arrow_forward_ios),
+                  thumb: Icon(
+                    Icons.arrow_forward_ios,
+                    color: MyColors.black,
+                  ),
                   content: Center(
-                    child: Text('Swipe to mark location'),
+                    child: Text(
+                      'Swipe to mark location',
+                      style: TextStyle(
+                        color: MyColors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
                   onChanged: (result) {
                     if (result == SwipePosition.SwipeRight) {
@@ -199,9 +238,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         isFabVisible = true;
                       });
                       locationAnimation = 1;
-                      animateToCurrentLocation(locationAnimation);
-                      _markCurrentLocation();
                       writeToDb();
+                      _populateMarkers();
+                      animateToCurrentLocation(locationAnimation);
                     }
                   },
                 ),
@@ -268,15 +307,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               child: Icon(Icons.bug_report),
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
-              label: 'Toggle hotspots',
+              label: 'Debug',
               labelStyle: TextStyle(
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
-                setState(() {
-                  isHotspotVisible
-                      ? isHotspotVisible = false
-                      : isHotspotVisible = true;
-                });
+                _clearMap();
               },
             ),
             SpeedDialChild(
