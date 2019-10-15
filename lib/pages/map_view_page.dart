@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
@@ -16,10 +15,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
-import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
-
-
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -58,29 +54,22 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-
-  Color colorMarker;
-  double radius = 100.0;
-
-  void _markCurrentLocation() {
-    var currentLocation = getCurrentLocation();
-    var markerIdVal = Random().toString();
-    final MarkerId markerId = MarkerId(markerIdVal);
-    var marker = Marker(
-      markerId: markerId,
-      position: LatLng(currentLocation.latitude, currentLocation.longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
-      onTap: doNothing,
-    );
-
-    setState(() {
-      markers[markerId] = marker;
-    });
-  } //adds current location as a marker to map and writes to db
-
-
-
+//  void _markCurrentLocation() {
+//    var currentLocation = getCurrentLocation();
+//    var markerIdVal = Random().toString();
+//    final MarkerId markerId = MarkerId(markerIdVal);
+//    var marker = Marker(
+//      markerId: markerId,
+//      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+//      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+//      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
+//      onTap: doNothing,
+//    );
+//
+//    setState(() {
+//      markers[markerId] = marker;
+//    });
+//  } //adds current location as a marker to map and writes to db
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
@@ -90,23 +79,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
       var gcd = new GreatCircleDistance.fromDegrees(
-      latitude1: getCurrentLocation().latitude.toDouble(),
-      longitude1: getCurrentLocation().longitude.toDouble(),
-      latitude2: markerPosition.latitude.toDouble(),
-      longitude2: markerPosition.longitude.toDouble());
+          latitude1: getCurrentLocation().latitude.toDouble(),
+          longitude1: getCurrentLocation().longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble());
 
-      if( radius >=gcd.haversineDistance()) {
-        colorMarker = Colors.green;
-      } else {
-        colorMarker = Colors.red;
-      }
+      radius >= gcd.haversineDistance()
+          ? isMarkerWithinRadius = true
+          : isMarkerWithinRadius = false;
 
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: colorMarker == Colors.green
-              ? BitmapDescriptor.defaultMarkerWithHue(130.0)
-              : BitmapDescriptor.defaultMarker,
+          icon: isMarkerWithinRadius
+              ? BitmapDescriptor.defaultMarkerWithHue(147.5)
+              : BitmapDescriptor.defaultMarkerWithHue(25.0),
           infoWindow:
               InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
           onTap: () {
@@ -155,7 +142,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       hotspots.clear();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -252,9 +238,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         isFabVisible = true;
                       });
                       locationAnimation = 1;
-                      animateToCurrentLocation(locationAnimation);
-                      _markCurrentLocation();
                       writeToDb();
+                      _populateMarkers();
+                      animateToCurrentLocation(locationAnimation);
                     }
                   },
                 ),
