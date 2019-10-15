@@ -118,7 +118,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         hotspots.add(Circle(
           circleId: CircleId(markerId.toString()),
           center: markerPosition,
-          radius: 75,
+          radius: 100,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
           strokeWidth: 8,
