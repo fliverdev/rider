@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/emergency_call.dart';
 import 'package:rider/services/map.dart';
@@ -15,7 +16,10 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
+
+
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -54,11 +58,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
+
+  Color colorMarker;
+  double radius = 100.0;
+
   void _markCurrentLocation() {
     var currentLocation = getCurrentLocation();
     var markerIdVal = Random().toString();
     final MarkerId markerId = MarkerId(markerIdVal);
-
     var marker = Marker(
       markerId: markerId,
       position: LatLng(currentLocation.latitude, currentLocation.longitude),
@@ -72,6 +79,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } //adds current location as a marker to map and writes to db
 
+
+
+
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
       final documentId = clients[i].documentID;
@@ -79,11 +89,24 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
+      var gcd = new GreatCircleDistance.fromDegrees(
+      latitude1: getCurrentLocation().latitude.toDouble(),
+      longitude1: getCurrentLocation().longitude.toDouble(),
+      latitude2: markerPosition.latitude.toDouble(),
+      longitude2: markerPosition.longitude.toDouble());
+
+      if( radius >= gcd.haversineDistance()) {
+        colorMarker = Colors.green;
+      } else {
+        colorMarker = Colors.red;
+      }
 
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+          icon: colorMarker == Colors.green
+              ? BitmapDescriptor.defaultMarkerWithHue(130.0)
+              : BitmapDescriptor.defaultMarker,
           infoWindow:
               InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
           onTap: () {
@@ -103,7 +126,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ));
       });
     }
-  } // creates markers from firestore on the map
+  }
 
   void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
@@ -132,6 +155,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       hotspots.clear();
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -201,12 +225,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
             Visibility(
               visible: isSwipeButtonVisible,
-              child: Align(
-                alignment: Alignment.bottomCenter,
+              child: Positioned(
+                left: 15.0,
+                right: 15.0,
+                bottom: 15.0,
                 child: SwipeButton(
-                  thumb: Icon(Icons.arrow_forward_ios),
+                  thumb: Icon(
+                    Icons.arrow_forward_ios,
+                    color: MyColors.black,
+                  ),
                   content: Center(
-                    child: Text('Swipe to mark location', style: TextStyle(color: invertInvertColorsStrong(context)),),
+                    child: Text(
+                      'Swipe to mark location',
+                      style: TextStyle(
+                        color: MyColors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
                   onChanged: (result) {
                     if (result == SwipePosition.SwipeRight) {
