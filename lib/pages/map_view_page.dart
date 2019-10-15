@@ -238,10 +238,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     child: Text(
                       'Swipe to mark location',
                       style: TextStyle(
-                        color: MyColors.white,
-                        fontSize: 16.0,
+                        color: invertInvertColorsMild(context),
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.italic,
+                        fontStyle: FontStyle.normal,
                       ),
                     ),
                   ),
