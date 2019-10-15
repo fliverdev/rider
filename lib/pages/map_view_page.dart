@@ -16,6 +16,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -24,6 +25,10 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
+  BitmapDescriptor markerPrimary;
+  BitmapDescriptor markerSecondary;
+
+
   void initState() {
     super.initState();
     _setCurrentLocation();
@@ -77,6 +82,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
+
       final documentId = clients[i].documentID;
       final markerId = MarkerId(documentId);
       final markerData = clients[i].data;
@@ -89,23 +95,22 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           longitude2: markerPosition.longitude.toDouble());
 
       if (radius >= gcd.haversineDistance()) {
-        colorMarker = Colors.green;
+        prefix0.isMarkerWithinRadius = true;
       } else {
-        colorMarker = Colors.red;
+        prefix0.isMarkerWithinRadius = false;
       }
+
+      createPrimaryMarker();
+      createSecondaryMarker();
 
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
           icon: isMarkerWithinRadius
-              ? BitmapDescriptor.defaultMarkerWithHue(147.5)
-              : BitmapDescriptor.fromAssetImage(
-                  ImageConfiguration(
-                    size: Size(64, 64),
-                  ),
-                  'assets/images/marker-secondary.png'),
+              ? markerPrimary
+              : markerSecondary,
           infoWindow:
-              InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
+          InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
           onTap: () {
             _deleteMarker(documentId);
           });
@@ -126,6 +131,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   void _populateMarkers() {
+
+
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         var docLength = docs.documents.length;
@@ -153,13 +160,40 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
+  createPrimaryMarker() {
+    if (true) {
+      ImageConfiguration configuration = createLocalImageConfiguration(context);
+      BitmapDescriptor.fromAssetImage(
+          configuration, 'assets/images/marker-primary.png')
+          .then((icon) {
+        setState(() {
+          markerPrimary = icon;
+        });
+      });
+    }
+  }
+
+  createSecondaryMarker() {
+    if (true) {
+      ImageConfiguration configuration = createLocalImageConfiguration(context);
+      BitmapDescriptor.fromAssetImage(
+          configuration, 'assets/images/marker-secondary.png')
+          .then((icon) {
+        setState(() {
+          markerSecondary = icon;
+        });
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     Icon toggleLightsIcon = isThemeCurrentlyDark(context)
         ? Icon(Icons.brightness_7)
         : Icon(Icons.brightness_2);
     String toggleLightsText =
-        isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
+    isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return Scaffold(
       body: Container(
         child: Stack(
@@ -172,7 +206,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               compassEnabled: false,
               initialCameraPosition: CameraPosition(
                 target:
-                    LatLng(currentLocation.latitude, currentLocation.longitude),
+                LatLng(currentLocation.latitude, currentLocation.longitude),
                 zoom: zoom[0],
                 bearing: bearing[0],
                 tilt: tilt[0],
@@ -294,7 +328,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
                 DynamicTheme.of(context).setBrightness(
-                    Theme.of(context).brightness == Brightness.dark
+                    Theme
+                        .of(context)
+                        .brightness == Brightness.dark
                         ? Brightness.light
                         : Brightness.dark);
                 _onMapCreated(mapController); //buggy
