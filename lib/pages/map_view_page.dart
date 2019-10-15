@@ -16,10 +16,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
-import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
-
-
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -58,7 +55,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-
   Color colorMarker;
   double radius = 100.0;
 
@@ -79,9 +75,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } //adds current location as a marker to map and writes to db
 
-
-
-
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
       final documentId = clients[i].documentID;
@@ -90,12 +83,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
       var gcd = new GreatCircleDistance.fromDegrees(
-      latitude1: getCurrentLocation().latitude.toDouble(),
-      longitude1: getCurrentLocation().longitude.toDouble(),
-      latitude2: markerPosition.latitude.toDouble(),
-      longitude2: markerPosition.longitude.toDouble());
+          latitude1: getCurrentLocation().latitude.toDouble(),
+          longitude1: getCurrentLocation().longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble());
 
-      if( radius >=gcd.haversineDistance()) {
+      if (radius >= gcd.haversineDistance()) {
         colorMarker = Colors.green;
       } else {
         colorMarker = Colors.red;
@@ -104,9 +97,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: colorMarker == Colors.green
-              ? BitmapDescriptor.defaultMarkerWithHue(130.0)
-              : BitmapDescriptor.defaultMarker,
+          icon: isMarkerWithinRadius
+              ? BitmapDescriptor.defaultMarkerWithHue(147.5)
+              : BitmapDescriptor.fromAssetImage(
+                  ImageConfiguration(
+                    size: Size(64, 64),
+                  ),
+                  'assets/images/marker-secondary.png'),
           infoWindow:
               InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
           onTap: () {
@@ -155,7 +152,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       hotspots.clear();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {

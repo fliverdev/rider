@@ -21,6 +21,7 @@ bool isFirstLaunch = true;
 bool isFirstLaunchSinceInstall = true;
 bool isSwipeButtonVisible = true;
 bool isFabVisible = false;
+bool isMarkerWithinRadius = true;
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;
