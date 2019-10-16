@@ -31,6 +31,8 @@ Firestore firestore = Firestore.instance;
 StreamSubscription subscription;
 Geoflutterfire geo = Geoflutterfire();
 Future<SharedPreferences> sharedPrefs = SharedPreferences.getInstance();
+BitmapDescriptor markerPrimary;
+BitmapDescriptor markerSecondary;
 
 BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);
 Stream<dynamic> query;
