@@ -34,11 +34,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     if (isFirstLaunch) {
       _populateMarkers();
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? carbon : silver);
+          .setMapStyle(isThemeCurrentlyDark(context) ? inturlam : silver);
       isFirstLaunch = false;
     } else {
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? silver : carbon);
+          .setMapStyle(isThemeCurrentlyDark(context) ? silver : inturlam);
     }
 
     new Timer.periodic(interval, (Timer t) {
