@@ -27,10 +27,12 @@ void animateToCurrentLocation(locationAnimation) async {
   );
 }
 
-Future<DocumentReference> writeToDb(currentLocation) async {
+Future<DocumentReference> writeToDb() async {
+  var currentLocation = getCurrentLocation();
   GeoFirePoint point = geo.point(
       latitude: currentLocation.latitude, longitude: currentLocation.longitude);
   return firestore.collection('locations').add({
     'position': point.data,
   });
 }
+

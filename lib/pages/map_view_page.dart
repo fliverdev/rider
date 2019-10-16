@@ -5,6 +5,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/about_page.dart';
@@ -24,9 +25,7 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
-    setState(() {
-      currentLocation = getCurrentLocation();
-    });
+    _setCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
@@ -47,24 +46,30 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-  void _markCurrentLocation() {
-    currentLocation = getCurrentLocation();
-    writeToDb(currentLocation);
-
-    var next = markers.length + 1;
-    MarkerId myMarkerId = MarkerId(next.toString());
-
-    var myMarker = Marker(
-        markerId: myMarkerId,
-        position: LatLng(currentLocation.latitude, currentLocation.longitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-        infoWindow:
-            InfoWindow(title: 'My Location', snippet: 'N users near you'),
-        onTap: doNothing);
-    setState(() {
-      markers[myMarkerId] = myMarker;
+  void _setCurrentLocation() {
+    Geolocator().getCurrentPosition().then((currLoc) {
+      setState(() {
+        currentLocation = currLoc;
+      });
     });
-  } //adds current location as a marker to map and writes to db
+  }
+
+//  void _markCurrentLocation() {
+//    var currentLocation = getCurrentLocation();
+//    var markerIdVal = Random().toString();
+//    final MarkerId markerId = MarkerId(markerIdVal);
+//    var marker = Marker(
+//      markerId: markerId,
+//      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+//      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+//      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
+//      onTap: doNothing,
+//    );
+//
+//    setState(() {
+//      markers[markerId] = marker;
+//    });
+//  } //adds current location as a marker to map and writes to db
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
@@ -73,10 +78,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
-
       var gcd = new GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude.toDouble(),
-          longitude1: currentLocation.longitude.toDouble(),
+          latitude1: getCurrentLocation().latitude.toDouble(),
+          longitude1: getCurrentLocation().longitude.toDouble(),
           latitude2: markerPosition.latitude.toDouble(),
           longitude2: markerPosition.longitude.toDouble());
 
@@ -84,8 +88,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           ? isMarkerWithinRadius = true
           : isMarkerWithinRadius = false;
 
-      _createPrimaryMarker();
-      _createSecondaryMarker();
+      createPrimaryMarker();
+      createSecondaryMarker();
 
       var marker = Marker(
           markerId: markerId,
@@ -142,7 +146,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-  void _createPrimaryMarker() {
+  createPrimaryMarker() {
     if (true) {
       ImageConfiguration configuration = createLocalImageConfiguration(context);
       BitmapDescriptor.fromAssetImage(
@@ -155,7 +159,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
   }
 
-  void _createSecondaryMarker() {
+  createSecondaryMarker() {
     if (true) {
       ImageConfiguration configuration = createLocalImageConfiguration(context);
       BitmapDescriptor.fromAssetImage(
@@ -262,7 +266,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         isFabVisible = true;
                       });
                       locationAnimation = 1;
-                      _markCurrentLocation();
+                      writeToDb();
                       _populateMarkers();
                       animateToCurrentLocation(locationAnimation);
                     }
