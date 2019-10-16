@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
@@ -16,7 +15,6 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
-import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -95,10 +93,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           longitude2: markerPosition.longitude.toDouble());
 
       if (radius >= gcd.haversineDistance()) {
-        prefix0.isMarkerWithinRadius = true;
+        isMarkerWithinRadius = true;
       } else {
-        prefix0.isMarkerWithinRadius = false;
+        isMarkerWithinRadius = false;
       }
+
 
       createPrimaryMarker();
       createSecondaryMarker();
@@ -282,9 +281,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         isFabVisible = true;
                       });
                       locationAnimation = 1;
-                      animateToCurrentLocation(locationAnimation);
-                      _markCurrentLocation();
                       writeToDb();
+                      _populateMarkers();
+                      animateToCurrentLocation(locationAnimation);
                     }
                   },
                 ),

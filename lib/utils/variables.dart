@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
@@ -11,6 +12,7 @@ var zoom = [15.0, 17.5];
 var bearing = [0.0, 90.0];
 var tilt = [0.0, 45.0];
 var locationAnimation = 0;
+final radius = 100.0;
 
 const interval = const Duration(seconds: 10);
 
@@ -23,11 +25,12 @@ bool isSwipeButtonVisible = true;
 bool isFabVisible = false;
 bool isMarkerWithinRadius = true;
 
+Color markerColor;
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;
 StreamSubscription subscription;
 Geoflutterfire geo = Geoflutterfire();
 Future<SharedPreferences> sharedPrefs = SharedPreferences.getInstance();
 
-BehaviorSubject<double> radius = BehaviorSubject.seeded(100.0);
+BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);
 Stream<dynamic> query;
