@@ -104,20 +104,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             _deleteMarker(documentId);
           });
 
-      var displayMarkersGcd = GreatCircleDistance.fromDegrees(
-          latitude1: getCurrentLocation().latitude.toDouble(),
-          longitude1: getCurrentLocation().longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble());
-
       setState(() {
+        var displayMarkersGcd = GreatCircleDistance.fromDegrees(
+            latitude1: getCurrentLocation().latitude.toDouble(),
+            longitude1: getCurrentLocation().longitude.toDouble(),
+            latitude2: markerPosition.latitude.toDouble(),
+            longitude2: markerPosition.longitude.toDouble());
+
         if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
           markers[markerId] = marker;
 
           hotspots.add(Circle(
             circleId: CircleId(markerId.toString()),
             center: markerPosition,
-            radius: hotspotRadius,
+            radius: 100,
             fillColor: MyColors.translucentColor,
             strokeColor: MyColors.primaryColor,
             strokeWidth: 8,
@@ -201,7 +201,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               compassEnabled: false,
               initialCameraPosition: CameraPosition(
                 target:
-                    LatLng(20.5937, 78.9629),
+                    LatLng(currentLocation.latitude, currentLocation.longitude),
                 zoom: zoom[0],
                 bearing: bearing[0],
                 tilt: tilt[0],
