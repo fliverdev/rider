@@ -34,17 +34,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     if (isFirstLaunch) {
       _populateMarkers();
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? aubergine : retro);
+          .setMapStyle(isThemeCurrentlyDark(context) ? inturlam : silver);
       isFirstLaunch = false;
     } else {
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine);
+          .setMapStyle(isThemeCurrentlyDark(context) ? silver : inturlam);
     }
 
     new Timer.periodic(interval, (Timer t) {
       _populateMarkers(); // updates markers every 10 seconds
     });
-  }
+  } // when map is created
 
   void _setCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
@@ -52,7 +52,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         currentLocation = currLoc;
       });
     });
-  }
+  } // inital setter
 
 //  void _markCurrentLocation() {
 //    var currentLocation = getCurrentLocation();
@@ -78,15 +78,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
-      var gcd = new GreatCircleDistance.fromDegrees(
+
+      var hotspotGcd = GreatCircleDistance.fromDegrees(
           latitude1: getCurrentLocation().latitude.toDouble(),
           longitude1: getCurrentLocation().longitude.toDouble(),
           latitude2: markerPosition.latitude.toDouble(),
           longitude2: markerPosition.longitude.toDouble());
 
-      radius >= gcd.haversineDistance()
+      hotspotRadius >= hotspotGcd.haversineDistance()
           ? isMarkerWithinRadius = true
           : isMarkerWithinRadius = false;
+
+      createPrimaryMarker();
+      createSecondaryMarker();
 
       var marker = Marker(
           markerId: markerId,
@@ -101,19 +105,28 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           });
 
       setState(() {
-        markers[markerId] = marker;
-        hotspots.add(Circle(
-          circleId: CircleId(markerId.toString()),
-          center: markerPosition,
-          radius: 100,
-          fillColor: MyColors.translucentColor,
-          strokeColor: MyColors.primaryColor,
-          strokeWidth: 8,
-          visible: true,
-        ));
+        var displayMarkersGcd = GreatCircleDistance.fromDegrees(
+            latitude1: getCurrentLocation().latitude.toDouble(),
+            longitude1: getCurrentLocation().longitude.toDouble(),
+            latitude2: markerPosition.latitude.toDouble(),
+            longitude2: markerPosition.longitude.toDouble());
+
+        if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
+          markers[markerId] = marker;
+
+          hotspots.add(Circle(
+            circleId: CircleId(markerId.toString()),
+            center: markerPosition,
+            radius: 100,
+            fillColor: MyColors.translucentColor,
+            strokeColor: MyColors.primaryColor,
+            strokeWidth: 8,
+            visible: isMarkerWithinRadius,
+          ));
+        }
       });
     }
-  }
+  } // fetches and displays markers within 5km
 
   void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
@@ -133,7 +146,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     print('Deleting marker $documentId...');
     _clearMap();
     Firestore.instance.collection('locations').document(documentId).delete();
-  }
+  } // deletes markers from firestore
 
   void _clearMap() {
     setState(() {
@@ -141,6 +154,32 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markers.clear();
       hotspots.clear();
     });
+  } // clears map of markers and hotspots
+
+  createPrimaryMarker() {
+    if (true) {
+      ImageConfiguration configuration = createLocalImageConfiguration(context);
+      BitmapDescriptor.fromAssetImage(
+              configuration, 'assets/images/marker-primary.png')
+          .then((icon) {
+        setState(() {
+          markerPrimary = icon;
+        });
+      });
+    }
+  }
+
+  createSecondaryMarker() {
+    if (true) {
+      ImageConfiguration configuration = createLocalImageConfiguration(context);
+      BitmapDescriptor.fromAssetImage(
+              configuration, 'assets/images/marker-secondary.png')
+          .then((icon) {
+        setState(() {
+          markerSecondary = icon;
+        });
+      });
+    }
   }
 
   @override
@@ -218,16 +257,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 child: SwipeButton(
                   thumb: Icon(
                     Icons.arrow_forward_ios,
-                    color: MyColors.black,
+                    color: invertColorsStrong(context),
                   ),
                   content: Center(
                     child: Text(
-                      'Swipe to mark location',
+                      'Swipe to mark location       ',
                       style: TextStyle(
-                        color: MyColors.white,
+                        color: invertInvertColorsStrong(context),
                         fontSize: 16.0,
                         fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ),
