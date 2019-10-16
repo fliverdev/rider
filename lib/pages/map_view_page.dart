@@ -112,7 +112,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
           strokeWidth: 8,
-          visible: true,
+          visible: isMarkerWithinRadius,
         ));
       });
     }
