@@ -15,7 +15,7 @@ final bearing = [0.0, 90.0];
 final tilt = [0.0, 45.0];
 
 final hotspotRadius = 100.0;
-final displayMarkersRadius = 1000.0;
+final displayMarkersRadius = 5000.0;
 
 final interval = Duration(seconds: 10);
 
