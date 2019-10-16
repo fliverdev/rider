@@ -218,16 +218,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 child: SwipeButton(
                   thumb: Icon(
                     Icons.arrow_forward_ios,
-                    color: MyColors.black,
+                    color: invertColorsStrong(context),
                   ),
                   content: Center(
                     child: Text(
-                      'Swipe to mark location',
+                      'Swipe to mark location       ',
                       style: TextStyle(
-                        color: invertInvertColorsMild(context),
-                        fontSize: 18.0,
+                        color: invertInvertColorsStrong(context),
+                        fontSize: 16.0,
                         fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
                       ),
                     ),
                   ),
