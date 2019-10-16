@@ -11,7 +11,7 @@ Position getCurrentLocation() {
     currentLocation = currLoc;
   });
   return currentLocation;
-}
+} // use this anytime you need to get user's location
 
 void animateToCurrentLocation(locationAnimation) async {
   var currentLocation = getCurrentLocation();
@@ -34,5 +34,4 @@ Future<DocumentReference> writeToDb() async {
   return firestore.collection('locations').add({
     'position': point.data,
   });
-}
-
+} // writes current location to firebase

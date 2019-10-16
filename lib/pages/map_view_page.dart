@@ -44,7 +44,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     new Timer.periodic(interval, (Timer t) {
       _populateMarkers(); // updates markers every 10 seconds
     });
-  }
+  } // when map is created
 
   void _setCurrentLocation() {
     Geolocator().getCurrentPosition().then((currLoc) {
@@ -52,7 +52,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         currentLocation = currLoc;
       });
     });
-  }
+  } // inital setter
 
 //  void _markCurrentLocation() {
 //    var currentLocation = getCurrentLocation();
@@ -126,7 +126,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       });
     }
-  }
+  } // fetches and displays markers within 5km
 
   void _populateMarkers() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
@@ -146,7 +146,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     print('Deleting marker $documentId...');
     _clearMap();
     Firestore.instance.collection('locations').document(documentId).delete();
-  }
+  } // deletes markers from firestore
 
   void _clearMap() {
     setState(() {
@@ -154,7 +154,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markers.clear();
       hotspots.clear();
     });
-  }
+  } // clears map of markers and hotspots
 
   createPrimaryMarker() {
     if (true) {
