@@ -34,11 +34,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     if (isFirstLaunch) {
       _populateMarkers();
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? aubergine : retro);
+          .setMapStyle(isThemeCurrentlyDark(context) ? carbon : silver);
       isFirstLaunch = false;
     } else {
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? retro : aubergine);
+          .setMapStyle(isThemeCurrentlyDark(context) ? silver : carbon);
     }
 
     new Timer.periodic(interval, (Timer t) {
@@ -224,10 +224,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     child: Text(
                       'Swipe to mark location',
                       style: TextStyle(
-                        color: MyColors.white,
-                        fontSize: 16.0,
+                        color: invertInvertColorsMild(context),
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.italic,
+                        fontStyle: FontStyle.normal,
                       ),
                     ),
                   ),

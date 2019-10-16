@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/ui_helpers.dart';
 
 enum SwipePosition {
   SwipeLeft,
@@ -71,7 +72,7 @@ class SwipeButtonState extends State<SwipeButton>
         children: <Widget>[
           DecoratedBox(
             decoration: BoxDecoration(
-              color: MyColors.accentColor,
+              color: invertColorsMild(context),
               borderRadius: BorderRadius.all(Radius.circular(50.0)),
             ),
             child: ClipRRect(
