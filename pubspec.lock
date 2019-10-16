@@ -140,9 +140,11 @@ packages:
   great_circle_distance:
     dependency: "direct main"
     description:
-      name: great_circle_distance
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "3dc87e3d1abbde1bf91a1d3d19d5cd935adff448"
+      url: "git://github.com/fliverdev/great_circle_distance.git"
+    source: git
     version: "1.0.1"
   image:
     dependency: transitive
