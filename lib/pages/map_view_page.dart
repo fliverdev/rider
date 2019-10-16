@@ -52,7 +52,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         currentLocation = currLoc;
       });
     });
-  } // inital setter
+  } // initial setter
 
 //  void _markCurrentLocation() {
 //    var currentLocation = getCurrentLocation();
@@ -126,6 +126,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       });
     }
+    print('Repopulated ${markers.length} clients');
   } // fetches and displays markers within 5km
 
   void _populateMarkers() {
@@ -136,7 +137,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         for (int i = 0; i < docLength; i++) {
           clients[i] = docs.documents[i];
         }
-        print('Reopulated $docLength clients');
         _getMarkersFromDb(clients);
       }
     });
