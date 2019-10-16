@@ -78,13 +78,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       final markerData = clients[i].data;
       final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
-      var gcd = new GreatCircleDistance.fromDegrees(
+
+      var hotspotGcd = GreatCircleDistance.fromDegrees(
           latitude1: getCurrentLocation().latitude.toDouble(),
           longitude1: getCurrentLocation().longitude.toDouble(),
           latitude2: markerPosition.latitude.toDouble(),
           longitude2: markerPosition.longitude.toDouble());
 
-      radius >= gcd.haversineDistance()
+      hotspotRadius >= hotspotGcd.haversineDistance()
           ? isMarkerWithinRadius = true
           : isMarkerWithinRadius = false;
 
@@ -104,16 +105,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           });
 
       setState(() {
-        markers[markerId] = marker;
-        hotspots.add(Circle(
-          circleId: CircleId(markerId.toString()),
-          center: markerPosition,
-          radius: 100,
-          fillColor: MyColors.translucentColor,
-          strokeColor: MyColors.primaryColor,
-          strokeWidth: 8,
-          visible: isMarkerWithinRadius,
-        ));
+        var displayMarkersGcd = GreatCircleDistance.fromDegrees(
+            latitude1: getCurrentLocation().latitude.toDouble(),
+            longitude1: getCurrentLocation().longitude.toDouble(),
+            latitude2: markerPosition.latitude.toDouble(),
+            longitude2: markerPosition.longitude.toDouble());
+
+        if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
+          markers[markerId] = marker;
+
+          hotspots.add(Circle(
+            circleId: CircleId(markerId.toString()),
+            center: markerPosition,
+            radius: 100,
+            fillColor: MyColors.translucentColor,
+            strokeColor: MyColors.primaryColor,
+            strokeWidth: 8,
+            visible: isMarkerWithinRadius,
+          ));
+        }
       });
     }
   }

@@ -8,13 +8,16 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 var currentLocation;
-var zoom = [15.0, 17.5];
-var bearing = [0.0, 90.0];
-var tilt = [0.0, 45.0];
 var locationAnimation = 0;
-final radius = 100.0;
 
-const interval = const Duration(seconds: 10);
+final zoom = [15.0, 17.5];
+final bearing = [0.0, 90.0];
+final tilt = [0.0, 45.0];
+
+final hotspotRadius = 100.0;
+final displayMarkersRadius = 1000.0;
+
+final interval = Duration(seconds: 10);
 
 final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
