@@ -61,22 +61,22 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   Color colorMarker;
   double radius = 100.0;
 
-  void _markCurrentLocation() {
-    var currentLocation = getCurrentLocation();
-    var markerIdVal = Random().toString();
-    final MarkerId markerId = MarkerId(markerIdVal);
-    var marker = Marker(
-      markerId: markerId,
-      position: LatLng(currentLocation.latitude, currentLocation.longitude),
-      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
-      onTap: doNothing,
-    );
-
-    setState(() {
-      markers[markerId] = marker;
-    });
-  } //adds current location as a marker to map and writes to db
+//  void _markCurrentLocation() {
+//    var currentLocation = getCurrentLocation();
+//    var markerIdVal = Random().toString();
+//    final MarkerId markerId = MarkerId(markerIdVal);
+//    var marker = Marker(
+//      markerId: markerId,
+//      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+//      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
+//      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
+//      onTap: doNothing,
+//    );
+//
+//    setState(() {
+//      markers[markerId] = marker;
+//    });
+//  } //adds current location as a marker to map and writes to db
 
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
