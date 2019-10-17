@@ -42,6 +42,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
 
     new Timer.periodic(interval, (Timer t) {
+      print('$interval seconds over, refreshing...');
       _fetchMarkersFromDb(); // updates markers every 10 seconds
     });
   } // when map is created
@@ -114,10 +115,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
       setState(() {
         if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
-          markers[documentId] = marker;
+          markers[markerId] = marker;
 
           hotspots.add(Circle(
-            circleId: CircleId(documentId.toString()),
+            circleId: CircleId(markerId.toString()),
             center: markerPosition,
             radius: hotspotRadius,
             fillColor: MyColors.translucentColor,
