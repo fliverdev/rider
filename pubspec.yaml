@@ -14,8 +14,8 @@ dependencies:
   dynamic_theme: ^1.0.0
   flutter_speed_dial: ^1.2.1
   geoflutterfire: ^2.0.3
-  geolocator: ^4.0.3
-  google_maps_flutter: ^0.5.20
+  geolocator: ^5.1.4+1
+  google_maps_flutter: ^0.5.21+7
   liquid_swipe: ^1.2.0
   permission_handler: ^3.2.2
   shared_preferences: ^0.5.3+4
