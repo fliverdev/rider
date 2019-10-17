@@ -122,7 +122,7 @@ packages:
       name: geolocator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.3"
+    version: "5.1.4+1"
   google_api_availability:
     dependency: transitive
     description:
@@ -136,13 +136,15 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.20+2"
+    version: "0.5.21+7"
   great_circle_distance:
     dependency: "direct main"
     description:
-      name: great_circle_distance
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "3dc87e3d1abbde1bf91a1d3d19d5cd935adff448"
+      url: "git://github.com/fliverdev/great_circle_distance.git"
+    source: git
     version: "1.0.1"
   image:
     dependency: transitive
@@ -164,7 +166,7 @@ packages:
       name: location_permissions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   matcher:
     dependency: transitive
     description:

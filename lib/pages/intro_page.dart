@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:liquid_swipe/Constants/Helpers.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/permission_helper.dart';
 
 import 'map_view_page.dart';
 
@@ -103,6 +104,62 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       fontSize: 18.0,
                       color: MyColors.white,
                     ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+      Container(
+        color: MyColors.primaryColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Location Permissions',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 22.0,
+                      color: MyColors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50.0,
+                  ),
+                  Text(
+                    'We need your permission to access your device\'s '
+                    'location. We require this in order to display nearby '
+                    'Riders and notify Drivers when there is demand in '
+                    'your area. \n\nDon\'t worry - we believe in '
+                    'your privacy and keep your location completely '
+                    'anonymous without requiring any additional details or permissions.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18.0,
+                      color: MyColors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  RaisedButton(
+                    child: Text('Grant access'),
+                    color: MyColors.black,
+                    textColor: MyColors.primaryColor,
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () {
+                      requestLocationPermission();
+                    },
                   ),
                 ],
               ),
