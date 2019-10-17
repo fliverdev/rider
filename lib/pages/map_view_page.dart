@@ -34,11 +34,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     if (isFirstLaunch) {
       _fetchMarkersFromDb();
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? fliverDark : silver);
+          .setMapStyle(isThemeCurrentlyDark(context) ? darkMap : lightMap);
       isFirstLaunch = false;
     } else {
       mapController
-          .setMapStyle(isThemeCurrentlyDark(context) ? silver : fliverDark);
+          .setMapStyle(isThemeCurrentlyDark(context) ? lightMap : darkMap);
     }
 
     new Timer.periodic(interval, (Timer t) {
