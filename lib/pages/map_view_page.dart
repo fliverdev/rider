@@ -15,6 +15,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -25,7 +26,6 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   BitmapDescriptor markerPrimary;
   BitmapDescriptor markerSecondary;
-
 
   void initState() {
     super.initState();
@@ -76,62 +76,81 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 //    setState(() {
 //      markers[markerId] = marker;
 //    });
-//  } //adds current location as a marker to map and writes to db
+//  } //adds current location as a mxarker to map and writes to db
 
+  var riderWithinRadius = 0;
   void _getMarkersFromDb(clients) {
     for (int i = 0; i < clients.length; i++) {
+      for (int j = 0; j < clients.length; j++) {
+        final documentIdi = clients[i].documentID;
+        final markerIdi = MarkerId(documentIdi);
+        final markerDatai = clients[i].data;
+        final markerPositioni = LatLng(
+            markerDatai['position']['geopoint'].latitude,
+            markerDatai['position']['geopoint'].longitude);
 
-      final documentId = clients[i].documentID;
-      final markerId = MarkerId(documentId);
-      final markerData = clients[i].data;
-      final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
-          markerData['position']['geopoint'].longitude);
-      var gcd = new GreatCircleDistance.fromDegrees(
-          latitude1: getCurrentLocation().latitude.toDouble(),
-          longitude1: getCurrentLocation().longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble());
+        final documentIdj = clients[j].documentID;
+        final markerIdj = MarkerId(documentIdj);
+        final markerDataj = clients[j].data;
+        final markerPositionj = LatLng(
+            markerDataj['position']['geopoint'].latitude,
+            markerDataj['position']['geopoint'].longitude);
 
-      if (radius >= gcd.haversineDistance()) {
-        isMarkerWithinRadius = true;
-      } else {
-        isMarkerWithinRadius = false;
+        var gcd = new GreatCircleDistance.fromDegrees(
+            latitude1: markerPositioni.latitude.toDouble(),
+            longitude1: markerPositioni.longitude.toDouble(),
+            latitude2: markerPositionj.latitude.toDouble(),
+            longitude2: markerPositionj.longitude.toDouble());
+
+        if (radius >= gcd.haversineDistance()) {
+          riderWithinRadius += 1;
+          if(riderWithinRadius >= 3)
+          {
+            isMarkerWithinRadius = true;
+          }
+          else {
+            isMarkerWithinRadius = false;
+          }
+
+        }
+        else
+          {
+            isMarkerWithinRadius = false;
+          }
+
+
+//        createPrimaryMarker();
+//        createSecondaryMarker();
+
+          var marker = Marker(
+              markerId: markerIdj,
+              position: markerPositionj,
+              icon: isMarkerWithinRadius ? BitmapDescriptor
+                  .defaultMarkerWithHue(147.5) : BitmapDescriptor.defaultMarker,
+              infoWindow: InfoWindow(
+                  title: 'ID: $markerIdj', snippet: 'Data: $markerDataj'),
+              onTap: () {
+                _deleteMarker(documentIdj);
+              });
+
+          setState(() {
+          markers[markerIdj] = marker;
+          hotspots.add(Circle(
+            circleId: CircleId(markerIdj.toString()),
+            center: markerPositionj,
+            radius: 100,
+            fillColor: MyColors.translucentColor,
+            strokeColor: MyColors.primaryColor,
+            strokeWidth: 8,
+            visible: isMarkerWithinRadius,
+          ));
+        });
       }
-
-
-      createPrimaryMarker();
-      createSecondaryMarker();
-
-      var marker = Marker(
-          markerId: markerId,
-          position: markerPosition,
-          icon: isMarkerWithinRadius
-              ? markerPrimary
-              : markerSecondary,
-          infoWindow:
-          InfoWindow(title: 'ID: $markerId', snippet: 'Data: $markerData'),
-          onTap: () {
-            _deleteMarker(documentId);
-          });
-
-      setState(() {
-        markers[markerId] = marker;
-        hotspots.add(Circle(
-          circleId: CircleId(markerId.toString()),
-          center: markerPosition,
-          radius: 100,
-          fillColor: MyColors.translucentColor,
-          strokeColor: MyColors.primaryColor,
-          strokeWidth: 8,
-          visible: isMarkerWithinRadius,
-        ));
-      });
+      riderWithinRadius = 0;
     }
   }
 
   void _populateMarkers() {
-
-
     Firestore.instance.collection('locations').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         var docLength = docs.documents.length;
@@ -159,32 +178,31 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   }
 
-  createPrimaryMarker() {
-    if (true) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
-      BitmapDescriptor.fromAssetImage(
-          configuration, 'assets/images/marker-primary.png')
-          .then((icon) {
-        setState(() {
-          markerPrimary = icon;
-        });
-      });
-    }
-  }
+//  createPrimaryMarker() {
+//    if (true) {
+//      ImageConfiguration configuration = createLocalImageConfiguration(context);
+//      BitmapDescriptor.fromAssetImage(
+//              configuration, 'assets/images/marker-primary.png')
+//          .then((icon) {
+//        setState(() {
+//          markerPrimary = icon;
+//        });
+//      });
+//    }
+//  }
 
-  createSecondaryMarker() {
-    if (true) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
-      BitmapDescriptor.fromAssetImage(
-          configuration, 'assets/images/marker-secondary.png')
-          .then((icon) {
-        setState(() {
-          markerSecondary = icon;
-        });
-      });
-    }
-  }
-
+//  createSecondaryMarker() {
+//    if (true) {
+//      ImageConfiguration configuration = createLocalImageConfiguration(context);
+//      BitmapDescriptor.fromAssetImage(
+//              configuration, 'assets/images/marker-secondary.png')
+//          .then((icon) {
+//        setState(() {
+//          markerSecondary = icon;
+//        });
+//      });
+//    }
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +210,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ? Icon(Icons.brightness_7)
         : Icon(Icons.brightness_2);
     String toggleLightsText =
-    isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
+        isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return Scaffold(
       body: Container(
         child: Stack(
@@ -205,7 +223,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               compassEnabled: false,
               initialCameraPosition: CameraPosition(
                 target:
-                LatLng(currentLocation.latitude, currentLocation.longitude),
+                    LatLng(currentLocation.latitude, currentLocation.longitude),
                 zoom: zoom[0],
                 bearing: bearing[0],
                 tilt: tilt[0],
@@ -327,9 +345,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   color: MyColors.accentColor, fontWeight: FontWeight.w500),
               onTap: () {
                 DynamicTheme.of(context).setBrightness(
-                    Theme
-                        .of(context)
-                        .brightness == Brightness.dark
+                    Theme.of(context).brightness == Brightness.dark
                         ? Brightness.light
                         : Brightness.dark);
                 _onMapCreated(mapController); //buggy
