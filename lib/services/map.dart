@@ -11,7 +11,7 @@ Position getCurrentLocation() {
   Geolocator().getCurrentPosition().then((currLoc) {
     currentLocation = currLoc;
   });
-  print('Current location: currentLocation');
+  print('Current location: $currentLocation');
   return currentLocation;
 } // use this anytime you need to get user's location
 
