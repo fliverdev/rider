@@ -139,6 +139,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           visible: true,
         ));
       });
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+          content:
+              Text('${markersWithinRadius.length} Riders are in your area!')));
     }
 
     print('Repopulated ${markers.length} clients');
@@ -205,6 +208,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     String toggleLightsText =
         isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return Scaffold(
+      key: scaffoldKey,
       body: Container(
         child: Stack(
           children: <Widget>[
