@@ -15,6 +15,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -72,6 +73,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 //    });
 //  } //adds current location as a marker to map and writes to db
 
+
+  int riderWithinRadius = 0;
+  var showMarkerAsGreen = false;
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
 
@@ -97,14 +101,30 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       _createPrimaryMarker();
       _createSecondaryMarker();
 
-      hotspotRadius >= hotspotGcd.haversineDistance()
-          ? isMarkerWithinRadius = true
-          : isMarkerWithinRadius = false;
+
+      if(hotspotRadius >= hotspotGcd.haversineDistance())
+        {
+          riderWithinRadius += 1;
+          prefix0.isMarkerWithinRadius = true;
+          if(riderWithinRadius >= 3)
+          {
+            showMarkerAsGreen = true;
+
+          }
+          else {
+            showMarkerAsGreen = false;
+          }
+
+        }
+      else{
+        prefix0.isMarkerWithinRadius = false;
+      }
+
 
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: isMarkerWithinRadius
+          icon: showMarkerAsGreen
               ? BitmapDescriptor.defaultMarkerWithHue(147.5)
               : BitmapDescriptor.defaultMarkerWithHue(25.0),
           infoWindow: InfoWindow(
@@ -124,11 +144,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             fillColor: MyColors.translucentColor,
             strokeColor: MyColors.primaryColor,
             strokeWidth: 8,
-            visible: isMarkerWithinRadius,
+            visible: showMarkerAsGreen,
           ));
         }
       });
+
     }
+
     print('Repopulated ${markers.length} clients');
   } // fetches and displays markers within 5km
 
