@@ -15,7 +15,6 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
-import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -76,6 +75,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
     markersWithinRadius.clear();
+    hotspots.clear();
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -102,6 +102,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       if (hotspotRadius >= hotspotGcd.haversineDistance()) {
         markersWithinRadius.add(markerId); // list which contains nearby markers
         isMarkerWithinRadius = true;
+        print(markersWithinRadius);
       }
 
       var marker = Marker(
@@ -119,20 +120,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       setState(() {
         if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
           markers[markerId] = marker;
-
-          hotspots.add(Circle(
-            circleId: CircleId(markerId.toString()),
-            center: markerPosition,
-            radius: hotspotRadius,
-            fillColor: MyColors.translucentColor,
-            strokeColor: MyColors.primaryColor,
-            strokeWidth: 8,
-            visible: false,
-          ));
         }
       });
 
       isMarkerWithinRadius = false;
+    }
+
+    if (markersWithinRadius.length >= 3) {
+      print('Generating hotspot...');
+      setState(() {
+        hotspots.add(Circle(
+          circleId: CircleId(currentLocation.toString()),
+          center: LatLng(currentLocation.latitude, currentLocation.longitude),
+          radius: hotspotRadius,
+          fillColor: MyColors.translucentColor,
+          strokeColor: MyColors.primaryColor,
+          strokeWidth: 10,
+          visible: true,
+        ));
+      });
     }
 
     print('Repopulated ${markers.length} clients');
