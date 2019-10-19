@@ -73,11 +73,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 //    });
 //  } //adds current location as a marker to map and writes to db
 
-
-  int riderWithinRadius = 0;
-  var showMarkerAsGreen = false;
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
+    markersWithinRadius.clear();
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -101,30 +99,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       _createPrimaryMarker();
       _createSecondaryMarker();
 
-
-      if(hotspotRadius >= hotspotGcd.haversineDistance())
-        {
-          riderWithinRadius += 1;
-          prefix0.isMarkerWithinRadius = true;
-          if(riderWithinRadius >= 3)
-          {
-            showMarkerAsGreen = true;
-
-          }
-          else {
-            showMarkerAsGreen = false;
-          }
-
-        }
-      else{
-        prefix0.isMarkerWithinRadius = false;
+      if (hotspotRadius >= hotspotGcd.haversineDistance()) {
+        markersWithinRadius.add(markerId); // list which contains nearby markers
+        isMarkerWithinRadius = true;
       }
-
 
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: showMarkerAsGreen
+          icon: isMarkerWithinRadius
               ? BitmapDescriptor.defaultMarkerWithHue(147.5)
               : BitmapDescriptor.defaultMarkerWithHue(25.0),
           infoWindow: InfoWindow(
@@ -144,11 +127,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             fillColor: MyColors.translucentColor,
             strokeColor: MyColors.primaryColor,
             strokeWidth: 8,
-            visible: showMarkerAsGreen,
+            visible: false,
           ));
         }
       });
 
+      isMarkerWithinRadius = false;
     }
 
     print('Repopulated ${markers.length} clients');

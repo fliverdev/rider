@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
+var ridersWithinRadius = 0;
+var markersWithinRadius = [];
 
 final zoom = [15.0, 17.5]; // zoom levels (0/1)
 final bearing = [0.0, 90.0]; // bearing level (0/1)
@@ -26,7 +28,7 @@ bool isFirstLaunch = true; // for dark mode fix
 bool isFirstLaunchSinceInstall = true; // use for app intro screen
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
 bool isFabVisible = false;
-bool isMarkerWithinRadius = true; // to color marker correctly
+bool isMarkerWithinRadius = false; // to identify nearby markers
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;
