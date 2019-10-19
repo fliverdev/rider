@@ -74,6 +74,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
+    markersWithinRadius.clear();
+    hotspots.clear();
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -97,9 +99,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       _createPrimaryMarker();
       _createSecondaryMarker();
 
-      hotspotRadius >= hotspotGcd.haversineDistance()
-          ? isMarkerWithinRadius = true
-          : isMarkerWithinRadius = false;
+      if (hotspotRadius >= hotspotGcd.haversineDistance()) {
+        markersWithinRadius.add(markerId); // list which contains nearby markers
+        isMarkerWithinRadius = true;
+        print(markersWithinRadius);
+      }
 
       var marker = Marker(
           markerId: markerId,
@@ -116,19 +120,30 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       setState(() {
         if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
           markers[markerId] = marker;
-
-          hotspots.add(Circle(
-            circleId: CircleId(markerId.toString()),
-            center: markerPosition,
-            radius: hotspotRadius,
-            fillColor: MyColors.translucentColor,
-            strokeColor: MyColors.primaryColor,
-            strokeWidth: 8,
-            visible: isMarkerWithinRadius,
-          ));
         }
       });
+
+      isMarkerWithinRadius = false;
     }
+
+    if (markersWithinRadius.length >= 3) {
+      print('Generating hotspot...');
+      setState(() {
+        hotspots.add(Circle(
+          circleId: CircleId(currentLocation.toString()),
+          center: LatLng(currentLocation.latitude, currentLocation.longitude),
+          radius: hotspotRadius,
+          fillColor: MyColors.translucentColor,
+          strokeColor: MyColors.primaryColor,
+          strokeWidth: 10,
+          visible: true,
+        ));
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+          content:
+              Text('${markersWithinRadius.length} Riders are in your area!')));
+    }
+
     print('Repopulated ${markers.length} clients');
   } // fetches and displays markers within 5km
 
@@ -193,6 +208,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     String toggleLightsText =
         isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return Scaffold(
+      key: scaffoldKey,
       body: Container(
         child: Stack(
           children: <Widget>[
