@@ -15,7 +15,6 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
-import 'package:rider/utils/variables.dart' as prefix0;
 import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -73,11 +72,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 //    });
 //  } //adds current location as a marker to map and writes to db
 
-
-  int riderWithinRadius = 0;
-  var showMarkerAsGreen = false;
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
+    markersWithinRadius.clear();
+    hotspots.clear();
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -101,30 +99,16 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       _createPrimaryMarker();
       _createSecondaryMarker();
 
-
-      if(hotspotRadius >= hotspotGcd.haversineDistance())
-        {
-          riderWithinRadius += 1;
-          prefix0.isMarkerWithinRadius = true;
-          if(riderWithinRadius >= 3)
-          {
-            showMarkerAsGreen = true;
-
-          }
-          else {
-            showMarkerAsGreen = false;
-          }
-
-        }
-      else{
-        prefix0.isMarkerWithinRadius = false;
+      if (hotspotRadius >= hotspotGcd.haversineDistance()) {
+        markersWithinRadius.add(markerId); // list which contains nearby markers
+        isMarkerWithinRadius = true;
+        print(markersWithinRadius);
       }
-
 
       var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: showMarkerAsGreen
+          icon: isMarkerWithinRadius
               ? BitmapDescriptor.defaultMarkerWithHue(147.5)
               : BitmapDescriptor.defaultMarkerWithHue(25.0),
           infoWindow: InfoWindow(
@@ -136,19 +120,28 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       setState(() {
         if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
           markers[markerId] = marker;
-
-          hotspots.add(Circle(
-            circleId: CircleId(markerId.toString()),
-            center: markerPosition,
-            radius: hotspotRadius,
-            fillColor: MyColors.translucentColor,
-            strokeColor: MyColors.primaryColor,
-            strokeWidth: 8,
-            visible: showMarkerAsGreen,
-          ));
         }
       });
 
+      isMarkerWithinRadius = false;
+    }
+
+    if (markersWithinRadius.length >= 3) {
+      print('Generating hotspot...');
+      setState(() {
+        hotspots.add(Circle(
+          circleId: CircleId(currentLocation.toString()),
+          center: LatLng(currentLocation.latitude, currentLocation.longitude),
+          radius: hotspotRadius,
+          fillColor: MyColors.translucentColor,
+          strokeColor: MyColors.primaryColor,
+          strokeWidth: 10,
+          visible: true,
+        ));
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+          content:
+              Text('${markersWithinRadius.length} Riders are in your area!')));
     }
 
     print('Repopulated ${markers.length} clients');
@@ -215,6 +208,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     String toggleLightsText =
         isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return Scaffold(
+      key: scaffoldKey,
       body: Container(
         child: Stack(
           children: <Widget>[
