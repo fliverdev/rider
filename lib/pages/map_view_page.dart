@@ -134,10 +134,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         currentMarkersWithinRadius != previousMarkersWithinRadius) {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
-          content: Text('$currentMarkersWithinRadius Riders are in your area!'),
+          content: Text(
+            '${currentMarkersWithinRadius - 1} other Riders are in your area!',
+            style: TextStyle(
+              color: invertInvertColorsStrong(context),
+              fontSize: 15.0,
+            ),
+          ),
+          backgroundColor: invertColorsTheme(context),
         ),
       );
-    }
+    } // generates snackbar only when necessary
 
     if (currentMarkersWithinRadius >= 3) {
       print('Generating hotspot...');
@@ -285,13 +292,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 child: SwipeButton(
                   thumb: Icon(
                     Icons.arrow_forward_ios,
-                    color: invertColorsStrong(context),
+                    color: MyColors.black,
                   ),
                   content: Center(
                     child: Text(
                       'Swipe to mark location       ',
                       style: TextStyle(
-                        color: invertInvertColorsStrong(context),
+                        color: MyColors.white,
                         fontSize: 16.0,
                         fontWeight: FontWeight.w400,
                       ),
@@ -343,6 +350,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               },
             ),
             SpeedDialChild(
+              child: Icon(Icons.bug_report),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'Debug',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                _clearMap();
+              },
+            ),
+            SpeedDialChild(
               child: toggleLightsIcon,
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
@@ -368,17 +386,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
                   return MyAboutPage();
                 }));
-              },
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.bug_report),
-              foregroundColor: invertColorsTheme(context),
-              backgroundColor: invertInvertColorsTheme(context),
-              label: 'Debug',
-              labelStyle: TextStyle(
-                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
-              onTap: () {
-                _clearMap();
               },
             ),
             SpeedDialChild(
