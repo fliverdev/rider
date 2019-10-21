@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
@@ -29,7 +28,7 @@ final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true; // for dark mode fix
-bool isFirstLaunchSinceInstall = true; // use for app intro screen
+//bool isFirstLaunchSinceInstall = true; // use for app intro screen
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
 bool isFabVisible = false;
 bool isSnackbarEnabled = false;
@@ -39,6 +38,5 @@ GoogleMapController mapController;
 Firestore firestore = Firestore.instance;
 StreamSubscription subscription;
 Geoflutterfire geo = Geoflutterfire();
-Future<SharedPreferences> sharedPrefs = SharedPreferences.getInstance();
 BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);
 Stream<dynamic> query;
