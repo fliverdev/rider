@@ -19,13 +19,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (isFirstLaunch) {
       prefs.setBool('isFirstLaunch', false);
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return MyIntroPage();
-      }));
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MyIntroPage()),
+          (Route<dynamic> route) => false);
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return MyMapViewPage();
-      }));
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MyMapViewPage()),
+          (Route<dynamic> route) => false);
     }
   }
 
