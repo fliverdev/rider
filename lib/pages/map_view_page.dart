@@ -74,7 +74,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
-    markersWithinRadius.clear();
+    allMarkersWithinRadius.clear();
     hotspots.clear();
 
     for (int i = 0; i < clients.length; i++) {
@@ -100,9 +100,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       _createSecondaryMarker();
 
       if (hotspotRadius >= hotspotGcd.haversineDistance()) {
-        markersWithinRadius.add(markerId); // list which contains nearby markers
+        allMarkersWithinRadius
+            .add(markerId); // list which contains nearby markers
         isMarkerWithinRadius = true;
-        print(markersWithinRadius);
+        print(allMarkersWithinRadius);
       }
 
       var marker = Marker(
@@ -126,8 +127,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       isMarkerWithinRadius = false;
     }
 
-    if (markersWithinRadius.length >= 3) {
+    currentMarkersWithinRadius = allMarkersWithinRadius.length;
+
+    if (isSnackbarEnabled &&
+        currentMarkersWithinRadius > 1 &&
+        currentMarkersWithinRadius != previousMarkersWithinRadius) {
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text('$currentMarkersWithinRadius Riders are in your area!'),
+        ),
+      );
+    }
+
+    if (currentMarkersWithinRadius >= 3) {
       print('Generating hotspot...');
+
       setState(() {
         hotspots.add(Circle(
           circleId: CircleId(currentLocation.toString()),
@@ -135,19 +149,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           radius: hotspotRadius,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
-          strokeWidth: 10,
-          visible: true,
+          strokeWidth: 15,
         ));
       });
-
-      if (isSnackbarEnabled) {
-        scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text(
-                '${markersWithinRadius.length} Riders are in your area!')));
-      }
     }
-
-    print('Repopulated ${markers.length} clients');
+    previousMarkersWithinRadius = currentMarkersWithinRadius;
   } // fetches and displays markers within 5km
 
   void _fetchMarkersFromDb() {

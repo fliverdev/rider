@@ -10,7 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
 var ridersWithinRadius = 0;
-var markersWithinRadius = [];
+var previousMarkersWithinRadius = 0;
+var currentMarkersWithinRadius = 0;
+var allMarkersWithinRadius = [];
 
 final zoom = [15.0, 17.5]; // zoom levels (0/1)
 final bearing = [0.0, 90.0]; // bearing level (0/1)
