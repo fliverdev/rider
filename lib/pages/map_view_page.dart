@@ -57,8 +57,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
-    allMarkersWithinRadius.clear();
+
     hotspots.clear();
+    markers.clear();
+    allMarkersWithinRadius.clear();
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -117,7 +119,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           content: Text(
-            '${currentMarkersWithinRadius - 1} other Riders are in your area!',
+            '$currentMarkersWithinRadius Riders are in your area!',
             style: TextStyle(
               color: invertInvertColorsStrong(context),
               fontSize: 15.0,
