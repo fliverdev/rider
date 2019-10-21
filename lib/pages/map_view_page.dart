@@ -41,22 +41,22 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           .setMapStyle(isThemeCurrentlyDark(context) ? lightMap : darkMap);
     }
 
-    new Timer.periodic(markerRefreshInterval, (Timer t) {
+    Timer.periodic(markerRefreshInterval, (Timer t) {
       print('$markerRefreshInterval seconds over, refreshing...');
       _fetchMarkersFromDb(); // updates markers every 10 seconds
     });
   } // when map is created
 
-  void _setCurrentLocation() {
-    Geolocator().getCurrentPosition().then((currLoc) {
-      setState(() {
-        currentLocation = currLoc;
-      });
+  _setCurrentLocation() async {
+    // add loading spinner here
+    var currLoc = await Geolocator().getCurrentPosition();
+    setState(() {
+      currentLocation = currLoc;
     });
   } // initial setter
 
   void _populateMarkers(clients) {
-    final currentLocation = getCurrentLocation();
+    var currentLocation = getCurrentLocation();
 
     hotspots.clear();
     markers.clear();
