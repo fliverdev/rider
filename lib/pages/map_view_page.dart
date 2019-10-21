@@ -55,23 +55,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } // initial setter
 
-//  void _markCurrentLocation() {
-//    var currentLocation = getCurrentLocation();
-//    var markerIdVal = Random().toString();
-//    final MarkerId markerId = MarkerId(markerIdVal);
-//    var marker = Marker(
-//      markerId: markerId,
-//      position: LatLng(currentLocation.latitude, currentLocation.longitude),
-//      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-//      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
-//      onTap: doNothing,
-//    );
-//
-//    setState(() {
-//      markers[markerId] = marker;
-//    });
-//  } //adds current location as a marker to map and writes to db
-
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
     allMarkersWithinRadius.clear();
@@ -85,19 +68,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           markerData['position']['geopoint'].longitude);
 
       var hotspotGcd = GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude.toDouble(),
-          longitude1: currentLocation.longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble());
+        latitude1: currentLocation.latitude.toDouble(),
+        longitude1: currentLocation.longitude.toDouble(),
+        latitude2: markerPosition.latitude.toDouble(),
+        longitude2: markerPosition.longitude.toDouble(),
+      );
 
       var displayMarkersGcd = GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude.toDouble(),
-          longitude1: currentLocation.longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble());
-
-      _createPrimaryMarker();
-      _createSecondaryMarker();
+        latitude1: currentLocation.latitude.toDouble(),
+        longitude1: currentLocation.longitude.toDouble(),
+        latitude2: markerPosition.latitude.toDouble(),
+        longitude2: markerPosition.longitude.toDouble(),
+      );
 
       if (hotspotRadius >= hotspotGcd.haversineDistance()) {
         allMarkersWithinRadius
@@ -178,8 +160,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _deleteMarker(documentId) {
     print('Deleting marker $documentId...');
-    _clearMap();
     Firestore.instance.collection('locations').document(documentId).delete();
+    setState(() {
+      markers.remove(MarkerId(documentId));
+    });
   } // deletes markers from firestore
 
   void _clearMap() {
@@ -189,32 +173,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       hotspots.clear();
     });
   } // clears map of markers and hotspots
-
-  _createPrimaryMarker() {
-    if (true) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
-      BitmapDescriptor.fromAssetImage(
-              configuration, 'assets/images/marker-primary.png')
-          .then((icon) {
-        setState(() {
-          markerPrimary = icon;
-        });
-      });
-    }
-  }
-
-  _createSecondaryMarker() {
-    if (true) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
-      BitmapDescriptor.fromAssetImage(
-              configuration, 'assets/images/marker-secondary.png')
-          .then((icon) {
-        setState(() {
-          markerSecondary = icon;
-        });
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
