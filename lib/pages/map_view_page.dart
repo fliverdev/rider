@@ -139,9 +139,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           visible: true,
         ));
       });
-      scaffoldKey.currentState.showSnackBar(SnackBar(
-          content:
-              Text('${markersWithinRadius.length} Riders are in your area!')));
+
+      if (isSnackbarEnabled) {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+                '${markersWithinRadius.length} Riders are in your area!')));
+      }
     }
 
     print('Repopulated ${markers.length} clients');
@@ -293,6 +296,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       setState(() {
                         isSwipeButtonVisible = false;
                         isFabVisible = true;
+                        isSnackbarEnabled = true;
                       });
                       locationAnimation = 1;
                       writeToDb();

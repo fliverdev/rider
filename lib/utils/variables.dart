@@ -30,6 +30,7 @@ bool isFirstLaunch = true; // for dark mode fix
 bool isFirstLaunchSinceInstall = true; // use for app intro screen
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
 bool isFabVisible = false;
+bool isSnackbarEnabled = false;
 bool isMarkerWithinRadius = false; // to identify nearby markers
 
 GoogleMapController mapController;
