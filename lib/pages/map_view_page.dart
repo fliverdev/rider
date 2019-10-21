@@ -55,27 +55,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } // initial setter
 
-//  void _markCurrentLocation() {
-//    var currentLocation = getCurrentLocation();
-//    var markerIdVal = Random().toString();
-//    final MarkerId markerId = MarkerId(markerIdVal);
-//    var marker = Marker(
-//      markerId: markerId,
-//      position: LatLng(currentLocation.latitude, currentLocation.longitude),
-//      icon: BitmapDescriptor.defaultMarkerWithHue(147.5),
-//      infoWindow: InfoWindow(title: 'My Marker', snippet: 'Current location'),
-//      onTap: doNothing,
-//    );
-//
-//    setState(() {
-//      markers[markerId] = marker;
-//    });
-//  } //adds current location as a marker to map and writes to db
-
   void _populateMarkers(clients) {
     final currentLocation = getCurrentLocation();
-    markersWithinRadius.clear();
+
     hotspots.clear();
+    markers.clear();
+    allMarkersWithinRadius.clear();
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -85,24 +70,24 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           markerData['position']['geopoint'].longitude);
 
       var hotspotGcd = GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude.toDouble(),
-          longitude1: currentLocation.longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble());
+        latitude1: currentLocation.latitude.toDouble(),
+        longitude1: currentLocation.longitude.toDouble(),
+        latitude2: markerPosition.latitude.toDouble(),
+        longitude2: markerPosition.longitude.toDouble(),
+      );
 
       var displayMarkersGcd = GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude.toDouble(),
-          longitude1: currentLocation.longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble());
-
-      _createPrimaryMarker();
-      _createSecondaryMarker();
+        latitude1: currentLocation.latitude.toDouble(),
+        longitude1: currentLocation.longitude.toDouble(),
+        latitude2: markerPosition.latitude.toDouble(),
+        longitude2: markerPosition.longitude.toDouble(),
+      );
 
       if (hotspotRadius >= hotspotGcd.haversineDistance()) {
-        markersWithinRadius.add(markerId); // list which contains nearby markers
+        allMarkersWithinRadius
+            .add(markerId); // list which contains nearby markers
         isMarkerWithinRadius = true;
-        print(markersWithinRadius);
+        print(allMarkersWithinRadius);
       }
 
       var marker = Marker(
@@ -126,8 +111,28 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       isMarkerWithinRadius = false;
     }
 
-    if (markersWithinRadius.length >= 3) {
+    currentMarkersWithinRadius = allMarkersWithinRadius.length;
+
+    if (isSnackbarEnabled &&
+        currentMarkersWithinRadius > 1 &&
+        currentMarkersWithinRadius != previousMarkersWithinRadius) {
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text(
+            '$currentMarkersWithinRadius Riders are in your area!',
+            style: TextStyle(
+              color: invertInvertColorsStrong(context),
+              fontSize: 15.0,
+            ),
+          ),
+          backgroundColor: invertColorsTheme(context),
+        ),
+      );
+    } // generates snackbar only when necessary
+
+    if (currentMarkersWithinRadius >= 3) {
       print('Generating hotspot...');
+
       setState(() {
         hotspots.add(Circle(
           circleId: CircleId(currentLocation.toString()),
@@ -135,16 +140,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           radius: hotspotRadius,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
-          strokeWidth: 10,
-          visible: true,
+          strokeWidth: 15,
         ));
       });
-      scaffoldKey.currentState.showSnackBar(SnackBar(
-          content:
-              Text('${markersWithinRadius.length} Riders are in your area!')));
     }
-
-    print('Repopulated ${markers.length} clients');
+    previousMarkersWithinRadius = currentMarkersWithinRadius;
   } // fetches and displays markers within 5km
 
   void _fetchMarkersFromDb() {
@@ -162,8 +162,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _deleteMarker(documentId) {
     print('Deleting marker $documentId...');
-    _clearMap();
     Firestore.instance.collection('locations').document(documentId).delete();
+    setState(() {
+      markers.remove(MarkerId(documentId));
+    });
   } // deletes markers from firestore
 
   void _clearMap() {
@@ -173,32 +175,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       hotspots.clear();
     });
   } // clears map of markers and hotspots
-
-  _createPrimaryMarker() {
-    if (true) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
-      BitmapDescriptor.fromAssetImage(
-              configuration, 'assets/images/marker-primary.png')
-          .then((icon) {
-        setState(() {
-          markerPrimary = icon;
-        });
-      });
-    }
-  }
-
-  _createSecondaryMarker() {
-    if (true) {
-      ImageConfiguration configuration = createLocalImageConfiguration(context);
-      BitmapDescriptor.fromAssetImage(
-              configuration, 'assets/images/marker-secondary.png')
-          .then((icon) {
-        setState(() {
-          markerSecondary = icon;
-        });
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -276,13 +252,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 child: SwipeButton(
                   thumb: Icon(
                     Icons.arrow_forward_ios,
-                    color: invertColorsStrong(context),
+                    color: MyColors.black,
                   ),
                   content: Center(
                     child: Text(
                       'Swipe to mark location       ',
                       style: TextStyle(
-                        color: invertInvertColorsStrong(context),
+                        color: MyColors.white,
                         fontSize: 16.0,
                         fontWeight: FontWeight.w400,
                       ),
@@ -293,6 +269,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       setState(() {
                         isSwipeButtonVisible = false;
                         isFabVisible = true;
+                        isSnackbarEnabled = true;
                       });
                       locationAnimation = 1;
                       writeToDb();
@@ -333,6 +310,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               },
             ),
             SpeedDialChild(
+              child: Icon(Icons.bug_report),
+              foregroundColor: invertColorsTheme(context),
+              backgroundColor: invertInvertColorsTheme(context),
+              label: 'Debug',
+              labelStyle: TextStyle(
+                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
+              onTap: () {
+                _clearMap();
+              },
+            ),
+            SpeedDialChild(
               child: toggleLightsIcon,
               foregroundColor: invertColorsTheme(context),
               backgroundColor: invertInvertColorsTheme(context),
@@ -358,17 +346,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {
                   return MyAboutPage();
                 }));
-              },
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.bug_report),
-              foregroundColor: invertColorsTheme(context),
-              backgroundColor: invertInvertColorsTheme(context),
-              label: 'Debug',
-              labelStyle: TextStyle(
-                  color: MyColors.accentColor, fontWeight: FontWeight.w500),
-              onTap: () {
-                _clearMap();
               },
             ),
             SpeedDialChild(
