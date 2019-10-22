@@ -1,4 +1,4 @@
-<p align="center"><img height="125px" width="125px" src="./branding/rickshaw.png" alt="Fliver Rider"/><img height="125px" width="400" src="./branding/text-black.png" alt="Fliver Rider"/></p>
+<p align="center"><img height="125px" width="125px" src="./branding/rickshaw.png" alt="Fliver Rider"/><img height="125px" width="400" src="./branding/fliver-black.png" alt="Fliver Rider"/></p>
 
 # Fliver Rider for iOS & Android
 
