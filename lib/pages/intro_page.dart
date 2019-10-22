@@ -245,14 +245,11 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   onPressed: () {
                     DynamicTheme.of(context).setBrightness(Brightness.light);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return MyMapViewPage();
-                        },
-                      ),
-                    );
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyMapViewPage()),
+                        (Route<dynamic> route) => false);
                   },
                 ),
               ],
@@ -329,14 +326,11 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   onPressed: () {
                     DynamicTheme.of(context).setBrightness(Brightness.dark);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return MyMapViewPage();
-                        },
-                      ),
-                    );
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyMapViewPage()),
+                        (Route<dynamic> route) => false);
                   },
                 ),
               ],

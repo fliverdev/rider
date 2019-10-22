@@ -350,7 +350,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     Theme.of(context).brightness == Brightness.dark
                         ? Brightness.light
                         : Brightness.dark);
-                _onMapCreated(mapController); //buggy
+                _onMapCreated(mapController);
               },
             ),
             SpeedDialChild(
