@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async_loader/async_loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,8 +49,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // when map is created
 
   _setCurrentLocation() async {
-    // add loading spinner here
     var currLoc = await Geolocator().getCurrentPosition();
+
+    var asyncLoader = AsyncLoader(
+      key: asyncLoaderKey,
+      initState: () async => await Geolocator().getCurrentPosition(),
+      renderLoad: () => Center(child: CircularProgressIndicator()),
+      renderError: ([error]) => null,
+      renderSuccess: ({data}) {
+        setState(() {
+          print('WTF YO');
+          currentLocation = data;
+        });
+      },
+    ); // add loading spinner/splash screen here
+
     setState(() {
       currentLocation = currLoc;
     });
