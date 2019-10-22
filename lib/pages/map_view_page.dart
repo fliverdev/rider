@@ -219,19 +219,23 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               circles: hotspots,
             ),
             Positioned(
-              top: 40.0,
+              top: 10.0,
               left: 20.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    'Fliver Rider',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 24.0,
-                      fontStyle: FontStyle.italic,
-                      color: invertColorsStrong(context),
-                    ),
+                  Container(
+                    width: 90.0,
+                    height: 90.0,
+                    child: isThemeCurrentlyDark(context)
+                        ? Image.asset(
+                            'assets/logo/fliver-green.png',
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'assets/logo/fliver-black.png',
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ],
               ),
