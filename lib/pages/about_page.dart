@@ -116,7 +116,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                 image: AssetImage(
-                                    './assets/images/${contributorPhotos[i]}'),
+                                    './assets/credits/${contributorPhotos[i]}'),
                               ),
                             ),
                           ),

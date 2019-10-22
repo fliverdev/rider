@@ -31,7 +31,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 175.0,
                   height: 175.0,
                   child: Image.asset(
-                    'assets/images/fliver-black.png',
+                    'assets/logo/fliver-black.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -39,7 +39,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 175.0,
                   height: 175.0,
                   child: Image.asset(
-                    'assets/images/rickshaw.png',
+                    'assets/other/rickshaw.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -181,7 +181,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 125.0,
                   height: 125.0,
                   child: Image.asset(
-                    'assets/images/fliver-black.png',
+                    'assets/logo/fliver-black.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -261,7 +261,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 125.0,
                   height: 125.0,
                   child: Image.asset(
-                    'assets/images/fliver-green.png',
+                    'assets/logo/fliver-green.png',
                     fit: BoxFit.cover,
                   ),
                 ),
