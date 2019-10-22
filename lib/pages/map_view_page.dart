@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async_loader/async_loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,22 +42,35 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           .setMapStyle(isThemeCurrentlyDark(context) ? lightMap : darkMap);
     }
 
-    new Timer.periodic(interval, (Timer t) {
-      print('$interval seconds over, refreshing...');
+    Timer.periodic(markerRefreshInterval, (Timer t) {
+      print('$markerRefreshInterval seconds over, refreshing...');
       _fetchMarkersFromDb(); // updates markers every 10 seconds
     });
   } // when map is created
 
-  void _setCurrentLocation() {
-    Geolocator().getCurrentPosition().then((currLoc) {
-      setState(() {
-        currentLocation = currLoc;
-      });
+  _setCurrentLocation() async {
+    var currLoc = await Geolocator().getCurrentPosition();
+
+    var asyncLoader = AsyncLoader(
+      key: asyncLoaderKey,
+      initState: () async => await Geolocator().getCurrentPosition(),
+      renderLoad: () => Center(child: CircularProgressIndicator()),
+      renderError: ([error]) => null,
+      renderSuccess: ({data}) {
+        setState(() {
+          print('WTF YO');
+          currentLocation = data;
+        });
+      },
+    ); // add loading spinner/splash screen here
+
+    setState(() {
+      currentLocation = currLoc;
     });
   } // initial setter
 
   void _populateMarkers(clients) {
-    final currentLocation = getCurrentLocation();
+    var currentLocation = getCurrentLocation();
 
     hotspots.clear();
     markers.clear();
@@ -205,19 +219,23 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               circles: hotspots,
             ),
             Positioned(
-              top: 40.0,
+              top: 10.0,
               left: 20.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    'Fliver Rider',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 24.0,
-                      fontStyle: FontStyle.italic,
-                      color: invertColorsStrong(context),
-                    ),
+                  Container(
+                    width: 90.0,
+                    height: 90.0,
+                    child: isThemeCurrentlyDark(context)
+                        ? Image.asset(
+                            'assets/logo/fliver-green.png',
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'assets/logo/fliver-black.png',
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ],
               ),

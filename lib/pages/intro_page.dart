@@ -31,7 +31,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 175.0,
                   height: 175.0,
                   child: Image.asset(
-                    'assets/images/fliver-black.png',
+                    'assets/logo/fliver-black.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -39,7 +39,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 175.0,
                   height: 175.0,
                   child: Image.asset(
-                    'assets/images/rickshaw.png',
+                    'assets/other/rickshaw.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -51,7 +51,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 22.0,
-                    color: MyColors.black,
+                    color: MyColors.accentColor,
                   ),
                 ),
                 SizedBox(
@@ -62,7 +62,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 18.0,
-                    color: MyColors.black,
+                    color: MyColors.accentColor,
                   ),
                 ),
               ],
@@ -86,7 +86,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     'It\'s as simple as a swipe!',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 22.0,
+                      fontSize: 20.0,
                       color: MyColors.primaryColor,
                     ),
                   ),
@@ -101,7 +101,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     'come to your location to pick you and others up!',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      fontSize: 18.0,
+                      fontSize: 16.0,
                       color: MyColors.white,
                     ),
                   ),
@@ -127,8 +127,8 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     'Location Permissions',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 22.0,
-                      color: MyColors.black,
+                      fontSize: 20.0,
+                      color: MyColors.accentColor,
                     ),
                   ),
                   SizedBox(
@@ -137,14 +137,11 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   Text(
                     'We need your permission to access your device\'s '
                     'location. We require this in order to display nearby '
-                    'Riders and notify Drivers when there is demand in '
-                    'your area. \n\nDon\'t worry - we believe in '
-                    'your privacy and keep your location completely '
-                    'anonymous without requiring any additional details or permissions.',
+                    'Riders and notify Drivers when there is demand in your area. \n\nDon\'t worry - we believe in your privacy and keep your location completely anonymous without requiring any additional details or permissions.',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      fontSize: 18.0,
-                      color: MyColors.black,
+                      fontSize: 16.0,
+                      color: MyColors.accentColor,
                     ),
                   ),
                   SizedBox(
@@ -160,6 +157,18 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     onPressed: () {
                       requestLocationPermission();
                     },
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Text(
+                    'Swipe to continue',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.0,
+                      fontStyle: FontStyle.italic,
+                      color: MyColors.accentColor,
+                    ),
                   ),
                 ],
               ),
@@ -181,33 +190,37 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 125.0,
                   height: 125.0,
                   child: Image.asset(
-                    'assets/images/fliver-black.png',
+                    'assets/logo/fliver-black.png',
                     fit: BoxFit.cover,
                   ),
                 ),
                 Text(
                   'Select an app theme',
                   style: TextStyle(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500,
                     fontSize: 18.0,
-                    color: MyColors.black,
+                    color: MyColors.accentColor,
                   ),
                 ),
                 Text(
                   '(Swipe to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     fontStyle: FontStyle.italic,
-                    color: MyColors.black,
+                    color: MyColors.accentColor,
                   ),
                 ),
                 SizedBox(
                   height: 30.0,
                 ),
-                Text(
-                  '🌝',
-                  style: TextStyle(fontSize: 100.0),
+                Container(
+                  width: 150.0,
+                  height: 150.0,
+                  child: Image.asset(
+                    'assets/other/sun.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 SizedBox(
                   height: 30.0,
@@ -216,15 +229,15 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   'Light Mode',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 22.0,
-                    color: MyColors.black,
+                    fontSize: 20.0,
+                    color: MyColors.accentColor,
                   ),
                 ),
                 SizedBox(
                   height: 30.0,
                 ),
                 RaisedButton(
-                  child: Text('Let\'s go!'),
+                  child: Text('Select'),
                   color: MyColors.black,
                   textColor: MyColors.white,
                   elevation: 3.0,
@@ -248,7 +261,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: MyColors.black,
+        color: MyColors.accentColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -261,14 +274,14 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   width: 125.0,
                   height: 125.0,
                   child: Image.asset(
-                    'assets/images/fliver-green.png',
+                    'assets/logo/fliver-green.png',
                     fit: BoxFit.cover,
                   ),
                 ),
                 Text(
                   'Select an app theme',
                   style: TextStyle(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500,
                     fontSize: 18.0,
                     color: MyColors.primaryColor,
                   ),
@@ -277,7 +290,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   '(Swipe to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     fontStyle: FontStyle.italic,
                     color: MyColors.primaryColor,
                   ),
@@ -285,9 +298,13 @@ class _MyIntroPageState extends State<MyIntroPage> {
                 SizedBox(
                   height: 30.0,
                 ),
-                Text(
-                  '🌚',
-                  style: TextStyle(fontSize: 100.0),
+                Container(
+                  width: 150.0,
+                  height: 150.0,
+                  child: Image.asset(
+                    'assets/other/moon.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 SizedBox(
                   height: 30.0,
@@ -296,7 +313,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   'Dark Mode',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 22.0,
+                    fontSize: 20.0,
                     color: MyColors.primaryColor,
                   ),
                 ),
@@ -304,7 +321,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   height: 30.0,
                 ),
                 RaisedButton(
-                  child: Text('Let\'s go!'),
+                  child: Text('Select'),
                   color: MyColors.primaryColor,
                   textColor: MyColors.accentColor,
                   elevation: 3.0,
@@ -333,7 +350,9 @@ class _MyIntroPageState extends State<MyIntroPage> {
       pages: pages,
       fullTransitionValue: 350.0,
       enableLoop: false,
-      waveType: WaveType.circularReveal, // two types available
+      enableSlideIcon: true,
+      positionSlideIcon: 0.6,
+      waveType: WaveType.circularReveal,
     );
   }
 }
