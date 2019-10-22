@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rider/pages/intro_page.dart';
 import 'package:rider/pages/map_view_page.dart';
-import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget build(BuildContext context) {
     return Container(
-      color: MyColors.accentColor,
+      color: invertInvertColorsStrong(context),
       child: Center(
         child: Container(
           width: 225.0,

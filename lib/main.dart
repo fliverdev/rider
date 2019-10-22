@@ -9,15 +9,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
-      defaultBrightness: Brightness.light,
+      defaultBrightness: Brightness.dark,
       data: (brightness) => ThemeData(
         primaryColor: MyColors.primaryColor,
         accentColor: MyColors.accentColor,
         brightness: brightness,
-        textTheme: TextTheme(
-          title: TextStyle(fontWeight: FontWeight.w700),
-          body1: TextStyle(fontWeight: FontWeight.w500),
-        ),
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
