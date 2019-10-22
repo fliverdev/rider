@@ -9,7 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  async_loader: ^0.1.2
   cloud_firestore: ^0.12.9
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0

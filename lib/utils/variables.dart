@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:async_loader/async_loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
+var getLoc;
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
 var ridersWithinRadius = 0;
@@ -29,8 +29,6 @@ final splashScreenDuration = Duration(seconds: 3);
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
-final GlobalKey<AsyncLoaderState> asyncLoaderKey =
-    GlobalKey<AsyncLoaderState>();
 
 bool isFirstLaunch = true; // for dark mode fix
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
