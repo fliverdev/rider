@@ -24,8 +24,8 @@ class MyMapViewPage extends StatefulWidget {
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
-    getLoc = setCurrentLocation();
     super.initState();
+    isLocationFetched = _setCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
@@ -47,13 +47,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } // when map is created
 
-  setCurrentLocation() {
+  Future<String> _setCurrentLocation() async {
     Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
         currentLocation = currLoc;
       });
     });
-    return currentLocation;
+    return 'Yesss';
   }
 
   void _populateMarkers(clients) {
@@ -185,9 +185,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     String toggleLightsText =
         isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return FutureBuilder(
-      future: getLoc,
+      future: isLocationFetched,
       builder: (context, data) {
-        if (!data.hasData) {
+        if (data.hasData) {
           return Container(
             child: Center(
               child: Text('Loading...'),
