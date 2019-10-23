@@ -1,18 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:rider/pages/intro_page.dart';
 import 'package:rider/pages/map_view_page.dart';
-import 'package:rider/utils/ui_helpers.dart';
-import 'package:rider/utils/variables.dart';
+import 'package:rider/widgets/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashPage extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  _SplashPageState createState() => _SplashPageState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashPageState extends State<SplashPage> {
   void firstScreenChecker() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
@@ -34,24 +31,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(splashScreenDuration, () {
-      firstScreenChecker();
-    });
+    firstScreenChecker();
   }
 
   Widget build(BuildContext context) {
-    return Container(
-      color: invertInvertColorsStrong(context),
-      child: Center(
-        child: Container(
-          width: 225.0,
-          height: 225.0,
-          child: Image.asset(
-            'assets/other/splash-screen.png',
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
+    return SplashScreen();
   }
 }

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:async_loader/async_loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -24,13 +24,11 @@ final displayMarkersRadius = 5000.0; // radius upto which markers are loaded
 
 final markerRefreshInterval =
     Duration(seconds: 10); // timeout to repopulate markers
-final splashScreenDuration = Duration(seconds: 3);
+final splashScreenDuration = Duration(milliseconds: 1500);
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
-final GlobalKey<AsyncLoaderState> asyncLoaderKey =
-    GlobalKey<AsyncLoaderState>();
 
 bool isFirstLaunch = true; // for dark mode fix
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
@@ -43,3 +41,4 @@ Firestore firestore = Firestore.instance;
 StreamSubscription subscription;
 Geoflutterfire geo = Geoflutterfire();
 BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);
+Future<Position> position;
