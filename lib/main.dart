@@ -1,6 +1,6 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:rider/pages/splash_page.dart';
+import 'package:rider/pages/first_page.dart';
 import 'package:rider/utils/colors.dart';
 
 void main() => runApp(MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Fliver Rider',
           theme: theme,
-          home: SplashPage(),
+          home: FirstPage(),
         );
       },
     );
