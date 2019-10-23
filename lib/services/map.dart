@@ -2,22 +2,16 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:rider/utils/variables.dart';
 
-getCurrentLocation() async {
+Position getCurrentLocation() {
   print('Getting location...');
-  LocationData currentLocation;
-  var location = Location();
-
-  try {
-    currentLocation = await location.getLocation();
-    print('Current location: $currentLocation');
-  } on Exception catch (e) {
-    print('An exception occured: $e');
-    currentLocation = null;
-  }
+  Geolocator().getCurrentPosition().then((currLoc) {
+    currentLocation = currLoc;
+  });
+  print('Current location: $currentLocation');
   return currentLocation;
 } // use this anytime you need to get user's location
 
