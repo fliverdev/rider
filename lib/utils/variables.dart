@@ -24,7 +24,7 @@ final displayMarkersRadius = 5000.0; // radius upto which markers are loaded
 
 final markerRefreshInterval =
     Duration(seconds: 10); // timeout to repopulate markers
-final splashScreenDuration = Duration(seconds: 3);
+final splashScreenDuration = Duration(seconds: 2);
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
