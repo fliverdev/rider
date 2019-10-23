@@ -51,7 +51,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 22.0,
-                    color: MyColors.accentColor,
+                    color: MyColors.black,
                   ),
                 ),
                 SizedBox(
@@ -62,7 +62,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 18.0,
-                    color: MyColors.accentColor,
+                    color: MyColors.black,
                   ),
                 ),
               ],
@@ -71,7 +71,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: MyColors.black,
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,30 +79,42 @@ class _MyIntroPageState extends State<MyIntroPage> {
             Container(
               width: width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(
+                    height: 100.0,
+                  ),
                   Text(
-                    'It\'s as simple as a swipe!',
+                    'Simple as a Swipe!',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 20.0,
-                      color: MyColors.primaryColor,
+                      color: MyColors.black,
                     ),
                   ),
                   SizedBox(
-                    height: 50.0,
+                    height: 10.0,
+                  ),
+                  Container(
+                    width: 152.0,
+                    height: 114.0,
+                    child: Image.asset(
+                      'assets/other/marker.gif',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
                   ),
                   Text(
-                    'When you are waiting for a taxi, open the app and swipe the '
-                    'button to mark your location.\n\nOnce marked, a hotspot '
-                    'will be displayed if there are 3 or more Riders in '
-                    'your area.\n\nTaxi Drivers will get notified and they can '
-                    'come to your location to pick you and others up!',
+                    'When you want a taxi, just open the app and swipe the button to mark your location.'
+                    '\n\nIf there are 3 or more Riders in your area, a hotspot will be displayed and Drivers will be notified.'
+                    '\n\nThe Drivers will see where there is high demand and will come accordingly to pick you and your friends up!',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16.0,
-                      color: MyColors.white,
+                      color: MyColors.black,
                     ),
                   ),
                 ],
@@ -112,7 +124,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: MyColors.primaryColor,
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,37 +132,51 @@ class _MyIntroPageState extends State<MyIntroPage> {
             Container(
               width: width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(
+                    height: 100.0,
+                  ),
                   Text(
                     'Location Permissions',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 20.0,
-                      color: MyColors.accentColor,
+                      color: MyColors.black,
                     ),
                   ),
                   SizedBox(
-                    height: 50.0,
+                    height: 20.0,
+                  ),
+                  Container(
+                    width: 120.0,
+                    height: 90.0,
+                    child: Image.asset(
+                      'assets/other/toggle.gif',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
                   ),
                   Text(
-                    'We need your permission to access your device\'s '
-                    'location. We require this in order to display nearby '
-                    'Riders and notify Drivers when there is demand in your area. \n\nDon\'t worry - we believe in your privacy and keep your location completely anonymous without requiring any additional details or permissions.',
+                    'We need to access your phone\'s location in order to find nearby Riders and notify Drivers when there is demand in your area.'
+                    '\n\nDon\'t worry - we believe in your privacy and keep your location completely anonymous without requiring any additional details or permissions.'
+                    '\n\nThe source code is also available on GitHub, in case you\'re still doubtful😉',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16.0,
-                      color: MyColors.accentColor,
+                      color: MyColors.black,
                     ),
                   ),
                   SizedBox(
-                    height: 30.0,
+                    height: 40.0,
                   ),
                   RaisedButton(
                     child: Text('GRANT ACCESS'),
                     color: MyColors.black,
-                    textColor: MyColors.primaryColor,
+                    textColor: MyColors.white,
                     elevation: 3.0,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -158,18 +184,6 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       requestLocationPermission();
                     },
                   ),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  Text(
-                    'Swipe to continue',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.0,
-                      fontStyle: FontStyle.italic,
-                      color: MyColors.accentColor,
-                    ),
-                  ),
                 ],
               ),
             )
@@ -177,7 +191,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: MyColors.white,
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -199,16 +213,16 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 18.0,
-                    color: MyColors.accentColor,
+                    color: MyColors.black,
                   ),
                 ),
                 Text(
-                  'Swipe right to change',
+                  '(Swipe right to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16.0,
                     fontStyle: FontStyle.italic,
-                    color: MyColors.accentColor,
+                    color: MyColors.black,
                   ),
                 ),
                 SizedBox(
@@ -230,7 +244,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 20.0,
-                    color: MyColors.accentColor,
+                    color: MyColors.black,
                   ),
                 ),
                 SizedBox(
@@ -258,7 +272,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: MyColors.accentColor,
+        color: Colors.black,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -284,7 +298,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 Text(
-                  'Swipe left to change',
+                  '(Swipe left to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16.0,
@@ -320,7 +334,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                 RaisedButton(
                   child: Text('LET\'S GO'),
                   color: MyColors.primaryColor,
-                  textColor: MyColors.accentColor,
+                  textColor: MyColors.black,
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -346,7 +360,11 @@ class _MyIntroPageState extends State<MyIntroPage> {
       enableLoop: false,
       enableSlideIcon: true,
       positionSlideIcon: 0.6,
-      waveType: WaveType.circularReveal,
+      slideIconWidget: Icon(
+        Icons.arrow_back_ios,
+        color: Colors.black,
+      ),
+      waveType: WaveType.liquidReveal,
     );
   }
 }
