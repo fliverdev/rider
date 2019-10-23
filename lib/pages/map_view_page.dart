@@ -27,7 +27,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   @override
   void initState() {
     super.initState();
-    position = _setCurrentLocation();
+    currentLocation = _setCurrentLocation();
   } // gets current user location when the app loads
 
   void _onMapCreated(GoogleMapController controller) {
@@ -183,9 +183,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     String toggleLightsText =
         isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
     return FutureBuilder(
-        future: position,
-        builder: (context, data) {
-          if (!data.hasData) {
+        future: currentLocation,
+        builder: (context, coordinates) {
+          if (!coordinates.hasData) {
             return Container(
               color: MyColors.light,
               child: Center(
