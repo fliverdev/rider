@@ -14,6 +14,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/widgets/splash_screen.dart';
 import 'package:rider/widgets/swipe_button.dart';
 
 import 'about_page.dart';
@@ -186,12 +187,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         future: position,
         builder: (context, data) {
           if (!data.hasData) {
-            return Container(
-              color: MyColors.light,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+            return SplashScreen();
           } else {
             return Scaffold(
               key: scaffoldKey,
