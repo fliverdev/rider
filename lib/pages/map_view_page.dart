@@ -114,12 +114,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     currentMarkersWithinRadius = allMarkersWithinRadius.length;
 
     if (isSnackbarEnabled &&
-        currentMarkersWithinRadius > 1 &&
+        currentMarkersWithinRadius >= 3 &&
         currentMarkersWithinRadius != previousMarkersWithinRadius) {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           content: Text(
-            '$currentMarkersWithinRadius Riders are in your area!',
+            'There are $currentMarkersWithinRadius Riders in your area!',
             style: TextStyle(
               color: invertInvertColorsStrong(context),
               fontSize: 15.0,
@@ -244,8 +244,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             size: 20.0,
                           ),
                           tooltip: 'Emergency',
-                          foregroundColor: invertInvertColorsTheme(context),
-                          backgroundColor: invertColorsTheme(context),
+                          foregroundColor: MyColors.primaryColor,
+                          backgroundColor: MyColors.accentColor,
                           elevation: 5.0,
                           onPressed: () {
                             showEmergencyPopup(context);

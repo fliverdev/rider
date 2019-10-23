@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rider/pages/intro_page.dart';
 import 'package:rider/pages/map_view_page.dart';
-import 'package:rider/widgets/splash_screen.dart';
+import 'package:rider/utils/ui_helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
@@ -35,6 +35,8 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Widget build(BuildContext context) {
-    return SplashScreen();
+    return Container(
+      color: invertInvertColorsStrong(context),
+    );
   }
 }
