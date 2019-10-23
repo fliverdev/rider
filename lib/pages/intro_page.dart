@@ -148,7 +148,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     height: 30.0,
                   ),
                   RaisedButton(
-                    child: Text('GRANT ACCESS'),
+                    child: Text('Grant access'),
                     color: MyColors.black,
                     textColor: MyColors.primaryColor,
                     elevation: 3.0,
@@ -203,7 +203,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 Text(
-                  'Swipe right to change',
+                  '(Swipe to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16.0,
@@ -237,7 +237,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   height: 30.0,
                 ),
                 RaisedButton(
-                  child: Text('LET\'S GO'),
+                  child: Text('Select'),
                   color: MyColors.black,
                   textColor: MyColors.white,
                   elevation: 3.0,
@@ -284,7 +284,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 Text(
-                  'Swipe left to change',
+                  '(Swipe to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16.0,
@@ -318,7 +318,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   height: 30.0,
                 ),
                 RaisedButton(
-                  child: Text('LET\'S GO'),
+                  child: Text('Select'),
                   color: MyColors.primaryColor,
                   textColor: MyColors.accentColor,
                   elevation: 3.0,
