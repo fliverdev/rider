@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
 var currentLocation;
-var isLocationFetched;
 var locationAnimation = 0; // used to switch between two kinds of animations
 var ridersWithinRadius = 0;
 var previousMarkersWithinRadius = 0;
@@ -31,7 +31,6 @@ final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true; // for dark mode fix
-//bool isLocationFetched = false;
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
 bool isFabVisible = false;
 bool isSnackbarEnabled = false;
@@ -42,3 +41,4 @@ Firestore firestore = Firestore.instance;
 StreamSubscription subscription;
 Geoflutterfire geo = Geoflutterfire();
 BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);
+Future<Position> position;
