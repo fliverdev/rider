@@ -4,13 +4,13 @@ import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashPage extends StatefulWidget {
+class FirstPage extends StatefulWidget {
   @override
-  _SplashPageState createState() => _SplashPageState();
+  _FirstPageState createState() => _FirstPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
-  void firstScreenChecker() async {
+class _FirstPageState extends State<FirstPage> {
+  void firstPageChecker() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
 
@@ -31,7 +31,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    firstScreenChecker();
+    firstPageChecker();
   }
 
   Widget build(BuildContext context) {

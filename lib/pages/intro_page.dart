@@ -58,7 +58,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   height: 10.0,
                 ),
                 Text(
-                  'Swipe right to get started.',
+                  'Swipe left to get started.',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 18.0,
@@ -217,7 +217,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 Text(
-                  '(Swipe right to change)',
+                  '(Swipe left to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16.0,
@@ -298,7 +298,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 Text(
-                  '(Swipe left to change)',
+                  '(Swipe right to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16.0,
