@@ -16,6 +16,7 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/widgets/no_connection.dart';
 import 'package:rider/widgets/splash_screen.dart';
 import 'package:rider/widgets/swipe_button.dart';
 
@@ -189,19 +190,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       Widget child,
     ) {
       if (connectivity == ConnectivityResult.none) {
-        return Container(
-          color: invertInvertColorsStrong(context),
-          child: Center(
-            child: Text(
-              'Error: no Internet connection!',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 22.0,
-                color: invertColorsStrong(context),
-              ),
-            ),
-          ),
-        );
+        return NoConnection();
       } else {
         return child;
       }
