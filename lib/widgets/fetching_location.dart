@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rider/utils/colors.dart';
@@ -20,9 +21,9 @@ class FetchingLocation extends StatelessWidget {
                 Container(
                   width: 225.0,
                   height: 225.0,
-                  child: Image.asset(
-                    'assets/other/icon.png',
-                    fit: BoxFit.cover,
+                  child: FlareActor(
+                    'assets/flare/fetching_location.flr',
+                    animation: 'animation',
                   ),
                 ),
                 SizedBox(

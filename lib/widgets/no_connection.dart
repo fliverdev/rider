@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
 
@@ -18,9 +19,9 @@ class NoConnection extends StatelessWidget {
                 Container(
                   width: 200.0,
                   height: 200.0,
-                  child: Image.asset(
-                    'assets/other/dino.gif',
-                    fit: BoxFit.cover,
+                  child: FlareActor(
+                    'assets/flare/no_connection.flr',
+                    animation: 'animation',
                   ),
                 ),
                 SizedBox(
