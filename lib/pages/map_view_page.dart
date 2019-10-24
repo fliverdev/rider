@@ -16,8 +16,8 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/widgets/fetching_location.dart';
 import 'package:rider/widgets/no_connection.dart';
-import 'package:rider/widgets/splash_screen.dart';
 import 'package:rider/widgets/swipe_button.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -184,6 +184,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         : Icon(Icons.brightness_2);
     String toggleLightsText =
         isThemeCurrentlyDark(context) ? 'Light mode' : 'Dark mode';
+
     return OfflineBuilder(connectivityBuilder: (
       BuildContext context,
       ConnectivityResult connectivity,
@@ -199,7 +200,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           future: position,
           builder: (context, data) {
             if (!data.hasData) {
-              return SplashScreen();
+              return FetchingLocation();
             } else {
               return Scaffold(
                 key: scaffoldKey,
