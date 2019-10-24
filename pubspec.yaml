@@ -15,7 +15,6 @@ dependencies:
   flare_flutter: ^1.6.2
   flutter_offline: ^0.2.4
   flutter_speed_dial: ^1.2.1
-  flutter_spinkit: ^4.0.0
   geoflutterfire: ^2.0.3
   geolocator: ^5.1.4+1
   google_maps_flutter: ^0.5.21+7

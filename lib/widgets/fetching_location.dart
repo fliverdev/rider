@@ -1,7 +1,5 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/ui_helpers.dart';
 
 class FetchingLocation extends StatelessWidget {
@@ -15,19 +13,19 @@ class FetchingLocation extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                SizedBox(
+                  height: 150.0,
+                ),
                 Container(
-                  width: 225.0,
-                  height: 225.0,
+                  width: 250.0,
+                  height: 250.0,
                   child: FlareActor(
                     'assets/flare/fetching_location.flr',
                     animation: 'animation',
                   ),
-                ),
-                SizedBox(
-                  height: 30.0,
                 ),
                 Text(
                   'Fetching location...',
@@ -36,13 +34,6 @@ class FetchingLocation extends StatelessWidget {
                     fontSize: 20.0,
                     color: invertColorsStrong(context),
                   ),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                SpinKitThreeBounce(
-                  color: MyColors.primaryColor,
-                  size: 30.0,
                 ),
               ],
             ),

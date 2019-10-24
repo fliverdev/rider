@@ -25,10 +25,10 @@ class NoConnection extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 50.0,
+                  height: 30.0,
                 ),
                 Text(
-                  'Error: no connection!',
+                  'Oops...there\'s no Internet!',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 20.0,
