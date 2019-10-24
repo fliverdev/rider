@@ -272,7 +272,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: Colors.black,
+        color: MyColors.black,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -362,7 +362,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
       positionSlideIcon: 0.6,
       slideIconWidget: Icon(
         Icons.arrow_back_ios,
-        color: Colors.black,
+        color: MyColors.black,
       ),
       waveType: WaveType.liquidReveal,
     );
