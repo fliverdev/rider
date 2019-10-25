@@ -19,6 +19,7 @@ import 'package:rider/utils/variables.dart';
 import 'package:rider/widgets/fetching_location.dart';
 import 'package:rider/widgets/no_connection.dart';
 import 'package:rider/widgets/swipe_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyMapViewPage extends StatefulWidget {
   @override
@@ -56,7 +57,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     return currentLocation;
   }
 
-  void _populateMarkers(clients) {
+  Future _populateMarkers(clients) async {
     var currentLocation = getCurrentLocation();
 
     hotspots.clear();
@@ -117,6 +118,39 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     if (isSnackbarEnabled &&
         currentMarkersWithinRadius >= 3 &&
         currentMarkersWithinRadius != previousMarkersWithinRadius) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool isTipShown = prefs.getBool('isTipShown') ?? false;
+
+      if (!isTipShown) {
+        prefs.setBool('isTipShown', true);
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              title: Text('Nearby Riders'),
+              content:
+                  Text('Congratulations! Looks like there are 3 or more Fliver '
+                      'Riders in your area.'
+                      '\n\nEvery time this threshold is reached, we create a '
+                      'hotspot to notify Drivers of demand so that they can '
+                      'come to pick you and your friends up.'),
+              actions: <Widget>[
+                RaisedButton(
+                  child: Text('Cool'),
+                  color: invertColorsTheme(context),
+                  textColor: invertInvertColorsStrong(context),
+                  elevation: 3.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ));
+      }
+
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           content: Text(
@@ -334,18 +368,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         },
                       ),
                       SpeedDialChild(
-                        child: Icon(Icons.bug_report),
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: 'Debug',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
-                        onTap: () {
-                          _clearMap();
-                        },
-                      ),
-                      SpeedDialChild(
                         child: toggleLightsIcon,
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
@@ -362,10 +384,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         },
                       ),
                       SpeedDialChild(
-                        child: Icon(Icons.info_outline),
+                        child: Icon(Icons.info),
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
-                        label: 'About',
+                        label: 'Credits',
                         labelStyle: TextStyle(
                             color: MyColors.accentColor,
                             fontWeight: FontWeight.w500),
