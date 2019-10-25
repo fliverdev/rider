@@ -62,7 +62,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                   IconButton(
                     icon: Icon(Icons.arrow_back_ios),
                     tooltip: 'Go back',
-                    iconSize: 24.0,
+                    iconSize: 22.0,
                     color: invertColorsStrong(context),
                     onPressed: () {
                       Navigator.pop(context);
@@ -71,7 +71,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                   Text(
                     'Credits',
                     style: TextStyle(
-                      fontSize: 24.0,
+                      fontSize: 22.0,
                       fontWeight: FontWeight.w600,
                       fontStyle: FontStyle.italic,
                       color: invertColorsStrong(context),
@@ -114,6 +114,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                                 '${contributorNames[i]}',
                                 style: TextStyle(
                                   fontSize: 20.0,
+                                  fontWeight: FontWeight.w500,
                                   color: invertColorsStrong(context),
                                 ),
                               ),
