@@ -368,18 +368,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         },
                       ),
                       SpeedDialChild(
-                        child: Icon(Icons.bug_report),
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: 'Debug',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
-                        onTap: () {
-                          _clearMap();
-                        },
-                      ),
-                      SpeedDialChild(
                         child: toggleLightsIcon,
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
@@ -396,10 +384,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         },
                       ),
                       SpeedDialChild(
-                        child: Icon(Icons.info_outline),
+                        child: Icon(Icons.info),
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
-                        label: 'About',
+                        label: 'Credits',
                         labelStyle: TextStyle(
                             color: MyColors.accentColor,
                             fontWeight: FontWeight.w500),
