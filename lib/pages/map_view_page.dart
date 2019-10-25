@@ -129,12 +129,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               title: Text('Nearby Riders'),
-              content: Text(
-                  'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
-                  '\n\nEvery time this threshold is reached, we notify Drivers of demand so that they can come to pick you and your friends up.'),
+              content:
+                  Text('Congratulations! Looks like there are 3 or more Fliver '
+                      'Riders in your area.'
+                      '\n\nEvery time this threshold is reached, we create a '
+                      'hotspot to notify Drivers of demand so that they can '
+                      'come to pick you and your friends up.'),
               actions: <Widget>[
                 RaisedButton(
-                  child: Text('COOL'),
+                  child: Text('Cool'),
                   color: invertColorsTheme(context),
                   textColor: invertInvertColorsStrong(context),
                   elevation: 3.0,
