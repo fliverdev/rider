@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/sexy_tile.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyAboutPage extends StatefulWidget {
   @override
@@ -10,6 +11,15 @@ class MyAboutPage extends StatefulWidget {
 }
 
 class _MyAboutPageState extends State<MyAboutPage> {
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      print('Launching $url...');
+      await launch(url);
+    } else {
+      print('Error launching $url!');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> contributorNames = [
@@ -28,6 +38,12 @@ class _MyAboutPageState extends State<MyAboutPage> {
       'urmil.jpg',
       'priyansh.jpg',
       'vinay.png',
+    ];
+
+    List<String> profileUrls = [
+      'https://urmilshroff.tech',
+      'https://github.com/prince1998',
+      'http://www.decaf.co.in',
     ];
 
     return Scaffold(
@@ -117,6 +133,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                         ],
                       ),
                       splashColor: MyColors.primaryColor,
+                      onTap: () => _launchURL(profileUrls[i]),
                     );
                   },
                 ),
@@ -134,7 +151,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
         child: Icon(
           Icons.code,
         ),
-        onPressed: doNothing,
+        onPressed: () => _launchURL('https://github.com/fliverdev/rider'),
       ),
     );
   }
