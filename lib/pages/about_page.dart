@@ -83,7 +83,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
             Expanded(
               child: GridView.count(
                 crossAxisCount: 1,
-                childAspectRatio: 2,
+                childAspectRatio: 2.1,
                 children: List.generate(
                   contributorNames.length,
                   (i) {
