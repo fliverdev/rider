@@ -34,6 +34,7 @@ bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
 bool isFabVisible = false;
 bool isSnackbarEnabled = false;
 bool isMarkerWithinRadius = false; // to identify nearby markers
+bool isMyMarkerPlotted = false;
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;

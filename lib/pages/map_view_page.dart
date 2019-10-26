@@ -158,7 +158,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ),
             );
           }
-        } else {
+        } else if (isMyMarkerPlotted) {
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
@@ -189,6 +189,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ));
       });
     }
+    isMyMarkerPlotted = true;
     previousMarkersWithinRadius = currentMarkersWithinRadius;
   } // fetches and displays markers within 5km
 
