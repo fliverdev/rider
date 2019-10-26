@@ -14,6 +14,7 @@ import 'package:rider/services/emergency_call.dart';
 import 'package:rider/services/map.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
+import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
 import 'package:rider/widgets/fetching_location.dart';
@@ -31,7 +32,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
     position = _setCurrentLocation();
-  } // gets current user location when the app loads
+  } // gets current user location when the app launches
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -44,13 +45,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     } else {
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? lightMap : darkMap);
-    }
+    } // weird fix for broken dark mode
 
     Timer.periodic(markerRefreshInterval, (Timer t) {
       print('$markerRefreshInterval seconds over, refreshing...');
       _fetchMarkersFromDb(); // updates markers every 10 seconds
     });
-  } // when map is created
+  }
 
   Future<Position> _setCurrentLocation() async {
     currentLocation = await Geolocator().getCurrentPosition();
@@ -58,11 +59,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   Future _populateMarkers(clients) async {
-    var currentLocation = getCurrentLocation();
+    currentLocation = getCurrentLocation();
+    currentMarkersWithinRadius = allMarkersWithinRadius.length;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isTipShown = prefs.getBool('isTipShown') ?? false;
 
     hotspots.clear();
     markers.clear();
     allMarkersWithinRadius.clear();
+    // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -76,20 +81,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         longitude1: currentLocation.longitude.toDouble(),
         latitude2: markerPosition.latitude.toDouble(),
         longitude2: markerPosition.longitude.toDouble(),
-      );
+      ); // display hotspot for 100m radius
 
       var displayMarkersGcd = GreatCircleDistance.fromDegrees(
         latitude1: currentLocation.latitude.toDouble(),
         longitude1: currentLocation.longitude.toDouble(),
         latitude2: markerPosition.latitude.toDouble(),
         longitude2: markerPosition.longitude.toDouble(),
-      );
+      ); // display only markers within 5km
 
       if (hotspotRadius >= hotspotGcd.haversineDistance()) {
         allMarkersWithinRadius
-            .add(markerId); // list which contains nearby markers
+            .add(markerId); // contains nearby markers within 100m
         isMarkerWithinRadius = true;
-        print(allMarkersWithinRadius);
       }
 
       var marker = Marker(
@@ -101,69 +105,90 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           infoWindow: InfoWindow(
               title: 'ID: $documentId', snippet: 'Data: $markerData'),
           onTap: () {
-            _deleteMarker(documentId);
+            _deleteMarker(documentId); // debug
           });
 
       setState(() {
         if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
           markers[markerId] = marker;
-        }
+        } // adds markers within 5km only, rest aren't considered at all
       });
 
       isMarkerWithinRadius = false;
     }
 
-    currentMarkersWithinRadius = allMarkersWithinRadius.length;
-
-    if (isSnackbarEnabled &&
-        currentMarkersWithinRadius >= 3 &&
-        currentMarkersWithinRadius != previousMarkersWithinRadius) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool isTipShown = prefs.getBool('isTipShown') ?? false;
-
-      if (!isTipShown) {
-        prefs.setBool('isTipShown', true);
-        showDialog(
-            context: context,
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              title: Text('Nearby Riders'),
-              content:
-                  Text('Congratulations! Looks like there are 3 or more Fliver '
-                      'Riders in your area.'
-                      '\n\nEvery time this threshold is reached, we create a '
-                      'hotspot to notify Drivers of demand so that they can '
-                      'come to pick you and your friends up.'),
-              actions: <Widget>[
-                RaisedButton(
-                  child: Text('Cool'),
-                  color: invertColorsTheme(context),
-                  textColor: invertInvertColorsStrong(context),
-                  elevation: 3.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ));
-      }
-
-      scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text(
-            'There are $currentMarkersWithinRadius Riders in your area!',
-            style: TextStyle(
-              color: invertInvertColorsStrong(context),
-              fontSize: 15.0,
+    if (isSnackbarEnabled) {
+      // do all this only after user swipes
+      if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
+        // if nearby markers increase/decrease
+        if (currentMarkersWithinRadius >= 3) {
+          // if a marker is added nearby
+          scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text(
+                'There are $currentMarkersWithinRadius Riders in your area!',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.bodyStyleDarkItalic
+                    : MyTextStyles.bodyStyleLightItalic,
+              ),
+              backgroundColor: invertColorsTheme(context),
             ),
-          ),
-          backgroundColor: invertColorsTheme(context),
-        ),
-      );
-    } // generates snackbar only when necessary
+          );
+          if (!isTipShown) {
+            // display a tip only once
+            prefs.setBool('isTipShown', true);
+            showDialog(
+              context: context,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                title: Text(
+                  'Nearby Riders',
+                  style: isThemeCurrentlyDark(context)
+                      ? MyTextStyles.titleStyleLight
+                      : MyTextStyles.titleStyleDark,
+                ),
+                content: Text(
+                  'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
+                  '\n\nEach time this threshold is reached, we create a '
+                  'hotspot to notify Drivers of demand so that they can'
+                  ' come to pick you and your friends up.',
+                  style: isThemeCurrentlyDark(context)
+                      ? MyTextStyles.bodyStyleLight
+                      : MyTextStyles.bodyStyleDark,
+                ),
+                actions: <Widget>[
+                  RaisedButton(
+                    child: Text('Okay'),
+                    color: invertColorsTheme(context),
+                    textColor: invertInvertColorsStrong(context),
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+        } else if (isMyMarkerPlotted) {
+          // when more markers are needed to create a hotspot
+          scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text(
+                'Waiting for ${3 - currentMarkersWithinRadius} Riders to mark their location',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.bodyStyleDarkItalic
+                    : MyTextStyles.bodyStyleLightItalic,
+              ),
+              backgroundColor: invertColorsTheme(context),
+            ),
+          );
+        }
+      }
+    }
 
     if (currentMarkersWithinRadius >= 3) {
       print('Generating hotspot...');
@@ -179,8 +204,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ));
       });
     }
+    isMyMarkerPlotted = true;
     previousMarkersWithinRadius = currentMarkersWithinRadius;
-  } // fetches and displays markers within 5km
+  } // works with markers within 5km
 
   void _fetchMarkersFromDb() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
@@ -193,7 +219,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         _populateMarkers(clients);
       }
     });
-  } // renders markers from firestore on the map
+  } // fetches markers from firestore
 
   void _deleteMarker(documentId) {
     print('Deleting marker $documentId...');
@@ -202,14 +228,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markers.remove(MarkerId(documentId));
     });
   } // deletes markers from firestore
-
-  void _clearMap() {
-    setState(() {
-      print('Clearing items from map...');
-      markers.clear();
-      hotspots.clear();
-    });
-  } // clears map of markers and hotspots
 
   @override
   Widget build(BuildContext context) {
@@ -230,12 +248,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         return child;
       }
     }, builder: (BuildContext context) {
+      // when there is proper internet
       return FutureBuilder(
           future: position,
           builder: (context, data) {
             if (!data.hasData) {
               return FetchingLocation();
             } else {
+              // when current location is obtained
               return Scaffold(
                 key: scaffoldKey,
                 body: Container(
@@ -299,7 +319,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             },
                           ),
                         ),
-                      ),
+                      ), // displays emergency button before swipe
                       Visibility(
                         visible: isSwipeButtonVisible,
                         child: Positioned(
@@ -314,11 +334,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             content: Center(
                               child: Text(
                                 'Swipe to mark location       ',
-                                style: TextStyle(
-                                  color: MyColors.white,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                style: MyTextStyles.bodyStyleLight,
                               ),
                             ),
                             onChanged: (result) {
@@ -355,9 +371,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Recenter',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           if (locationAnimation == 0) {
                             locationAnimation = 1;
@@ -372,9 +386,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: toggleLightsText,
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           DynamicTheme.of(context).setBrightness(
                               Theme.of(context).brightness == Brightness.dark
@@ -388,9 +400,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Credits',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           Navigator.push(context,
                               CupertinoPageRoute(builder: (context) {
@@ -403,16 +413,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: MyColors.white,
                         backgroundColor: MaterialColors.red,
                         label: 'Emergency',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           showEmergencyPopup(context);
                         },
                       ),
                     ],
                   ),
-                ),
+                ), // shows fab only after swipe
               );
             }
           });

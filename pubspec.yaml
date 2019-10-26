@@ -49,3 +49,8 @@ flutter:
      - assets/flare/
      - assets/logo/
      - assets/other/
+
+  fonts:
+    - family: LexendDeca
+      fonts:
+        - asset: assets/fonts/LexendDeca/LexendDeca-Regular.ttf

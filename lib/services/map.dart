@@ -27,7 +27,7 @@ void animateToCurrentLocation(locationAnimation) async {
       ),
     ),
   );
-}
+} // dat cool animation tho
 
 Future<DocumentReference> writeToDb() async {
   var currentLocation = getCurrentLocation();
@@ -36,4 +36,4 @@ Future<DocumentReference> writeToDb() async {
   return firestore.collection('locations').add({
     'position': point.data,
   });
-} // writes current location to firebase
+} // writes current location to firestore

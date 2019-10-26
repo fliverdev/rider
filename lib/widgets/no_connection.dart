@@ -1,6 +1,7 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/text_styles.dart';
 
 class NoConnection extends StatelessWidget {
   @override
@@ -29,11 +30,7 @@ class NoConnection extends StatelessWidget {
                 ),
                 Text(
                   'Oops...there\'s no Internet!',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20.0,
-                    color: MyColors.dark,
-                  ),
+                  style: MyTextStyles.titleStyleDark,
                 ),
               ],
             ),
