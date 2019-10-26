@@ -58,7 +58,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   Future _populateMarkers(clients) async {
-    var currentLocation = getCurrentLocation();
+    currentLocation = getCurrentLocation();
+    currentMarkersWithinRadius = allMarkersWithinRadius.length;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isTipShown = prefs.getBool('isTipShown') ?? false;
 
     hotspots.clear();
     markers.clear();
@@ -113,57 +116,67 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       isMarkerWithinRadius = false;
     }
 
-    currentMarkersWithinRadius = allMarkersWithinRadius.length;
-
-    if (isSnackbarEnabled &&
-        currentMarkersWithinRadius >= 3 &&
-        currentMarkersWithinRadius != previousMarkersWithinRadius) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool isTipShown = prefs.getBool('isTipShown') ?? false;
-
-      if (!isTipShown) {
-        prefs.setBool('isTipShown', true);
-        showDialog(
-            context: context,
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              title: Text('Nearby Riders'),
-              content:
-                  Text('Congratulations! Looks like there are 3 or more Fliver '
-                      'Riders in your area.'
-                      '\n\nEvery time this threshold is reached, we create a '
-                      'hotspot to notify Drivers of demand so that they can '
-                      'come to pick you and your friends up.'),
-              actions: <Widget>[
-                RaisedButton(
-                  child: Text('Cool'),
-                  color: invertColorsTheme(context),
-                  textColor: invertInvertColorsStrong(context),
-                  elevation: 3.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+    if (isSnackbarEnabled) {
+      if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
+        if (currentMarkersWithinRadius >= 3) {
+          scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text(
+                'There are $currentMarkersWithinRadius Riders in your area!',
+                style: TextStyle(
+                  color: invertInvertColorsStrong(context),
+                  fontSize: 15.0,
                 ),
-              ],
-            ));
-      }
-
-      scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text(
-            'There are $currentMarkersWithinRadius Riders in your area!',
-            style: TextStyle(
-              color: invertInvertColorsStrong(context),
-              fontSize: 15.0,
+              ),
+              backgroundColor: invertColorsTheme(context),
             ),
-          ),
-          backgroundColor: invertColorsTheme(context),
-        ),
-      );
-    } // generates snackbar only when necessary
+          );
+          if (!isTipShown) {
+            prefs.setBool('isTipShown', true);
+            showDialog(
+              context: context,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                title: Text('Nearby Riders'),
+                content: Text(
+                    'Congratulations! Looks like there are 3 or more Fliver '
+                    'Riders in your area.'
+                    '\n\nEvery time this threshold is reached, we create a '
+                    'hotspot to notify Drivers of demand so that they can '
+                    'come to pick you and your friends up.'),
+                actions: <Widget>[
+                  RaisedButton(
+                    child: Text('Cool'),
+                    color: invertColorsTheme(context),
+                    textColor: invertInvertColorsStrong(context),
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+        } else {
+          scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text(
+                'Waiting for ${3 - currentMarkersWithinRadius} other Riders to mark their location',
+                style: TextStyle(
+                  color: invertInvertColorsStrong(context),
+                  fontSize: 15.0,
+                ),
+              ),
+              backgroundColor: invertColorsTheme(context),
+            ),
+          );
+        }
+      } // generates snackbar only when necessary
+    }
 
     if (currentMarkersWithinRadius >= 3) {
       print('Generating hotspot...');
