@@ -140,14 +140,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 title: Text('Nearby Riders'),
                 content: Text(
-                    'Congratulations! Looks like there are 3 or more Fliver '
-                    'Riders in your area.'
-                    '\n\nEvery time this threshold is reached, we create a '
-                    'hotspot to notify Drivers of demand so that they can '
-                    'come to pick you and your friends up.'),
+                    'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
+                    '\n\nEach time this threshold is reached, we create a hotspot to notify Drivers of demand so that they can come to pick you and your friends up.'),
                 actions: <Widget>[
                   RaisedButton(
-                    child: Text('Cool'),
+                    child: Text('Got it'),
                     color: invertColorsTheme(context),
                     textColor: invertInvertColorsStrong(context),
                     elevation: 3.0,
@@ -165,7 +162,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
-                'Waiting for ${3 - currentMarkersWithinRadius} other Riders to mark their location',
+                'Waiting for ${3 - currentMarkersWithinRadius} Riders to mark their location',
                 style: TextStyle(
                   color: invertInvertColorsStrong(context),
                   fontSize: 15.0,
@@ -329,7 +326,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 'Swipe to mark location       ',
                                 style: TextStyle(
                                   color: MyColors.white,
-                                  fontSize: 16.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),

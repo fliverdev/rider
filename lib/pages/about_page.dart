@@ -71,8 +71,8 @@ class _MyAboutPageState extends State<MyAboutPage> {
                   Text(
                     'Credits',
                     style: TextStyle(
+                      fontWeight: FontWeight.w500,
                       fontSize: 22.0,
-                      fontWeight: FontWeight.w600,
                       fontStyle: FontStyle.italic,
                       color: invertColorsStrong(context),
                     ),
@@ -124,7 +124,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                               Text(
                                 '${contributorDesc[i]}',
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 15.0,
                                   fontStyle: FontStyle.italic,
                                   color: invertColorsStrong(context),
                                 ),

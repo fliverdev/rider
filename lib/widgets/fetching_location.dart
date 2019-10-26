@@ -20,8 +20,8 @@ class FetchingLocation extends StatelessWidget {
                   height: 150.0,
                 ),
                 Container(
-                  width: 250.0,
-                  height: 250.0,
+                  width: 225.0,
+                  height: 225.0,
                   child: FlareActor(
                     'assets/flare/fetching_location.flr',
                     animation: 'animation',
@@ -31,7 +31,7 @@ class FetchingLocation extends StatelessWidget {
                   'Fetching location...',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
-                    fontSize: 20.0,
+                    fontSize: 18.0,
                     color: invertColorsStrong(context),
                   ),
                 ),

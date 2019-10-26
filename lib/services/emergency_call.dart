@@ -11,12 +11,9 @@ void showEmergencyPopup(BuildContext context) {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           title: Text('Emergency Helpline'),
-          content: Text('You can choose to call Emergency Services or the '
-              'Regional Transport Office of India. You can then file a '
-              'complaint in case of accident, rude behaviour of drivers, etc.'
-              '\n\nPlease note that we, the Developers of Fliver, do not '
-              'guarantee your complaint being lodged as we have no '
-              'affiliation with these government organizations.'),
+          content: Text(
+              'You can call Emergency Services or the Regional Transport Office of India to file a complaint in case of accident, rude behaviour of drivers, etc.'
+              '\n\nPlease note that we, the Developers of Fliver, do not guarantee your complaint being lodged as we have no affiliation with these government organizations.'),
           actions: <Widget>[
             FlatButton(
               child: Text('Cancel'),

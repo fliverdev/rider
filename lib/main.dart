@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
     return DynamicTheme(
       defaultBrightness: Brightness.dark,
       data: (brightness) => ThemeData(
+        fontFamily: 'LexendDeca',
         primaryColor: MyColors.primaryColor,
         accentColor: MyColors.accentColor,
         brightness: brightness,

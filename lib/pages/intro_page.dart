@@ -109,11 +109,11 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                   Text(
                     'When you want a taxi, just open the app and swipe the button to mark your location.'
-                    '\n\nIf there are 3 or more Riders in your area, a hotspot will be displayed and Drivers will be notified.'
+                    '\n\nIf there are 3 or more Riders in your area, a hotspot will be created and Drivers will be notified.'
                     '\n\nThe Drivers will see where there is high demand and will come accordingly to pick you and your friends up!',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      fontSize: 16.0,
+                      fontSize: 15.0,
                       color: MyColors.black,
                     ),
                   ),
@@ -166,7 +166,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     '\n\nThe source code is also available on GitHub, in case you\'re still doubtful😉',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      fontSize: 16.0,
+                      fontSize: 15.0,
                       color: MyColors.black,
                     ),
                   ),
@@ -220,7 +220,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   '(Swipe left to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
-                    fontSize: 16.0,
+                    fontSize: 15.0,
                     fontStyle: FontStyle.italic,
                     color: MyColors.black,
                   ),
@@ -301,7 +301,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   '(Swipe right to change)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
-                    fontSize: 16.0,
+                    fontSize: 15.0,
                     fontStyle: FontStyle.italic,
                     color: MyColors.primaryColor,
                   ),

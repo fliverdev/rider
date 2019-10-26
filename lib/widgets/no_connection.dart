@@ -30,9 +30,9 @@ class NoConnection extends StatelessWidget {
                 Text(
                   'Oops...there\'s no Internet!',
                   style: TextStyle(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500,
                     fontSize: 20.0,
-                    color: MyColors.dark,
+                    color: MyColors.black,
                   ),
                 ),
               ],
