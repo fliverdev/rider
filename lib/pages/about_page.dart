@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/sexy_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -62,7 +63,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                   IconButton(
                     icon: Icon(Icons.arrow_back_ios),
                     tooltip: 'Go back',
-                    iconSize: 22.0,
+                    iconSize: 20.0,
                     color: invertColorsStrong(context),
                     onPressed: () {
                       Navigator.pop(context);
@@ -70,12 +71,9 @@ class _MyAboutPageState extends State<MyAboutPage> {
                   ),
                   Text(
                     'Credits',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 22.0,
-                      fontStyle: FontStyle.italic,
-                      color: invertColorsStrong(context),
-                    ),
+                    style: isThemeCurrentlyDark(context)
+                        ? MyTextStyles.titleStyleLight
+                        : MyTextStyles.titleStyleDark,
                   ),
                 ],
               ),
@@ -83,7 +81,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
             Expanded(
               child: GridView.count(
                 crossAxisCount: 1,
-                childAspectRatio: 2.1,
+                childAspectRatio: 2.2,
                 children: List.generate(
                   contributorNames.length,
                   (i) {
@@ -112,22 +110,18 @@ class _MyAboutPageState extends State<MyAboutPage> {
                             children: <Widget>[
                               Text(
                                 '${contributorNames[i]}',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: invertColorsStrong(context),
-                                ),
+                                style: isThemeCurrentlyDark(context)
+                                    ? MyTextStyles.titleStyleLight
+                                    : MyTextStyles.titleStyleDark,
                               ),
                               SizedBox(
                                 height: 5.0,
                               ),
                               Text(
                                 '${contributorDesc[i]}',
-                                style: TextStyle(
-                                  fontSize: 15.0,
-                                  fontStyle: FontStyle.italic,
-                                  color: invertColorsStrong(context),
-                                ),
+                                style: isThemeCurrentlyDark(context)
+                                    ? MyTextStyles.bodyStyleLightItalic
+                                    : MyTextStyles.bodyStyleDarkItalic,
                               ),
                             ],
                           ),

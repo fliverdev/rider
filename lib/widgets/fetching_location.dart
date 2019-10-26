@@ -1,5 +1,6 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 
 class FetchingLocation extends StatelessWidget {
@@ -17,7 +18,7 @@ class FetchingLocation extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  height: 150.0,
+                  height: 175.0,
                 ),
                 Container(
                   width: 225.0,
@@ -29,11 +30,9 @@ class FetchingLocation extends StatelessWidget {
                 ),
                 Text(
                   'Fetching location...',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 18.0,
-                    color: invertColorsStrong(context),
-                  ),
+                  style: isThemeCurrentlyDark(context)
+                      ? MyTextStyles.titleStyleLight
+                      : MyTextStyles.titleStyleDark,
                 ),
               ],
             ),

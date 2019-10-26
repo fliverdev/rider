@@ -14,6 +14,7 @@ import 'package:rider/services/emergency_call.dart';
 import 'package:rider/services/map.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
+import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
 import 'package:rider/widgets/fetching_location.dart';
@@ -123,10 +124,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             SnackBar(
               content: Text(
                 'There are $currentMarkersWithinRadius Riders in your area!',
-                style: TextStyle(
-                  color: invertInvertColorsStrong(context),
-                  fontSize: 15.0,
-                ),
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.bodyStyleDarkItalic
+                    : MyTextStyles.bodyStyleLightItalic,
               ),
               backgroundColor: invertColorsTheme(context),
             ),
@@ -138,13 +138,24 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               child: AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                title: Text('Nearby Riders'),
+                title: Text(
+                  'Nearby Riders',
+                  style: isThemeCurrentlyDark(context)
+                      ? MyTextStyles.titleStyleLight
+                      : MyTextStyles.titleStyleDark,
+                ),
                 content: Text(
-                    'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
-                    '\n\nEach time this threshold is reached, we create a hotspot to notify Drivers of demand so that they can come to pick you and your friends up.'),
+                  'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
+                  '\n\nEach time this threshold is reached, we create a '
+                  'hotspot to notify Drivers of demand so that they can'
+                  ' come to pick you and your friends up.',
+                  style: isThemeCurrentlyDark(context)
+                      ? MyTextStyles.bodyStyleLight
+                      : MyTextStyles.bodyStyleDark,
+                ),
                 actions: <Widget>[
                   RaisedButton(
-                    child: Text('Got it'),
+                    child: Text('Okay'),
                     color: invertColorsTheme(context),
                     textColor: invertInvertColorsStrong(context),
                     elevation: 3.0,
@@ -163,10 +174,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             SnackBar(
               content: Text(
                 'Waiting for ${3 - currentMarkersWithinRadius} Riders to mark their location',
-                style: TextStyle(
-                  color: invertInvertColorsStrong(context),
-                  fontSize: 15.0,
-                ),
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.bodyStyleDarkItalic
+                    : MyTextStyles.bodyStyleLightItalic,
               ),
               backgroundColor: invertColorsTheme(context),
             ),
@@ -325,11 +335,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             content: Center(
                               child: Text(
                                 'Swipe to mark location       ',
-                                style: TextStyle(
-                                  color: MyColors.white,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                style: MyTextStyles.bodyStyleLight,
                               ),
                             ),
                             onChanged: (result) {
@@ -366,9 +372,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Recenter',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           if (locationAnimation == 0) {
                             locationAnimation = 1;
@@ -383,9 +387,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: toggleLightsText,
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           DynamicTheme.of(context).setBrightness(
                               Theme.of(context).brightness == Brightness.dark
@@ -399,9 +401,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Credits',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           Navigator.push(context,
                               CupertinoPageRoute(builder: (context) {
@@ -414,9 +414,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: MyColors.white,
                         backgroundColor: MaterialColors.red,
                         label: 'Emergency',
-                        labelStyle: TextStyle(
-                            color: MyColors.accentColor,
-                            fontWeight: FontWeight.w500),
+                        labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
                           showEmergencyPopup(context);
                         },
