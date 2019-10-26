@@ -307,13 +307,13 @@ class _MyIntroPageState extends State<MyIntroPage> {
     return LiquidSwipe(
       pages: pages,
       fullTransitionValue: 350.0,
-      enableLoop: false,
+      enableLoop: false, // last screen shouldn't go back to first
       enableSlideIcon: true,
       slideIconWidget: Icon(
         Icons.arrow_back_ios,
-        color: MyColors.black,
+        color: MyColors.black, // gets hidden in dark mode screen
       ),
-      waveType: WaveType.liquidReveal,
+      waveType: WaveType.liquidReveal, // another one is circularReveal
     );
   }
 }

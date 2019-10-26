@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
-var ridersWithinRadius = 0;
+var ridersWithinRadius = 0; // number of riders nearby for hotspot
 var previousMarkersWithinRadius = 0;
 var currentMarkersWithinRadius = 0;
 var allMarkersWithinRadius = [];
@@ -18,23 +18,23 @@ final zoom = [15.0, 17.5]; // zoom levels (0/1)
 final bearing = [0.0, 90.0]; // bearing level (0/1)
 final tilt = [0.0, 45.0]; // axis tilt (0/1)
 
-final hotspotRadius = 100.0; // radius that defines if a marker is nearby
-final displayMarkersRadius = 5000.0; // radius upto which markers are loaded
-// and displayed on the map
+final hotspotRadius = 100.0; // radius that defines if a marker is 'nearby'
+final displayMarkersRadius = 5000.0; // radius up to which markers are loaded
 
 final markerRefreshInterval =
     Duration(seconds: 5); // timeout to repopulate markers
 
-final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> scaffoldKey =
+    GlobalKey<ScaffoldState>(); // for snackbar
 final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true; // for dark mode fix
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
 bool isFabVisible = false;
-bool isSnackbarEnabled = false;
+bool isSnackbarEnabled = false; // to display snackbars correctly
 bool isMarkerWithinRadius = false; // to identify nearby markers
-bool isMyMarkerPlotted = false;
+bool isMyMarkerPlotted = false; // if user has swiped correctly
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;

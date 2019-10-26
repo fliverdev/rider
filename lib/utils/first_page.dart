@@ -20,6 +20,7 @@ class _FirstPageState extends State<FirstPage> {
           context,
           MaterialPageRoute(builder: (context) => MyIntroPage()),
           (Route<dynamic> route) => false);
+      // very first launch since install
     } else {
       Navigator.pushAndRemoveUntil(
           context,
@@ -36,7 +37,7 @@ class _FirstPageState extends State<FirstPage> {
 
   Widget build(BuildContext context) {
     return Container(
-      color: invertInvertColorsStrong(context),
+      color: invertInvertColorsStrong(context), // blank screen
     );
   }
 }

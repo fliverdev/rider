@@ -32,7 +32,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
     position = _setCurrentLocation();
-  } // gets current user location when the app loads
+  } // gets current user location when the app launches
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -45,13 +45,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     } else {
       mapController
           .setMapStyle(isThemeCurrentlyDark(context) ? lightMap : darkMap);
-    }
+    } // weird fix for broken dark mode
 
     Timer.periodic(markerRefreshInterval, (Timer t) {
       print('$markerRefreshInterval seconds over, refreshing...');
       _fetchMarkersFromDb(); // updates markers every 10 seconds
     });
-  } // when map is created
+  }
 
   Future<Position> _setCurrentLocation() async {
     currentLocation = await Geolocator().getCurrentPosition();
@@ -67,6 +67,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     hotspots.clear();
     markers.clear();
     allMarkersWithinRadius.clear();
+    // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
       var documentId = clients[i].documentID;
@@ -80,20 +81,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         longitude1: currentLocation.longitude.toDouble(),
         latitude2: markerPosition.latitude.toDouble(),
         longitude2: markerPosition.longitude.toDouble(),
-      );
+      ); // display hotspot for 100m radius
 
       var displayMarkersGcd = GreatCircleDistance.fromDegrees(
         latitude1: currentLocation.latitude.toDouble(),
         longitude1: currentLocation.longitude.toDouble(),
         latitude2: markerPosition.latitude.toDouble(),
         longitude2: markerPosition.longitude.toDouble(),
-      );
+      ); // display only markers within 5km
 
       if (hotspotRadius >= hotspotGcd.haversineDistance()) {
         allMarkersWithinRadius
-            .add(markerId); // list which contains nearby markers
+            .add(markerId); // contains nearby markers within 100m
         isMarkerWithinRadius = true;
-        print(allMarkersWithinRadius);
       }
 
       var marker = Marker(
@@ -105,21 +105,24 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           infoWindow: InfoWindow(
               title: 'ID: $documentId', snippet: 'Data: $markerData'),
           onTap: () {
-            _deleteMarker(documentId);
+            _deleteMarker(documentId); // debug
           });
 
       setState(() {
         if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
           markers[markerId] = marker;
-        }
+        } // adds markers within 5km only, rest aren't considered at all
       });
 
       isMarkerWithinRadius = false;
     }
 
     if (isSnackbarEnabled) {
+      // do all this only after user swipes
       if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
+        // if nearby markers increase/decrease
         if (currentMarkersWithinRadius >= 3) {
+          // if a marker is added nearby
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
@@ -132,6 +135,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
           );
           if (!isTipShown) {
+            // display a tip only once
             prefs.setBool('isTipShown', true);
             showDialog(
               context: context,
@@ -170,6 +174,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             );
           }
         } else if (isMyMarkerPlotted) {
+          // when more markers are needed to create a hotspot
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
@@ -182,7 +187,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
           );
         }
-      } // generates snackbar only when necessary
+      }
     }
 
     if (currentMarkersWithinRadius >= 3) {
@@ -201,7 +206,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
     isMyMarkerPlotted = true;
     previousMarkersWithinRadius = currentMarkersWithinRadius;
-  } // fetches and displays markers within 5km
+  } // works with markers within 5km
 
   void _fetchMarkersFromDb() {
     Firestore.instance.collection('locations').getDocuments().then((docs) {
@@ -214,7 +219,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         _populateMarkers(clients);
       }
     });
-  } // renders markers from firestore on the map
+  } // fetches markers from firestore
 
   void _deleteMarker(documentId) {
     print('Deleting marker $documentId...');
@@ -223,14 +228,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markers.remove(MarkerId(documentId));
     });
   } // deletes markers from firestore
-
-  void _clearMap() {
-    setState(() {
-      print('Clearing items from map...');
-      markers.clear();
-      hotspots.clear();
-    });
-  } // clears map of markers and hotspots
 
   @override
   Widget build(BuildContext context) {
@@ -251,12 +248,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         return child;
       }
     }, builder: (BuildContext context) {
+      // when there is proper internet
       return FutureBuilder(
           future: position,
           builder: (context, data) {
             if (!data.hasData) {
               return FetchingLocation();
             } else {
+              // when current location is obtained
               return Scaffold(
                 key: scaffoldKey,
                 body: Container(
@@ -320,7 +319,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             },
                           ),
                         ),
-                      ),
+                      ), // displays emergency button before swipe
                       Visibility(
                         visible: isSwipeButtonVisible,
                         child: Positioned(
@@ -421,7 +420,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       ),
                     ],
                   ),
-                ),
+                ), // shows fab only after swipe
               );
             }
           });

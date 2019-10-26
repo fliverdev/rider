@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
 
+// use these for any text styling, add more if needed
+
 class MyTextStyles {
   static const titleStyleLight = TextStyle(
     fontSize: 20.0,

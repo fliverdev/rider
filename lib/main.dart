@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'LexendDeca',
         primaryColor: MyColors.primaryColor,
         accentColor: MyColors.accentColor,
-        brightness: brightness,
+        brightness: brightness, // default is dark
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(

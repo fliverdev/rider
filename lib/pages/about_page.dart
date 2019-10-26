@@ -81,7 +81,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
             Expanded(
               child: GridView.count(
                 crossAxisCount: 1,
-                childAspectRatio: 2.2,
+                childAspectRatio: 2.2, // increase/decrease tile height
                 children: List.generate(
                   contributorNames.length,
                   (i) {
