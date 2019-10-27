@@ -128,10 +128,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               content: Text(
                 'There are $currentMarkersWithinRadius Riders in your area!',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.bodyStyleDarkItalic
+                    ? MyTextStyles.bodyStylePrimaryItalic
                     : MyTextStyles.bodyStyleLightItalic,
               ),
-              backgroundColor: invertColorsTheme(context),
+              backgroundColor: MyColors.black,
             ),
           );
           if (!isTipShown) {
@@ -178,12 +178,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
-                'Waiting for ${3 - currentMarkersWithinRadius} Riders to mark their location',
+                'Waiting for ${3 - currentMarkersWithinRadius} more Riders',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.bodyStyleDarkItalic
+                    ? MyTextStyles.bodyStylePrimaryItalic
                     : MyTextStyles.bodyStyleLightItalic,
               ),
-              backgroundColor: invertColorsTheme(context),
+              backgroundColor: MyColors.black,
             ),
           );
         }
