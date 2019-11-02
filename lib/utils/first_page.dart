@@ -15,10 +15,13 @@ class _FirstPageState extends State<FirstPage> {
     bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
 
     if (isFirstLaunch) {
-      prefs.setBool('isFirstLaunch', false);
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => MyIntroPage()),
+          MaterialPageRoute(
+              builder: (context) => MyIntroPage(
+                    helper: prefs,
+                    flag: isFirstLaunch,
+                  )),
           (Route<dynamic> route) => false);
       // very first launch since install
     } else {

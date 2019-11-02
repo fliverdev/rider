@@ -7,8 +7,13 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/permission_helper.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyIntroPage extends StatefulWidget {
+  final SharedPreferences helper;
+  final bool flag;
+  MyIntroPage({Key key, @required this.helper, @required this.flag})
+      : super(key: key);
   @override
   _MyIntroPageState createState() => _MyIntroPageState();
 }
@@ -236,6 +241,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   onPressed: () {
                     DynamicTheme.of(context).setBrightness(Brightness.light);
+                    widget.helper.setBool('isFirstLaunch', false);
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
@@ -304,6 +310,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   onPressed: () {
                     DynamicTheme.of(context).setBrightness(Brightness.dark);
+                    widget.helper.setBool('isFirstLaunch', false);
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
