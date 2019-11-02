@@ -33,6 +33,7 @@ bool isFirstLaunch = true; // for dark mode fix
 bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
 bool isFabVisible = false;
 bool isSnackbarEnabled = false; // to display snackbars correctly
+bool isPermissionButtonVisible = true; // for intro page
 bool isMarkerWithinRadius = false; // to identify nearby markers
 bool isMyMarkerPlotted = false; // if user has swiped correctly
 
