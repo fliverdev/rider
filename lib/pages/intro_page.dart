@@ -6,6 +6,7 @@ import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/permission_helper.dart';
 import 'package:rider/utils/text_styles.dart';
+import 'package:rider/utils/variables.dart';
 
 class MyIntroPage extends StatefulWidget {
   @override
@@ -149,16 +150,29 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  RaisedButton(
-                    child: Text('Grant Access'),
-                    color: MyColors.black,
-                    textColor: MyColors.white,
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () {
-                      requestLocationPermission();
-                    },
+                  Visibility(
+                    visible: isPermissionButtonVisible,
+                    child: RaisedButton(
+                      child: Text('Grant Access'),
+                      color: MyColors.black,
+                      textColor: MyColors.white,
+                      elevation: 3.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                      onPressed: () {
+                        requestLocationPermission();
+                        setState(() {
+                          isPermissionButtonVisible = false;
+                        });
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: !isPermissionButtonVisible,
+                    child: Text(
+                      'Swipe left to continue',
+                      style: MyTextStyles.bodyStyleDarkItalic,
+                    ),
                   ),
                 ],
               ),
