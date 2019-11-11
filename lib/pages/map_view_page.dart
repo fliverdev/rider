@@ -9,7 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
-import 'package:rider/pages/about_page.dart';
+import 'package:rider/pages/credits_page.dart';
 import 'package:rider/services/emergency_call.dart';
 import 'package:rider/services/map.dart';
 import 'package:rider/utils/colors.dart';
@@ -454,7 +454,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                           if (isTipShown3) {
                             Navigator.push(context,
                                 CupertinoPageRoute(builder: (context) {
-                              return MyAboutPage();
+                              return MyCreditsPage();
                             }));
                           } else {
                             // display a tip only once
@@ -493,7 +493,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                       Navigator.push(context,
                                           CupertinoPageRoute(
                                               builder: (context) {
-                                        return MyAboutPage();
+                                        return MyCreditsPage();
                                       }));
                                     },
                                   ),
