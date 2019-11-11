@@ -62,7 +62,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     currentLocation = getCurrentLocation();
     currentMarkersWithinRadius = allMarkersWithinRadius.length;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isTipShown = prefs.getBool('isTipShown') ?? false;
+    bool isTipShown1 = prefs.getBool('isTipShown1') ?? false;
+    bool isTipShown2 = prefs.getBool('isTipShown2') ?? false;
 
     hotspots.clear();
     markers.clear();
@@ -117,7 +118,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       isMarkerWithinRadius = false;
     }
 
-    if (isSnackbarEnabled) {
+    if (isButtonSwiped) {
       // do all this only after user swipes
       if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
@@ -134,9 +135,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               backgroundColor: MyColors.black,
             ),
           );
-          if (!isTipShown) {
+          if (!isTipShown2) {
             // display a tip only once
-            prefs.setBool('isTipShown', true);
+            prefs.setBool('isTipShown2', true);
             showDialog(
               context: context,
               child: AlertDialog(
@@ -150,9 +151,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ),
                 content: Text(
                   'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
-                  '\n\nEach time this threshold is reached, we create a '
-                  'hotspot to notify Drivers of demand so that they can'
-                  ' come to pick you and your friends up.',
+                  '\n\nEach time this threshold is reached, a hotspot is created to notify Drivers of demand so that they can come to pick you and your friends up.',
                   style: isThemeCurrentlyDark(context)
                       ? MyTextStyles.bodyStyleLight
                       : MyTextStyles.bodyStyleDark,
@@ -186,8 +185,55 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               backgroundColor: MyColors.black,
             ),
           );
+          if (!isTipShown1) {
+            // display a tip only once
+            prefs.setBool('isTipShown1', true);
+            showDialog(
+              context: context,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                title: Text(
+                  'Not Enough Riders',
+                  style: isThemeCurrentlyDark(context)
+                      ? MyTextStyles.titleStyleLight
+                      : MyTextStyles.titleStyleDark,
+                ),
+                content: Text(
+                  'Drivers get notified when there are 3 or more Riders in the same area.'
+                  '\n\nRight now, there are only ${3 - currentMarkersWithinRadius} other Riders near you, so tell your friends to download the app and mark their locations!',
+                  style: isThemeCurrentlyDark(context)
+                      ? MyTextStyles.bodyStyleLight
+                      : MyTextStyles.bodyStyleDark,
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Cancel'),
+                    textColor: invertColorsStrong(context),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  RaisedButton(
+                    child: Text('Share'),
+                    color: invertColorsTheme(context),
+                    textColor: invertInvertColorsStrong(context),
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () {
+                      // TODO: implement share
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
         }
       }
+      isMyMarkerPlotted = true;
     }
 
     if (currentMarkersWithinRadius >= 3) {
@@ -204,7 +250,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ));
       });
     }
-    isMyMarkerPlotted = true;
     previousMarkersWithinRadius = currentMarkersWithinRadius;
   } // works with markers within 5km
 
@@ -300,7 +345,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ),
                       Visibility(
-                        visible: isSwipeButtonVisible,
+                        visible: !isButtonSwiped,
                         child: Positioned(
                           top: 40.0,
                           right: 20.0,
@@ -321,7 +366,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ), // displays emergency button before swipe
                       Visibility(
-                        visible: isSwipeButtonVisible,
+                        visible: !isButtonSwiped,
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,
@@ -340,9 +385,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             onChanged: (result) {
                               if (result == SwipePosition.SwipeRight) {
                                 setState(() {
-                                  isSwipeButtonVisible = false;
-                                  isFabVisible = true;
-                                  isSnackbarEnabled = true;
+                                  isButtonSwiped = true;
                                 });
                                 locationAnimation = 1;
                                 writeToDb();
@@ -357,7 +400,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   ),
                 ),
                 floatingActionButton: Visibility(
-                  visible: isFabVisible,
+                  visible: isButtonSwiped,
                   child: SpeedDial(
                     heroTag: 'fab',
                     closeManually: false,

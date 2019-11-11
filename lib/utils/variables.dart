@@ -9,7 +9,6 @@ import 'package:rxdart/rxdart.dart';
 
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
-var ridersWithinRadius = 0; // number of riders nearby for hotspot
 var previousMarkersWithinRadius = 0;
 var currentMarkersWithinRadius = 0;
 var allMarkersWithinRadius = [];
@@ -30,12 +29,10 @@ final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true; // for dark mode fix
-bool isSwipeButtonVisible = true; // to show/hide fab and swipe button correctly
-bool isFabVisible = false;
-bool isSnackbarEnabled = false; // to display snackbars correctly
+bool isButtonSwiped = false; // for showing/hiding certain widgets
 bool isPermissionButtonVisible = true; // for intro page
-bool isMarkerWithinRadius = false; // to identify nearby markers
 bool isMyMarkerPlotted = false; // if user has swiped correctly
+bool isMarkerWithinRadius = false; // to identify nearby markers
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;
