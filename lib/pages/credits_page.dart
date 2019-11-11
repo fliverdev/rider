@@ -57,7 +57,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
             Expanded(
               child: GridView.count(
                 crossAxisCount: 1,
-                childAspectRatio: 2.2, // increase/decrease tile height
+                childAspectRatio: 2.3, // increase/decrease tile height
                 children: <Widget>[
                   SexyTile(
                     child: Row(
@@ -192,22 +192,52 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                     splashColor: MyColors.primaryColor,
                     onTap: () => _launchURL('http://www.decaf.co.in'),
                   ),
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Built using Flutter 📲'
+                          '\nCompletely free & open source'
+                          '\nMade with ❤️ in Mumbai, India',
+                          style: isThemeCurrentlyDark(context)
+                              ? MyTextStyles.bodyStyleLight
+                              : MyTextStyles.bodyStyleDark,
+                          textAlign: TextAlign.center,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            FlatButton(
+                              child: Text('Source Code'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () => _launchURL(
+                                  'https://github.com/fliverdev/rider'),
+                            ),
+                            FlatButton(
+                              child: Text('Feedback'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () =>
+                                  _launchURL('mailto:urmilshroff@gmail.com'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'fab',
-        tooltip: 'Source code',
-        foregroundColor: invertInvertColorsTheme(context),
-        backgroundColor: invertColorsTheme(context),
-        elevation: 5.0,
-        child: Icon(
-          Icons.code,
-        ),
-        onPressed: () => _launchURL('https://github.com/fliverdev/rider'),
       ),
     );
   }
