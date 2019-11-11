@@ -20,6 +20,7 @@ import 'package:rider/utils/variables.dart';
 import 'package:rider/widgets/fetching_location.dart';
 import 'package:rider/widgets/no_connection.dart';
 import 'package:rider/widgets/swipe_button.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -225,7 +226,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     onPressed: () {
-                      // TODO: implement share
+                      Navigator.pop(context);
+                      Share.share(
+                          'Download Fliver Rider now and help me get a taxi! https://github.com/fliverdev/rider');
                     },
                   ),
                 ],
