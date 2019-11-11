@@ -117,7 +117,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       isMarkerWithinRadius = false;
     }
 
-    if (isSnackbarEnabled) {
+    if (isButtonSwiped) {
       // do all this only after user swipes
       if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
@@ -300,7 +300,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ),
                       Visibility(
-                        visible: isSwipeButtonVisible,
+                        visible: !isButtonSwiped,
                         child: Positioned(
                           top: 40.0,
                           right: 20.0,
@@ -321,7 +321,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ), // displays emergency button before swipe
                       Visibility(
-                        visible: isSwipeButtonVisible,
+                        visible: !isButtonSwiped,
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,
@@ -340,9 +340,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             onChanged: (result) {
                               if (result == SwipePosition.SwipeRight) {
                                 setState(() {
-                                  isSwipeButtonVisible = false;
-                                  isFabVisible = true;
-                                  isSnackbarEnabled = true;
+                                  isButtonSwiped = true;
                                 });
                                 locationAnimation = 1;
                                 writeToDb();
@@ -357,7 +355,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   ),
                 ),
                 floatingActionButton: Visibility(
-                  visible: isFabVisible,
+                  visible: isButtonSwiped,
                   child: SpeedDial(
                     heroTag: 'fab',
                     closeManually: false,
