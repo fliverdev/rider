@@ -445,11 +445,62 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Credits',
                         labelStyle: MyTextStyles.labelStyle,
-                        onTap: () {
-                          Navigator.push(context,
-                              CupertinoPageRoute(builder: (context) {
-                            return MyAboutPage();
-                          }));
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isTipShown3 =
+                              prefs.getBool('isTipShown3') ?? false;
+
+                          if (isTipShown3) {
+                            Navigator.push(context,
+                                CupertinoPageRoute(builder: (context) {
+                              return MyAboutPage();
+                            }));
+                          } else {
+                            // display a tip only once
+                            prefs.setBool('isTipShown3', true);
+                            showDialog(
+                              context: context,
+                              child: AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                title: Text(
+                                  'Credits',
+                                  style: isThemeCurrentlyDark(context)
+                                      ? MyTextStyles.titleStyleLight
+                                      : MyTextStyles.titleStyleDark,
+                                ),
+                                content: Text(
+                                  'Fliver was developed with ❤️ by three Computer Engineering guys from MPSTME, NMIMS.'
+                                  '\n\nTap anyone\'s name to open up their profile!',
+                                  style: isThemeCurrentlyDark(context)
+                                      ? MyTextStyles.bodyStyleLight
+                                      : MyTextStyles.bodyStyleDark,
+                                ),
+                                actions: <Widget>[
+                                  RaisedButton(
+                                    child: Text('Okay'),
+                                    color: invertColorsTheme(context),
+                                    textColor:
+                                        invertInvertColorsStrong(context),
+                                    elevation: 3.0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(context,
+                                          CupertinoPageRoute(
+                                              builder: (context) {
+                                        return MyAboutPage();
+                                      }));
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         },
                       ),
                       SpeedDialChild(
