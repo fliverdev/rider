@@ -188,6 +188,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           );
         }
       }
+      isMyMarkerPlotted = true;
     }
 
     if (currentMarkersWithinRadius >= 3) {
@@ -204,7 +205,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         ));
       });
     }
-    isMyMarkerPlotted = true;
     previousMarkersWithinRadius = currentMarkersWithinRadius;
   } // works with markers within 5km
 
