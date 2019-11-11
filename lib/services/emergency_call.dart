@@ -44,8 +44,8 @@ void showEmergencyPopup(BuildContext context) {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               onPressed: () {
-                launch('tel:1800220110');
                 Navigator.pop(context);
+                launch('tel:1800220110');
               },
             ),
             RaisedButton(
@@ -56,8 +56,8 @@ void showEmergencyPopup(BuildContext context) {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               onPressed: () {
-                launch('tel:112');
                 Navigator.pop(context);
+                launch('tel:112');
               },
             ),
           ],

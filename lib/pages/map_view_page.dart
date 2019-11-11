@@ -9,7 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
-import 'package:rider/pages/about_page.dart';
+import 'package:rider/pages/credits_page.dart';
 import 'package:rider/services/emergency_call.dart';
 import 'package:rider/services/map.dart';
 import 'package:rider/utils/colors.dart';
@@ -20,6 +20,7 @@ import 'package:rider/utils/variables.dart';
 import 'package:rider/widgets/fetching_location.dart';
 import 'package:rider/widgets/no_connection.dart';
 import 'package:rider/widgets/swipe_button.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -119,8 +120,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
 
     if (isButtonSwiped) {
-      // do all this only after user swipes
-      if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
+      // do all this only after user swipes & r/w of markers occurs once
+      if (isMyMarkerPlotted &&
+          currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
@@ -172,8 +174,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ),
             );
           }
-        } else if (isMyMarkerPlotted) {
-          // when more markers are needed to create a hotspot
+        } else {
+          // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
@@ -224,7 +226,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     onPressed: () {
-                      // TODO: implement share
+                      Navigator.pop(context);
+                      Share.share(
+                          'Download Fliver Rider now and help me get a taxi! https://github.com/fliverdev/rider');
                     },
                   ),
                 ],
@@ -233,7 +237,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         }
       }
-      isMyMarkerPlotted = true;
+      isMyMarkerPlotted = true; // basically skips it the first time
     }
 
     if (currentMarkersWithinRadius >= 3) {
@@ -444,11 +448,62 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Credits',
                         labelStyle: MyTextStyles.labelStyle,
-                        onTap: () {
-                          Navigator.push(context,
-                              CupertinoPageRoute(builder: (context) {
-                            return MyAboutPage();
-                          }));
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isTipShown3 =
+                              prefs.getBool('isTipShown3') ?? false;
+
+                          if (isTipShown3) {
+                            Navigator.push(context,
+                                CupertinoPageRoute(builder: (context) {
+                              return MyCreditsPage();
+                            }));
+                          } else {
+                            // display a tip only once
+                            prefs.setBool('isTipShown3', true);
+                            showDialog(
+                              context: context,
+                              child: AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                title: Text(
+                                  'Credits',
+                                  style: isThemeCurrentlyDark(context)
+                                      ? MyTextStyles.titleStyleLight
+                                      : MyTextStyles.titleStyleDark,
+                                ),
+                                content: Text(
+                                  'Fliver was developed with ❤️ by three Computer Engineering guys from MPSTME, NMIMS.'
+                                  '\n\nTap anyone\'s name to open up their profile!',
+                                  style: isThemeCurrentlyDark(context)
+                                      ? MyTextStyles.bodyStyleLight
+                                      : MyTextStyles.bodyStyleDark,
+                                ),
+                                actions: <Widget>[
+                                  RaisedButton(
+                                    child: Text('Okay'),
+                                    color: invertColorsTheme(context),
+                                    textColor:
+                                        invertInvertColorsStrong(context),
+                                    elevation: 3.0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(context,
+                                          CupertinoPageRoute(
+                                              builder: (context) {
+                                        return MyCreditsPage();
+                                      }));
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         },
                       ),
                       SpeedDialChild(
