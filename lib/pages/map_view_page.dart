@@ -119,8 +119,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
 
     if (isButtonSwiped) {
-      // do all this only after user swipes
-      if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
+      // do all this only after user swipes & r/w of markers occurs once
+      if (isMyMarkerPlotted &&
+          currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
@@ -172,8 +173,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ),
             );
           }
-        } else if (isMyMarkerPlotted) {
-          // when more markers are needed to create a hotspot
+        } else {
+          // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
@@ -233,7 +234,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         }
       }
-      isMyMarkerPlotted = true;
+      isMyMarkerPlotted = true; // basically skips it the first time
     }
 
     if (currentMarkersWithinRadius >= 3) {
