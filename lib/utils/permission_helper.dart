@@ -1,19 +1,21 @@
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rider/utils/variables.dart';
 
-void requestLocationPermission() async {
-  Map<PermissionGroup, PermissionStatus> permissions =
+Future<Map<PermissionGroup, PermissionStatus>>
+    requestLocationPermission() async {
+  Map<PermissionGroup, PermissionStatus> locationPermission =
       await PermissionHandler().requestPermissions([PermissionGroup.location]);
-}
+  return locationPermission;
+} // return is needed for await (future stuff)
 
-//void checkLocationPermission() async {
-//  PermissionStatus locationPermission =
-//      await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
-//  ServiceStatus locationService =
-//      await PermissionHandler().checkServiceStatus(PermissionGroup.location);
-//
-//  if (locationPermission == PermissionStatus.granted) {
-//    print('Permission granted');
-//  } else {
-//    print('Permission denied');
-//  }
-//}
+Future<bool> checkLocationPermission() async {
+  PermissionStatus permissionStatus =
+      await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
+
+  permissionStatus == PermissionStatus.granted
+      ? isPermissionGranted = true
+      : isPermissionGranted = false;
+
+  print('Location permission status: $isPermissionGranted');
+  return isPermissionGranted;
+} // tells whether location access is granted or denied

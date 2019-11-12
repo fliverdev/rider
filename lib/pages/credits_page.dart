@@ -199,7 +199,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                       children: <Widget>[
                         Text(
                           'Built using Flutter 📲'
-                          '\nCompletely free & open source'
+                          '\nCompletely free & Open Source'
                           '\nMade with ❤️ in Mumbai, India',
                           style: isThemeCurrentlyDark(context)
                               ? MyTextStyles.bodyStyleLight

@@ -30,9 +30,12 @@ final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true; // for dark mode fix
 bool isButtonSwiped = false; // for showing/hiding certain widgets
+bool isPermissionGranted = false; // for location permission
 bool isPermissionButtonVisible = true; // for intro page
 bool isMyMarkerPlotted = false; // if user has swiped correctly
 bool isMarkerWithinRadius = false; // to identify nearby markers
+
+String permissionStatusMessage = '';
 
 GoogleMapController mapController;
 Firestore firestore = Firestore.instance;
