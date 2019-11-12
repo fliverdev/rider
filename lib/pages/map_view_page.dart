@@ -475,7 +475,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                       : MyTextStyles.titleStyleDark,
                                 ),
                                 content: Text(
-                                  'Fliver was developed with ❤️ by three Computer Engineering guys from MPSTME, NMIMS.'
+                                  'Fliver was developed by three Computer Engineering guys from MPSTME, NMIMS.'
                                   '\n\nTap anyone\'s name to open up their profile!',
                                   style: isThemeCurrentlyDark(context)
                                       ? MyTextStyles.bodyStyleLight
