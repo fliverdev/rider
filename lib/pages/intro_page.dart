@@ -118,10 +118,19 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       elevation: 3.0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                      onPressed: () {
-                        requestLocationPermission();
-                        setState(() {
-                          isPermissionButtonVisible = false;
+                      onPressed: () async {
+                        final requestLocation =
+                            await requestLocationPermission();
+                        final locationChecker = checkLocationPermission();
+                        locationChecker.then((isPermissionGranted) {
+                          isPermissionGranted
+                              ? permissionStatusMessage =
+                                  'Swipe left to continue'
+                              : permissionStatusMessage =
+                                  'Please grant location access!';
+                          setState(() {
+                            isPermissionButtonVisible = false;
+                          });
                         });
                       },
                     ),
@@ -129,7 +138,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   Visibility(
                     visible: !isPermissionButtonVisible,
                     child: Text(
-                      'Swipe left to continue',
+                      '$permissionStatusMessage',
                       style: MyTextStyles.bodyStyleDarkItalic,
                     ),
                   ),
