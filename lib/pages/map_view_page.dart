@@ -96,6 +96,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       var markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
 
+      if (documentId == widget.identity && !isMyMarkerPlotted) {
+        print('$documentId is plotted');
+        setState(() {
+          isMyMarkerPlotted = true;
+        });
+        locationAnimation = 1;
+        animateToCurrentLocation(locationAnimation);
+      }
+
       var hotspotGcd = GreatCircleDistance.fromDegrees(
         latitude1: currentLocation.latitude.toDouble(),
         longitude1: currentLocation.longitude.toDouble(),
@@ -139,7 +148,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     if (isButtonSwiped) {
       // do all this only after user swipes & r/w of markers occurs once
-      if (isMyMarkerPlotted &&
+      if (isMyMarkerFetched &&
           currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
         if (currentMarkersWithinRadius >= 3) {
@@ -192,6 +201,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ),
             );
           }
+          locationAnimation = 1;
+          animateToCurrentLocation(locationAnimation);
         } else {
           // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
@@ -255,7 +266,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         }
       }
-      isMyMarkerPlotted = true; // basically skips it the first time
+      isMyMarkerFetched = true; // basically skips it the first time
     }
 
     if (currentMarkersWithinRadius >= 3) {
@@ -367,7 +378,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ),
                       Visibility(
-                        visible: !isButtonSwiped,
+                        visible: !isButtonSwiped && !isMyMarkerPlotted,
                         child: Positioned(
                           top: 40.0,
                           right: 20.0,
@@ -388,7 +399,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ), // displays emergency button before swipe
                       Visibility(
-                        visible: !isButtonSwiped,
+                        visible: !isButtonSwiped && !isMyMarkerPlotted,
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,
@@ -422,7 +433,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   ),
                 ),
                 floatingActionButton: Visibility(
-                  visible: isButtonSwiped,
+                  visible: isButtonSwiped || isMyMarkerPlotted,
                   child: SpeedDial(
                     heroTag: 'fab',
                     closeManually: false,
@@ -438,11 +449,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         label: 'Recenter',
                         labelStyle: MyTextStyles.labelStyle,
                         onTap: () {
-                          if (locationAnimation == 0) {
-                            locationAnimation = 1;
-                          } else if (locationAnimation == 1) {
-                            locationAnimation = 0;
-                          }
+                          locationAnimation == 0
+                              ? locationAnimation = 1
+                              : locationAnimation = 0;
                           animateToCurrentLocation(locationAnimation);
                         },
                       ),

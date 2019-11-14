@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,7 +31,8 @@ bool isFirstLaunch = true; // for dark mode fix
 bool isButtonSwiped = false; // for showing/hiding certain widgets
 bool isPermissionGranted = false; // for location permission
 bool isPermissionButtonVisible = true; // for intro page
-bool isMyMarkerPlotted = false; // if user has swiped correctly
+bool isMyMarkerPlotted = false; // if user has already marked location
+bool isMyMarkerFetched = false; // if user has swiped correctly
 bool isMarkerWithinRadius = false; // to identify nearby markers
 
 String permissionStatusMessage = '';
