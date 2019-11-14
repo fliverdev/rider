@@ -293,14 +293,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _fetchMarkersFromDb() {
     Firestore.instance.collection('markers').getDocuments().then((docs) {
-      if (docs.documents.isNotEmpty) {
-        var docLength = docs.documents.length;
-        var clients = List(docLength);
-        for (int i = 0; i < docLength; i++) {
-          clients[i] = docs.documents[i];
-        }
-        _populateMarkers(clients);
+      var docLength = docs.documents.length;
+      var clients = List(docLength);
+      for (int i = 0; i < docLength; i++) {
+        clients[i] = docs.documents[i];
       }
+      _populateMarkers(clients);
     });
   } // fetches markers from firestore
 
