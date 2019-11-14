@@ -90,8 +90,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
-      var documentId = clients[i].documentID;
-      var markerId = MarkerId(documentId);
+      var markerId = MarkerId(widget.identity);
       var markerData = clients[i].data;
       var markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
@@ -123,9 +122,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ? BitmapDescriptor.defaultMarkerWithHue(147.5)
               : BitmapDescriptor.defaultMarkerWithHue(25.0),
           infoWindow: InfoWindow(
-              title: 'ID: $documentId', snippet: 'Data: $markerData'),
+              title: 'ID: ${widget.identity}', snippet: 'Data: $markerData'),
           onTap: () {
-            _deleteMarker(documentId); // debug
+            _deleteMarker(); // debug
           });
 
       setState(() {
@@ -288,11 +287,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } // fetches markers from firestore
 
-  void _deleteMarker(documentId) {
-    print('Deleting marker $documentId...');
-    Firestore.instance.collection('markers').document(documentId).delete();
+  void _deleteMarker() {
+    print('Deleting marker ${widget.identity}...');
+    Firestore.instance.collection('markers').document(widget.identity).delete();
     setState(() {
-      markers.remove(MarkerId(documentId));
+      markers.remove(MarkerId(widget.identity));
     });
   } // deletes markers from firestore
 
