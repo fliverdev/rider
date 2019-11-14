@@ -38,7 +38,6 @@ bool isMarkerWithinRadius = false; // to identify nearby markers
 String permissionStatusMessage = '';
 
 GoogleMapController mapController;
-Firestore firestore = Firestore.instance;
 StreamSubscription subscription;
 Geoflutterfire geo = Geoflutterfire();
 BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);
