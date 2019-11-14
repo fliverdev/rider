@@ -23,6 +23,7 @@ dependencies:
   share: ^0.6.3
   shared_preferences: ^0.5.3+5
   url_launcher: ^5.2.4
+  uuid: ^2.0.4
 
   great_circle_distance:
     git:
