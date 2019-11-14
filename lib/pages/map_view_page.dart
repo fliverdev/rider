@@ -12,7 +12,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/credits_page.dart';
 import 'package:rider/services/emergency_call.dart';
-import 'package:rider/services/location.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/text_styles.dart';
@@ -66,7 +65,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   Future<void> _writeToDb() async {
-    var currentLocation = getCurrentLocation();
     GeoFirePoint point = geo.point(
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude);
@@ -77,8 +75,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         .setData({'position': point.data});
   } // writes current location to firestore
 
+  void _fetchMarkersFromDb() {
+    Firestore.instance.collection('markers').getDocuments().then((docs) {
+      var docLength = docs.documents.length;
+      var clients = List(docLength);
+      for (int i = 0; i < docLength; i++) {
+        clients[i] = docs.documents[i];
+      }
+      _populateMarkers(clients);
+    });
+  } // fetches markers from firestore
+
   Future _populateMarkers(clients) async {
-    currentLocation = getCurrentLocation();
     currentMarkersWithinRadius = allMarkersWithinRadius.length;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isTipShown1 = prefs.getBool('isTipShown1') ?? false;
@@ -100,7 +108,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         print('$documentId is plotted');
         isMyMarkerPlotted = true;
         locationAnimation = 1;
-        animateToCurrentLocation(locationAnimation);
+        _animateToLocation(currentLocation, locationAnimation);
       }
 
       var hotspotGcd = GreatCircleDistance.fromDegrees(
@@ -145,7 +153,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
 
     if (isFirstCycle) {
-      print("Setting isFirstCycle to false...");
       setState(() {
         isFirstCycle = false;
       });
@@ -207,7 +214,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             );
           }
           locationAnimation = 1;
-          animateToCurrentLocation(locationAnimation);
+          _animateToLocation(currentLocation, locationAnimation);
         } else {
           // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
@@ -289,18 +296,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       });
     }
     previousMarkersWithinRadius = currentMarkersWithinRadius;
-  } // works with markers within 5km
-
-  void _fetchMarkersFromDb() {
-    Firestore.instance.collection('markers').getDocuments().then((docs) {
-      var docLength = docs.documents.length;
-      var clients = List(docLength);
-      for (int i = 0; i < docLength; i++) {
-        clients[i] = docs.documents[i];
-      }
-      _populateMarkers(clients);
-    });
-  } // fetches markers from firestore
+  } // populates & manages markers within 5km
 
   void _deleteMarker(documentId) {
     print('Deleting marker $documentId...');
@@ -309,6 +305,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       markers.remove(MarkerId(documentId));
     });
   } // deletes markers from firestore
+
+  void _animateToLocation(location, animation) async {
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(location.latitude, location.longitude),
+          zoom: zoom[animation],
+          bearing: bearing[animation],
+          tilt: tilt[animation],
+        ),
+      ),
+    );
+  } // dat cool animation tho
 
   @override
   Widget build(BuildContext context) {
@@ -430,7 +439,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 locationAnimation = 1;
                                 _writeToDb();
                                 _fetchMarkersFromDb();
-                                animateToCurrentLocation(locationAnimation);
+                                _animateToLocation(
+                                    currentLocation, locationAnimation);
                               }
                             },
                           ),
@@ -459,7 +469,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                           locationAnimation == 0
                               ? locationAnimation = 1
                               : locationAnimation = 0;
-                          animateToCurrentLocation(locationAnimation);
+                          _animateToLocation(
+                              currentLocation, locationAnimation);
                         },
                       ),
                       SpeedDialChild(
