@@ -98,9 +98,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
       if (documentId == widget.identity && !isMyMarkerPlotted) {
         print('$documentId is plotted');
-        setState(() {
-          isMyMarkerPlotted = true;
-        });
+        isMyMarkerPlotted = true;
         locationAnimation = 1;
         animateToCurrentLocation(locationAnimation);
       }
@@ -144,6 +142,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       });
 
       isMarkerWithinRadius = false;
+    }
+
+    if (isFirstCycle) {
+      print("Setting isFirstCycle to false...");
+      setState(() {
+        isFirstCycle = false;
+      });
     }
 
     if (isButtonSwiped) {
@@ -378,7 +383,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ),
                       Visibility(
-                        visible: !isButtonSwiped && !isMyMarkerPlotted,
+                        visible: !isFirstCycle &&
+                            !isButtonSwiped &&
+                            !isMyMarkerPlotted,
                         child: Positioned(
                           top: 40.0,
                           right: 20.0,
@@ -399,7 +406,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ), // displays emergency button before swipe
                       Visibility(
-                        visible: !isButtonSwiped && !isMyMarkerPlotted,
+                        visible: !isFirstCycle &&
+                            !isButtonSwiped &&
+                            !isMyMarkerPlotted,
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,

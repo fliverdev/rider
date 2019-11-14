@@ -28,6 +28,7 @@ final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true; // for dark mode fix
+bool isFirstCycle = true; // don't display swipe button in first cycle
 bool isButtonSwiped = false; // for showing/hiding certain widgets
 bool isPermissionGranted = false; // for location permission
 bool isPermissionButtonVisible = true; // for intro page
