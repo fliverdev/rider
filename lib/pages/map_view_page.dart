@@ -65,14 +65,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   Future<void> _writeToDb() async {
-    GeoFirePoint point = geo.point(
+    GeoFirePoint geoPoint = geo.point(
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude);
 
-    Firestore.instance
-        .collection('markers')
-        .document(widget.identity)
-        .setData({'position': point.data});
+    Firestore.instance.collection('markers').document(widget.identity).setData({
+      'position': geoPoint.data,
+      'timestamp': DateTime.now(),
+    });
   } // writes current location to firestore
 
   void _fetchMarkersFromDb() {
