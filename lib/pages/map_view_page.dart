@@ -203,7 +203,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ),
                 content: Text(
                   'Drivers get notified when there are 3 or more Riders in the same area.'
-                  '\n\nRight now, there are only ${3 - currentMarkersWithinRadius} other Riders near you, so tell your friends to download the app and mark their locations!',
+                  '\n\nRight now, there are only ${currentMarkersWithinRadius - 1} other Riders near you, so tell your friends to download the app and mark their locations!',
                   style: isThemeCurrentlyDark(context)
                       ? MyTextStyles.bodyStyleLight
                       : MyTextStyles.bodyStyleDark,
