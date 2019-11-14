@@ -70,9 +70,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     GeoFirePoint point = geo.point(
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude);
-    return firestore.collection('markers').add({
-      'position': point.data,
-    });
+    return firestore
+        .collection('markers')
+        .add({'position': point.data, 'uuid': widget.identity});
   } // writes current location to firestore
 
   Future _populateMarkers(clients) async {
