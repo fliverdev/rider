@@ -6,12 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/credits_page.dart';
 import 'package:rider/services/emergency_call.dart';
-import 'package:rider/services/map.dart';
+import 'package:rider/services/location.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/text_styles.dart';
@@ -24,6 +25,10 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyMapViewPage extends StatefulWidget {
+  final SharedPreferences helper;
+  final String identity;
+  MyMapViewPage({Key key, @required this.helper, @required this.identity})
+      : super(key: key);
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
 }
@@ -33,6 +38,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
     position = _setCurrentLocation();
+    print('UUID is ${widget.identity}');
   } // gets current user location when the app launches
 
   void _onMapCreated(GoogleMapController controller) {
@@ -58,6 +64,16 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     currentLocation = await Geolocator().getCurrentPosition();
     return currentLocation;
   }
+
+  Future<DocumentReference> _writeToDb() async {
+    var currentLocation = getCurrentLocation();
+    GeoFirePoint point = geo.point(
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude);
+    return firestore.collection('markers').add({
+      'position': point.data,
+    });
+  } // writes current location to firestore
 
   Future _populateMarkers(clients) async {
     currentLocation = getCurrentLocation();
@@ -258,7 +274,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // works with markers within 5km
 
   void _fetchMarkersFromDb() {
-    Firestore.instance.collection('locations').getDocuments().then((docs) {
+    Firestore.instance.collection('markers').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         var docLength = docs.documents.length;
         var clients = List(docLength);
@@ -272,7 +288,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   void _deleteMarker(documentId) {
     print('Deleting marker $documentId...');
-    Firestore.instance.collection('locations').document(documentId).delete();
+    Firestore.instance.collection('markers').document(documentId).delete();
     setState(() {
       markers.remove(MarkerId(documentId));
     });
@@ -392,7 +408,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                   isButtonSwiped = true;
                                 });
                                 locationAnimation = 1;
-                                writeToDb();
+                                _writeToDb();
                                 _fetchMarkersFromDb();
                                 animateToCurrentLocation(locationAnimation);
                               }
