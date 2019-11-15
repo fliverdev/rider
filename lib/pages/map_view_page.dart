@@ -185,17 +185,26 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           isMarkerWithinRadius = true;
         }
 
+        if (isMarkerWithinRadius) {
+          if (documentId == widget.identity) {
+            markerColor = 210.0; // blue for own marker
+          } else {
+            markerColor = 147.5; // green for nearby markers
+          }
+        } else {
+          markerColor = 25.0; //red for far away markers
+        }
+
         var marker = Marker(
-            markerId: markerId,
-            position: markerPosition,
-            icon: isMarkerWithinRadius
-                ? BitmapDescriptor.defaultMarkerWithHue(147.5)
-                : BitmapDescriptor.defaultMarkerWithHue(25.0),
-            infoWindow: InfoWindow(
-                title: 'ID: $documentId', snippet: 'Data: $markerData'),
-            onTap: () {
-              _deleteMarker(documentId); // debug
-            });
+          markerId: markerId,
+          position: markerPosition,
+          icon: BitmapDescriptor.defaultMarkerWithHue(markerColor),
+          infoWindow: documentId == widget.identity
+              ? InfoWindow(
+                  title: 'My Marker',
+                )
+              : null, // display info window only for own marker
+        );
 
         setState(() {
           if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
@@ -407,10 +416,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     children: <Widget>[
                       GoogleMap(
                         onMapCreated: _onMapCreated,
-                        mapToolbarEnabled: true,
                         myLocationEnabled: true,
                         myLocationButtonEnabled: false,
                         compassEnabled: false,
+                        mapToolbarEnabled: false,
                         initialCameraPosition: CameraPosition(
                           target: LatLng(currentLocation.latitude,
                               currentLocation.longitude),

@@ -8,6 +8,7 @@ import 'package:rxdart/rxdart.dart';
 
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
+var markerColor;
 var previousMarkersWithinRadius = 0;
 var currentMarkersWithinRadius = 0;
 var allMarkersWithinRadius = [];
