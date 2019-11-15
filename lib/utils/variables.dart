@@ -39,6 +39,7 @@ bool isPermissionButtonVisible = true; // for intro page
 bool isMyMarkerPlotted = false; // if user has already marked location
 bool isMyMarkerFetched = false; // if user has swiped correctly
 bool isMarkerWithinRadius = false; // to identify nearby markers
+bool isMovedAway = false; // to check if user has moved outside hotspot
 
 String permissionStatusMessage = '';
 

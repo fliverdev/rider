@@ -168,16 +168,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       } else {
         if (documentId == widget.identity) {
-          // if my marker, then check if person has moved outside hotspot
+          // if my marker, then check if expired/person has moved
           dynamicCurrentLocation = await Geolocator().getCurrentPosition();
           var dynamicGcd = GreatCircleDistance.fromDegrees(
-            latitude1: dynamicCurrentLocation.latitude.toDouble(),
-            longitude1: dynamicCurrentLocation.longitude.toDouble(),
-            latitude2: markerPosition.latitude.toDouble(),
-            longitude2: markerPosition.longitude.toDouble(),
+            latitude1: markerPosition.latitude.toDouble(),
+            longitude1: markerPosition.longitude.toDouble(),
+            latitude2: dynamicCurrentLocation.latitude.toDouble(),
+            longitude2: dynamicCurrentLocation.longitude.toDouble(),
           ); // distance between my marker and dynamic current location
-          if (hotspotRadius >= dynamicGcd.haversineDistance()) {
+
+          if (dynamicGcd.haversineDistance() >= hotspotRadius) {
             print('You moved outside the hotspot, deleting...');
+            _deleteMarker(documentId);
+
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -211,6 +214,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       _animateToLocation(
                           staticCurrentLocation, locationAnimation);
                       setState(() {
+                        isMovedAway = true;
                         isFirstCycle = true;
                         isButtonSwiped = false;
                         isMyMarkerPlotted = false;
@@ -221,15 +225,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ],
               ),
             );
-          }
-        } else {
-          if (documentId == widget.identity && !isMyMarkerPlotted) {
+          } else if (!isMyMarkerPlotted) {
             print('$documentId is plotted');
             isMyMarkerPlotted = true;
             locationAnimation = 1;
             _animateToLocation(staticCurrentLocation, locationAnimation);
           }
-
+        }
+        if (!isMovedAway) {
           if (hotspotRadius >= staticGcd.haversineDistance()) {
             allMarkersWithinRadius
                 .add(markerId); // contains nearby markers within 100m
@@ -262,8 +265,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               markers[markerId] = marker;
             } // adds markers within 5km only, rest aren't considered at all
           });
+
+          isMarkerWithinRadius = false;
         }
-        isMarkerWithinRadius = false;
       }
     }
 
