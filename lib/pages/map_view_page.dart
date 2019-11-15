@@ -111,6 +111,52 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       if (timeDiff > markerExpireInterval) {
         print('Marker $markerId expired, deleting...');
         _deleteMarker(documentId);
+
+        if (documentId == widget.identity && isButtonSwiped) {
+          // only if you delete your own marker
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              title: Text(
+                'Marker Expired',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.titleStyleLight
+                    : MyTextStyles.titleStyleDark,
+              ),
+              content: Text(
+                'Markers get deleted automatically after 15 minutes.'
+                '\n\nIf you\'re still looking for a taxi, please mark your location again!',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.bodyStyleLight
+                    : MyTextStyles.bodyStyleDark,
+              ),
+              actions: <Widget>[
+                RaisedButton(
+                  child: Text('Okay'),
+                  color: invertColorsTheme(context),
+                  textColor: invertInvertColorsStrong(context),
+                  elevation: 3.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    locationAnimation = 0;
+                    _animateToLocation(currentLocation, locationAnimation);
+                    setState(() {
+                      isFirstCycle = true;
+                      isButtonSwiped = false;
+                      isMyMarkerPlotted = false;
+                    });
+                    // displays swipe button etc. again
+                  },
+                ),
+              ],
+            ),
+          );
+        }
       } else {
         if (documentId == widget.identity && !isMyMarkerPlotted) {
           print('$documentId is plotted');
