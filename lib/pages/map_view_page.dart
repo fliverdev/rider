@@ -529,7 +529,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         label: 'Recenter',
                         labelStyle: MyTextStyles.labelStyle,
                         onTap: () async {
-                          dynamicCurrentLocation =
+                          currentLocation =
                               await Geolocator().getCurrentPosition();
                           locationAnimation == 0
                               ? locationAnimation = 1
