@@ -65,6 +65,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   Future<void> _writeToDb() async {
+    currentLocation = await Geolocator().getCurrentPosition();
     GeoFirePoint geoPoint = geo.point(
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude);
@@ -73,7 +74,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       'position': geoPoint.data,
       'timestamp': DateTime.now(),
     });
-  } // writes current location to firestore
+  } // writes current location & time to firestore
 
   void _fetchMarkersFromDb() {
     Firestore.instance.collection('markers').getDocuments().then((docs) {
@@ -101,54 +102,61 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       var documentId = clients[i].documentID;
       var markerId = MarkerId(documentId);
       var markerData = clients[i].data;
+
       var markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
+      var markerTimestamp = markerData['timestamp'].toDate();
 
-      if (documentId == widget.identity && !isMyMarkerPlotted) {
-        print('$documentId is plotted');
-        isMyMarkerPlotted = true;
-        locationAnimation = 1;
-        _animateToLocation(currentLocation, locationAnimation);
+      var timeDiff = DateTime.now().difference(markerTimestamp);
+      if (timeDiff > markerExpireInterval) {
+        print('Marker $markerId expired, deleting...');
+        _deleteMarker(documentId);
+      } else {
+        if (documentId == widget.identity && !isMyMarkerPlotted) {
+          print('$documentId is plotted');
+          isMyMarkerPlotted = true;
+          locationAnimation = 1;
+          _animateToLocation(currentLocation, locationAnimation);
+        }
+
+        var hotspotGcd = GreatCircleDistance.fromDegrees(
+          latitude1: currentLocation.latitude.toDouble(),
+          longitude1: currentLocation.longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble(),
+        ); // display hotspot for 100m radius
+
+        var displayMarkersGcd = GreatCircleDistance.fromDegrees(
+          latitude1: currentLocation.latitude.toDouble(),
+          longitude1: currentLocation.longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble(),
+        ); // display only markers within 5km
+
+        if (hotspotRadius >= hotspotGcd.haversineDistance()) {
+          allMarkersWithinRadius
+              .add(markerId); // contains nearby markers within 100m
+          isMarkerWithinRadius = true;
+        }
+
+        var marker = Marker(
+            markerId: markerId,
+            position: markerPosition,
+            icon: isMarkerWithinRadius
+                ? BitmapDescriptor.defaultMarkerWithHue(147.5)
+                : BitmapDescriptor.defaultMarkerWithHue(25.0),
+            infoWindow: InfoWindow(
+                title: 'ID: $documentId', snippet: 'Data: $markerData'),
+            onTap: () {
+              _deleteMarker(documentId); // debug
+            });
+
+        setState(() {
+          if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
+            markers[markerId] = marker;
+          } // adds markers within 5km only, rest aren't considered at all
+        });
       }
-
-      var hotspotGcd = GreatCircleDistance.fromDegrees(
-        latitude1: currentLocation.latitude.toDouble(),
-        longitude1: currentLocation.longitude.toDouble(),
-        latitude2: markerPosition.latitude.toDouble(),
-        longitude2: markerPosition.longitude.toDouble(),
-      ); // display hotspot for 100m radius
-
-      var displayMarkersGcd = GreatCircleDistance.fromDegrees(
-        latitude1: currentLocation.latitude.toDouble(),
-        longitude1: currentLocation.longitude.toDouble(),
-        latitude2: markerPosition.latitude.toDouble(),
-        longitude2: markerPosition.longitude.toDouble(),
-      ); // display only markers within 5km
-
-      if (hotspotRadius >= hotspotGcd.haversineDistance()) {
-        allMarkersWithinRadius
-            .add(markerId); // contains nearby markers within 100m
-        isMarkerWithinRadius = true;
-      }
-
-      var marker = Marker(
-          markerId: markerId,
-          position: markerPosition,
-          icon: isMarkerWithinRadius
-              ? BitmapDescriptor.defaultMarkerWithHue(147.5)
-              : BitmapDescriptor.defaultMarkerWithHue(25.0),
-          infoWindow: InfoWindow(
-              title: 'ID: $documentId', snippet: 'Data: $markerData'),
-          onTap: () {
-            _deleteMarker(documentId); // debug
-          });
-
-      setState(() {
-        if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
-          markers[markerId] = marker;
-        } // adds markers within 5km only, rest aren't considered at all
-      });
-
       isMarkerWithinRadius = false;
     }
 

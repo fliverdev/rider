@@ -21,6 +21,8 @@ final displayMarkersRadius = 5000.0; // radius up to which markers are loaded
 
 final markerRefreshInterval =
     Duration(seconds: 5); // timeout to repopulate markers
+final markerExpireInterval =
+    Duration(minutes: 15); // timeout to delete old markers
 
 final GlobalKey<ScaffoldState> scaffoldKey =
     GlobalKey<ScaffoldState>(); // for snackbar
