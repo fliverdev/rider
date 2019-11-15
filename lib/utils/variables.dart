@@ -6,7 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
-var currentLocation;
+var staticCurrentLocation; // set only once
+var dynamicCurrentLocation; // updated every 5 seconds
 var locationAnimation = 0; // used to switch between two kinds of animations
 var markerColor;
 var previousMarkersWithinRadius = 0;
