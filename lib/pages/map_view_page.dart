@@ -585,12 +585,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Recenter',
                         labelStyle: MyTextStyles.labelStyle,
-                        onTap: () {
+                        onTap: () async {
+                          dynamicCurrentLocation =
+                              await Geolocator().getCurrentPosition();
                           locationAnimation == 0
                               ? locationAnimation = 1
                               : locationAnimation = 0;
                           _animateToLocation(
-                              staticCurrentLocation, locationAnimation);
+                              dynamicCurrentLocation, locationAnimation);
                         },
                       ),
                       SpeedDialChild(
