@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,6 +8,7 @@ import 'package:rxdart/rxdart.dart';
 
 var currentLocation;
 var locationAnimation = 0; // used to switch between two kinds of animations
+var markerColor;
 var previousMarkersWithinRadius = 0;
 var currentMarkersWithinRadius = 0;
 var allMarkersWithinRadius = [];
@@ -22,6 +22,8 @@ final displayMarkersRadius = 5000.0; // radius up to which markers are loaded
 
 final markerRefreshInterval =
     Duration(seconds: 5); // timeout to repopulate markers
+final markerExpireInterval =
+    Duration(minutes: 15); // timeout to delete old markers
 
 final GlobalKey<ScaffoldState> scaffoldKey =
     GlobalKey<ScaffoldState>(); // for snackbar
@@ -29,16 +31,17 @@ final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 final Set<Circle> hotspots = {};
 
 bool isFirstLaunch = true; // for dark mode fix
+bool isFirstCycle = true; // don't display swipe button in first cycle
 bool isButtonSwiped = false; // for showing/hiding certain widgets
 bool isPermissionGranted = false; // for location permission
 bool isPermissionButtonVisible = true; // for intro page
-bool isMyMarkerPlotted = false; // if user has swiped correctly
+bool isMyMarkerPlotted = false; // if user has already marked location
+bool isMyMarkerFetched = false; // if user has swiped correctly
 bool isMarkerWithinRadius = false; // to identify nearby markers
 
 String permissionStatusMessage = '';
 
 GoogleMapController mapController;
-Firestore firestore = Firestore.instance;
 StreamSubscription subscription;
 Geoflutterfire geo = Geoflutterfire();
 BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);

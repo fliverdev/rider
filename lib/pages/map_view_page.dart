@@ -6,12 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/credits_page.dart';
 import 'package:rider/services/emergency_call.dart';
-import 'package:rider/services/map.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/text_styles.dart';
@@ -24,6 +24,10 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyMapViewPage extends StatefulWidget {
+  final SharedPreferences helper;
+  final String identity;
+  MyMapViewPage({Key key, @required this.helper, @required this.identity})
+      : super(key: key);
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
 }
@@ -33,6 +37,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void initState() {
     super.initState();
     position = _setCurrentLocation();
+    print('UUID is ${widget.identity}');
   } // gets current user location when the app launches
 
   void _onMapCreated(GoogleMapController controller) {
@@ -59,8 +64,30 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     return currentLocation;
   }
 
+  Future<void> _writeToDb() async {
+    currentLocation = await Geolocator().getCurrentPosition();
+    GeoFirePoint geoPoint = geo.point(
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude);
+
+    Firestore.instance.collection('markers').document(widget.identity).setData({
+      'position': geoPoint.data,
+      'timestamp': DateTime.now(),
+    });
+  } // writes current location & time to firestore
+
+  void _fetchMarkersFromDb() {
+    Firestore.instance.collection('markers').getDocuments().then((docs) {
+      var docLength = docs.documents.length;
+      var clients = List(docLength);
+      for (int i = 0; i < docLength; i++) {
+        clients[i] = docs.documents[i];
+      }
+      _populateMarkers(clients);
+    });
+  } // fetches markers from firestore
+
   Future _populateMarkers(clients) async {
-    currentLocation = getCurrentLocation();
     currentMarkersWithinRadius = allMarkersWithinRadius.length;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isTipShown1 = prefs.getBool('isTipShown1') ?? false;
@@ -75,53 +102,128 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       var documentId = clients[i].documentID;
       var markerId = MarkerId(documentId);
       var markerData = clients[i].data;
+
       var markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
+      var markerTimestamp = markerData['timestamp'].toDate();
 
-      var hotspotGcd = GreatCircleDistance.fromDegrees(
-        latitude1: currentLocation.latitude.toDouble(),
-        longitude1: currentLocation.longitude.toDouble(),
-        latitude2: markerPosition.latitude.toDouble(),
-        longitude2: markerPosition.longitude.toDouble(),
-      ); // display hotspot for 100m radius
+      var timeDiff = DateTime.now().difference(markerTimestamp);
+      if (timeDiff > markerExpireInterval) {
+        print('Marker $markerId expired, deleting...');
+        _deleteMarker(documentId);
 
-      var displayMarkersGcd = GreatCircleDistance.fromDegrees(
-        latitude1: currentLocation.latitude.toDouble(),
-        longitude1: currentLocation.longitude.toDouble(),
-        latitude2: markerPosition.latitude.toDouble(),
-        longitude2: markerPosition.longitude.toDouble(),
-      ); // display only markers within 5km
+        if (documentId == widget.identity && isButtonSwiped) {
+          // only if you delete your own marker
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              title: Text(
+                'Marker Expired',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.titleStyleLight
+                    : MyTextStyles.titleStyleDark,
+              ),
+              content: Text(
+                'Markers get deleted automatically after 15 minutes.'
+                '\n\nIf you\'re still looking for a taxi, please mark your location again!',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.bodyStyleLight
+                    : MyTextStyles.bodyStyleDark,
+              ),
+              actions: <Widget>[
+                RaisedButton(
+                  child: Text('Okay'),
+                  color: invertColorsTheme(context),
+                  textColor: invertInvertColorsStrong(context),
+                  elevation: 3.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    locationAnimation = 0;
+                    _animateToLocation(currentLocation, locationAnimation);
+                    setState(() {
+                      isFirstCycle = true;
+                      isButtonSwiped = false;
+                      isMyMarkerPlotted = false;
+                    });
+                    // displays swipe button etc. again
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+      } else {
+        if (documentId == widget.identity && !isMyMarkerPlotted) {
+          print('$documentId is plotted');
+          isMyMarkerPlotted = true;
+          locationAnimation = 1;
+          _animateToLocation(currentLocation, locationAnimation);
+        }
 
-      if (hotspotRadius >= hotspotGcd.haversineDistance()) {
-        allMarkersWithinRadius
-            .add(markerId); // contains nearby markers within 100m
-        isMarkerWithinRadius = true;
-      }
+        var hotspotGcd = GreatCircleDistance.fromDegrees(
+          latitude1: currentLocation.latitude.toDouble(),
+          longitude1: currentLocation.longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble(),
+        ); // display hotspot for 100m radius
 
-      var marker = Marker(
+        var displayMarkersGcd = GreatCircleDistance.fromDegrees(
+          latitude1: currentLocation.latitude.toDouble(),
+          longitude1: currentLocation.longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble(),
+        ); // display only markers within 5km
+
+        if (hotspotRadius >= hotspotGcd.haversineDistance()) {
+          allMarkersWithinRadius
+              .add(markerId); // contains nearby markers within 100m
+          isMarkerWithinRadius = true;
+        }
+
+        if (isMarkerWithinRadius) {
+          if (documentId == widget.identity) {
+            markerColor = 210.0; // blue for own marker
+          } else {
+            markerColor = 147.5; // green for nearby markers
+          }
+        } else {
+          markerColor = 25.0; //red for far away markers
+        }
+
+        var marker = Marker(
           markerId: markerId,
           position: markerPosition,
-          icon: isMarkerWithinRadius
-              ? BitmapDescriptor.defaultMarkerWithHue(147.5)
-              : BitmapDescriptor.defaultMarkerWithHue(25.0),
-          infoWindow: InfoWindow(
-              title: 'ID: $documentId', snippet: 'Data: $markerData'),
-          onTap: () {
-            _deleteMarker(documentId); // debug
-          });
+          icon: BitmapDescriptor.defaultMarkerWithHue(markerColor),
+          infoWindow: documentId == widget.identity
+              ? InfoWindow(
+                  title: 'My Marker',
+                )
+              : null, // display info window only for own marker
+        );
 
-      setState(() {
-        if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
-          markers[markerId] = marker;
-        } // adds markers within 5km only, rest aren't considered at all
-      });
-
+        setState(() {
+          if (displayMarkersRadius >= displayMarkersGcd.haversineDistance()) {
+            markers[markerId] = marker;
+          } // adds markers within 5km only, rest aren't considered at all
+        });
+      }
       isMarkerWithinRadius = false;
+    }
+
+    if (isFirstCycle) {
+      setState(() {
+        isFirstCycle = false;
+      });
     }
 
     if (isButtonSwiped) {
       // do all this only after user swipes & r/w of markers occurs once
-      if (isMyMarkerPlotted &&
+      if (isMyMarkerFetched &&
           currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
         if (currentMarkersWithinRadius >= 3) {
@@ -174,6 +276,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ),
             );
           }
+          locationAnimation = 1;
+          _animateToLocation(currentLocation, locationAnimation);
         } else {
           // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
@@ -203,7 +307,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ),
                 content: Text(
                   'Drivers get notified when there are 3 or more Riders in the same area.'
-                  '\n\nRight now, there are only ${3 - currentMarkersWithinRadius} other Riders near you, so tell your friends to download the app and mark their locations!',
+                  '\n\nRight now, there are only ${currentMarkersWithinRadius - 1} other Riders near you, so tell your friends to download the app and mark their locations!',
                   style: isThemeCurrentlyDark(context)
                       ? MyTextStyles.bodyStyleLight
                       : MyTextStyles.bodyStyleDark,
@@ -237,7 +341,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         }
       }
-      isMyMarkerPlotted = true; // basically skips it the first time
+      isMyMarkerFetched = true; // basically skips it the first time
     }
 
     if (currentMarkersWithinRadius >= 3) {
@@ -255,28 +359,28 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       });
     }
     previousMarkersWithinRadius = currentMarkersWithinRadius;
-  } // works with markers within 5km
-
-  void _fetchMarkersFromDb() {
-    Firestore.instance.collection('locations').getDocuments().then((docs) {
-      if (docs.documents.isNotEmpty) {
-        var docLength = docs.documents.length;
-        var clients = List(docLength);
-        for (int i = 0; i < docLength; i++) {
-          clients[i] = docs.documents[i];
-        }
-        _populateMarkers(clients);
-      }
-    });
-  } // fetches markers from firestore
+  } // populates & manages markers within 5km
 
   void _deleteMarker(documentId) {
     print('Deleting marker $documentId...');
-    Firestore.instance.collection('locations').document(documentId).delete();
+    Firestore.instance.collection('markers').document(documentId).delete();
     setState(() {
       markers.remove(MarkerId(documentId));
     });
   } // deletes markers from firestore
+
+  void _animateToLocation(location, animation) async {
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(location.latitude, location.longitude),
+          zoom: zoom[animation],
+          bearing: bearing[animation],
+          tilt: tilt[animation],
+        ),
+      ),
+    );
+  } // dat cool animation tho
 
   @override
   Widget build(BuildContext context) {
@@ -312,10 +416,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     children: <Widget>[
                       GoogleMap(
                         onMapCreated: _onMapCreated,
-                        mapToolbarEnabled: true,
                         myLocationEnabled: true,
                         myLocationButtonEnabled: false,
                         compassEnabled: false,
+                        mapToolbarEnabled: false,
                         initialCameraPosition: CameraPosition(
                           target: LatLng(currentLocation.latitude,
                               currentLocation.longitude),
@@ -349,7 +453,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ),
                       Visibility(
-                        visible: !isButtonSwiped,
+                        visible: !isFirstCycle &&
+                            !isButtonSwiped &&
+                            !isMyMarkerPlotted,
                         child: Positioned(
                           top: 40.0,
                           right: 20.0,
@@ -370,7 +476,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         ),
                       ), // displays emergency button before swipe
                       Visibility(
-                        visible: !isButtonSwiped,
+                        visible: !isFirstCycle &&
+                            !isButtonSwiped &&
+                            !isMyMarkerPlotted,
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,
@@ -392,9 +500,10 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                   isButtonSwiped = true;
                                 });
                                 locationAnimation = 1;
-                                writeToDb();
+                                _writeToDb();
                                 _fetchMarkersFromDb();
-                                animateToCurrentLocation(locationAnimation);
+                                _animateToLocation(
+                                    currentLocation, locationAnimation);
                               }
                             },
                           ),
@@ -404,7 +513,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   ),
                 ),
                 floatingActionButton: Visibility(
-                  visible: isButtonSwiped,
+                  visible: isButtonSwiped || isMyMarkerPlotted,
                   child: SpeedDial(
                     heroTag: 'fab',
                     closeManually: false,
@@ -419,13 +528,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Recenter',
                         labelStyle: MyTextStyles.labelStyle,
-                        onTap: () {
-                          if (locationAnimation == 0) {
-                            locationAnimation = 1;
-                          } else if (locationAnimation == 1) {
-                            locationAnimation = 0;
-                          }
-                          animateToCurrentLocation(locationAnimation);
+                        onTap: () async {
+                          currentLocation =
+                              await Geolocator().getCurrentPosition();
+                          locationAnimation == 0
+                              ? locationAnimation = 1
+                              : locationAnimation = 0;
+                          _animateToLocation(
+                              currentLocation, locationAnimation);
                         },
                       ),
                       SpeedDialChild(
@@ -475,7 +585,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                       : MyTextStyles.titleStyleDark,
                                 ),
                                 content: Text(
-                                  'Fliver was developed by three Computer Engineering guys from MPSTME, NMIMS.'
+                                  'Fliver was developed by three Computer Engineering students from MPSTME, NMIMS.'
                                   '\n\nTap anyone\'s name to open up their profile!',
                                   style: isThemeCurrentlyDark(context)
                                       ? MyTextStyles.bodyStyleLight

@@ -11,7 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MyIntroPage extends StatefulWidget {
   final SharedPreferences helper;
   final bool flag;
-  MyIntroPage({Key key, @required this.helper, @required this.flag})
+  final String identity;
+  MyIntroPage(
+      {Key key,
+      @required this.helper,
+      @required this.flag,
+      @required this.identity})
       : super(key: key);
   @override
   _MyIntroPageState createState() => _MyIntroPageState();
@@ -202,13 +207,19 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  onPressed: () {
-                    DynamicTheme.of(context).setBrightness(Brightness.light);
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+
                     widget.helper.setBool('isFirstLaunch', false);
+                    widget.helper.setString('uuid', widget.identity);
+
+                    DynamicTheme.of(context).setBrightness(Brightness.light);
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MyMapViewPage()),
+                            builder: (context) => MyMapViewPage(
+                                helper: prefs, identity: widget.identity)),
                         (Route<dynamic> route) => false);
                   },
                 ),
@@ -271,13 +282,19 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  onPressed: () {
-                    DynamicTheme.of(context).setBrightness(Brightness.dark);
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+
                     widget.helper.setBool('isFirstLaunch', false);
+                    widget.helper.setString('uuid', widget.identity);
+
+                    DynamicTheme.of(context).setBrightness(Brightness.dark);
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MyMapViewPage()),
+                            builder: (context) => MyMapViewPage(
+                                helper: prefs, identity: widget.identity)),
                         (Route<dynamic> route) => false);
                   },
                 ),

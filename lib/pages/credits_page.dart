@@ -211,7 +211,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             FlatButton(
-                              child: Text('Source Code'),
+                              child: Text('GitHub'),
                               textColor: invertColorsStrong(context),
                               shape: RoundedRectangleBorder(
                                   borderRadius:
@@ -225,8 +225,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
-                              onPressed: () =>
-                                  _launchURL('mailto:urmilshroff@gmail.com'),
+                              onPressed: () => _launchURL(
+                                  'mailto:urmilshroff@gmail.com?subject=Fliver Rider feedback'),
                             ),
                           ],
                         ),
