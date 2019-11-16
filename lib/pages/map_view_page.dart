@@ -88,7 +88,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // fetches markers from firestore
 
   Future _populateMarkers(clients) async {
-    currentMarkersWithinRadius = allMarkersWithinRadius.length;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isTipShown1 = prefs.getBool('isTipShown1') ?? false;
     bool isTipShown2 = prefs.getBool('isTipShown2') ?? false;
@@ -161,6 +160,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         if (documentId == widget.identity && !isMyMarkerPlotted) {
           print('$documentId is plotted');
           isMyMarkerPlotted = true;
+//          isButtonSwiped = true;
           locationAnimation = 1;
           _animateToLocation(currentLocation, locationAnimation);
         }
@@ -192,18 +192,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             markerColor = 147.5; // green for nearby markers
           }
         } else {
-          markerColor = 25.0; //red for far away markers
+          markerColor = 22.5; //red for far away markers
         }
 
         var marker = Marker(
           markerId: markerId,
           position: markerPosition,
           icon: BitmapDescriptor.defaultMarkerWithHue(markerColor),
-          infoWindow: documentId == widget.identity
-              ? InfoWindow(
-                  title: 'My Marker',
-                )
-              : null, // display info window only for own marker
         );
 
         setState(() {
@@ -212,6 +207,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           } // adds markers within 5km only, rest aren't considered at all
         });
       }
+      currentMarkersWithinRadius = allMarkersWithinRadius.length;
       isMarkerWithinRadius = false;
     }
 
@@ -226,6 +222,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       if (isMyMarkerFetched &&
           currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
+        print(
+            'Current markers: $currentMarkersWithinRadius, previous markers: $previousMarkersWithinRadius');
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
           scaffoldKey.currentState.showSnackBar(
@@ -359,6 +357,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       });
     }
     previousMarkersWithinRadius = currentMarkersWithinRadius;
+    print('Previous markers: $previousMarkersWithinRadius');
   } // populates & manages markers within 5km
 
   void _deleteMarker(documentId) {
