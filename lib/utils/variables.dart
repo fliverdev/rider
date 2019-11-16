@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
@@ -43,6 +42,5 @@ String permissionStatusMessage = '';
 
 GoogleMapController mapController;
 StreamSubscription subscription;
-Geoflutterfire geo = Geoflutterfire();
 BehaviorSubject<double> circleRadius = BehaviorSubject.seeded(100.0);
 Future<Position> position;

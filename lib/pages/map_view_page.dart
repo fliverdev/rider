@@ -11,8 +11,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/credits_page.dart';
-import 'package:rider/services/emergency_call.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/emergency_call.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
@@ -66,7 +66,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   Future<void> _writeToDb() async {
     currentLocation = await Geolocator().getCurrentPosition();
-    GeoFirePoint geoPoint = geo.point(
+    GeoFirePoint geoPoint = Geoflutterfire().point(
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude);
 
