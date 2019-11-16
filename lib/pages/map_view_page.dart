@@ -167,71 +167,72 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
           );
         }
-      } else if (documentId == widget.identity) {
-        // to check if user is moving
-        dynamicLocation = await Geolocator().getCurrentPosition();
-
-        var dynamicGcd = GreatCircleDistance.fromDegrees(
-          latitude1: dynamicLocation.latitude.toDouble(),
-          longitude1: dynamicLocation.longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble(),
-        ); // distance between dynamic location and my marker
-
-        if (dynamicGcd.haversineDistance() >= hotspotRadius) {
-          print('User moved outside hotspot, deleting...');
-          _deleteMarker(documentId);
-          isMarkerDeleted = true;
-
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              title: Text(
-                'You\'re Moving!',
-                style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.titleStyleLight
-                    : MyTextStyles.titleStyleDark,
-              ),
-              content: Text(
-                'You moved outside your hotspot, so your marker has been deleted.'
-                '\n\nIf you\'re still looking for a taxi, please mark your location again!',
-                style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.bodyStyleLight
-                    : MyTextStyles.bodyStyleDark,
-              ),
-              actions: <Widget>[
-                RaisedButton(
-                  child: Text('Okay'),
-                  color: invertColorsTheme(context),
-                  textColor: invertInvertColorsStrong(context),
-                  elevation: 3.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    locationAnimation = 0;
-                    _animateToLocation(staticLocation, locationAnimation);
-                    setState(() {
-                      isFirstCycle = true;
-                      isButtonSwiped = false;
-                      isMyMarkerPlotted = false;
-                    });
-                    // displays swipe button etc. again
-                  },
-                ),
-              ],
-            ),
-          );
-        }
       }
+//      else if (documentId == widget.identity) {
+//        // to check if user is moving
+//        dynamicLocation = await Geolocator().getCurrentPosition();
+//
+//        var dynamicGcd = GreatCircleDistance.fromDegrees(
+//          latitude1: dynamicLocation.latitude.toDouble(),
+//          longitude1: dynamicLocation.longitude.toDouble(),
+//          latitude2: markerPosition.latitude.toDouble(),
+//          longitude2: markerPosition.longitude.toDouble(),
+//        ); // distance between dynamic location and my marker
+//
+//        if (dynamicGcd.haversineDistance() >= hotspotRadius) {
+//          print('User moved outside hotspot, deleting...');
+//          _deleteMarker(documentId);
+//          isMarkerDeleted = true;
+//
+//          showDialog(
+//            context: context,
+//            barrierDismissible: false,
+//            child: AlertDialog(
+//              shape: RoundedRectangleBorder(
+//                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+//              title: Text(
+//                'You\'re Moving!',
+//                style: isThemeCurrentlyDark(context)
+//                    ? MyTextStyles.titleStyleLight
+//                    : MyTextStyles.titleStyleDark,
+//              ),
+//              content: Text(
+//                'You moved outside your hotspot, so your marker has been deleted.'
+//                '\n\nIf you\'re still looking for a taxi, please mark your location again!',
+//                style: isThemeCurrentlyDark(context)
+//                    ? MyTextStyles.bodyStyleLight
+//                    : MyTextStyles.bodyStyleDark,
+//              ),
+//              actions: <Widget>[
+//                RaisedButton(
+//                  child: Text('Okay'),
+//                  color: invertColorsTheme(context),
+//                  textColor: invertInvertColorsStrong(context),
+//                  elevation: 3.0,
+//                  shape: RoundedRectangleBorder(
+//                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+//                  onPressed: () {
+//                    Navigator.pop(context);
+//                    locationAnimation = 0;
+//                    _animateToLocation(staticLocation, locationAnimation);
+//                    setState(() {
+//                      isFirstCycle = true;
+//                      isButtonSwiped = false;
+//                      isMyMarkerPlotted = false;
+//                    });
+//                    // displays swipe button etc. again
+//                  },
+//                ),
+//              ],
+//            ),
+//          );
+//        }
+//      }
       if (!isMarkerDeleted) {
         if (documentId == widget.identity && !isMyMarkerPlotted) {
           print('$documentId is plotted');
           isMyMarkerPlotted = true;
-//          isButtonSwiped = true;
+          isButtonSwiped = true;
           locationAnimation = 1;
           _animateToLocation(staticLocation, locationAnimation);
         }
@@ -402,7 +403,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     if (currentMarkersWithinRadius >= 3) {
       print('Generating hotspot...');
-
       setState(() {
         hotspots.add(Circle(
           circleId: CircleId(staticLocation.toString()),
