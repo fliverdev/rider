@@ -66,7 +66,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   Future<void> _writeToDb() async {
     staticLocation = await Geolocator().getCurrentPosition();
-    GeoFirePoint geoPoint = geo.point(
+    GeoFirePoint geoPoint = Geoflutterfire().point(
         latitude: staticLocation.latitude, longitude: staticLocation.longitude);
 
     Firestore.instance.collection('markers').document(widget.identity).setData({
