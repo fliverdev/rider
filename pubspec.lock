@@ -150,7 +150,7 @@ packages:
       name: geolocator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.4+1"
+    version: "5.1.5"
   google_api_availability:
     dependency: transitive
     description:
