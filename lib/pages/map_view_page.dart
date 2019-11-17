@@ -245,12 +245,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
         if (isMarkerWithinRadius) {
           if (documentId == widget.identity) {
-            markerColor = 210.0; // blue for own marker
+            markerColor = 218.0; // blue for own marker
           } else {
-            markerColor = 147.5; // green for nearby markers
+            markerColor = 165.0; // green for nearby markers
           }
         } else {
-          markerColor = 22.5; //red for far away markers
+          markerColor = 34.0; //red for far away markers
         }
 
         var marker = Marker(
