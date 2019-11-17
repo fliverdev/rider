@@ -66,7 +66,7 @@ PODS:
   - Flutter (1.0.0)
   - geoflutterfire (0.0.1):
     - Flutter
-  - geolocator (5.1.4):
+  - geolocator (5.1.5):
     - Flutter
   - google_api_availability (2.0.1):
     - Flutter
@@ -228,7 +228,7 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 8b42755db950682e7de0d167bc6fb26a57b244af
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   geoflutterfire: 2a6493e01fb6eef1a6c9046b1baf9a943d0c5ffe
-  geolocator: c98cc4a1f2558c11fa5db0fccad80883cde6eb4f
+  geolocator: 80aba2bb48f8c7dfc5a8b70b9d13fc3edc8399c4
   google_api_availability: 163b30f802e6148c67f092aa4501c90ddd8eec8d
   google_maps_flutter: 78a52114c898b42ea647919679a4c58b70abe876
   GoogleAppMeasurement: 47285fa897e5a125df56b9ef8750a1d81e4598a8
