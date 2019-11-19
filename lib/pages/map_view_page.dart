@@ -89,7 +89,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       for (int i = 0; i < docLength; i++) {
         clients[i] = docs.documents[i];
       }
-      currentLocation = await Geolocator().getCurrentPosition();
+      if (!isFirstCycle) {
+        currentLocation = await Geolocator().getCurrentPosition();
+      }
       _populateMarkers(clients);
     });
   } // fetches markers from firestore
@@ -134,6 +136,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
         if (documentId == widget.identity && isButtonSwiped && !isMoving) {
           // only if you delete your own marker
+          myMarkerLocation = currentLocation;
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -189,6 +192,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         if (currentGcd.haversineDistance() >= hotspotRadius && !isMoving) {
           print('User moved outside hotspot, deleting...');
           _deleteMarker(documentId);
+          myMarkerLocation = currentLocation;
           isMarkerDeleted = true;
           isMoving = true;
 
@@ -411,7 +415,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       isMyMarkerFetched = true; // basically skips it the first time
     }
 
-    if (currentMarkersWithinRadius >= 3) {
+    if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
       print('Generating hotspot...');
       setState(() {
         hotspots.add(Circle(
