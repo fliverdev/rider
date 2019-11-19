@@ -35,12 +35,14 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   @override
   void initState() {
+    print('initState() called');
     super.initState();
     print('UUID is ${widget.identity}');
     position = _setCurrentLocation();
   } // gets current user location when the app launches
 
   void _onMapCreated(GoogleMapController controller) {
+    print('_onMapCreated() called');
     mapController = controller;
 
     if (isFirstLaunch) {
@@ -60,11 +62,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   Future<Position> _setCurrentLocation() async {
+    print('_setCurrentLocation() called');
     currentLocation = await Geolocator().getCurrentPosition();
+    myMarkerLocation = currentLocation;
     return currentLocation;
   }
 
   Future<void> _writeToDb() async {
+    print('_writeToDb() called');
     myMarkerLocation = await Geolocator().getCurrentPosition();
     GeoFirePoint geoPoint = Geoflutterfire().point(
         latitude: myMarkerLocation.latitude,
@@ -77,6 +82,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // writes current location & time to firestore
 
   void _fetchMarkersFromDb() {
+    print('_fetchMarkersFromDb() called');
     Firestore.instance.collection('markers').getDocuments().then((docs) async {
       var docLength = docs.documents.length;
       var clients = List(docLength);
@@ -89,6 +95,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // fetches markers from firestore
 
   Future _populateMarkers(clients) async {
+    print('_populateMarkers() called');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isTipShown1 = prefs.getBool('isTipShown1') ?? false;
     bool isTipShown2 = prefs.getBool('isTipShown2') ?? false;
@@ -99,6 +106,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
+      print('_populateMarkers() loop $i/${clients.length}');
       var documentId = clients[i].documentID;
       var markerId = MarkerId(documentId);
       var markerData = clients[i].data;
@@ -233,6 +241,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           isMyMarkerPlotted = true;
           isButtonSwiped = true;
           locationAnimation = 1;
+          myMarkerLocation = markerPosition;
           _animateToLocation(myMarkerLocation, locationAnimation);
         }
 
@@ -418,6 +427,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // populates & manages markers within 5km
 
   void _deleteMarker(documentId) {
+    print('_deleteMarker() called');
     print('Deleting marker $documentId...');
     Firestore.instance.collection('markers').document(documentId).delete();
     setState(() {
@@ -426,6 +436,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // deletes markers from firestore
 
   void _animateToLocation(location, animation) async {
+    print('_animateToLocation called');
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
@@ -440,6 +451,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('Widget build() called');
     Icon toggleLightsIcon = isThemeCurrentlyDark(context)
         ? Icon(Icons.brightness_7)
         : Icon(Icons.brightness_2);
