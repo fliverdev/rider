@@ -420,7 +420,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           radius: hotspotRadius,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
-          strokeWidth: isIOS(context) ? 8 : 15,
+          strokeWidth: isIOS(context) ? 8 : 20,
         ));
       });
     }
