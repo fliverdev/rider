@@ -34,6 +34,7 @@ bool isFirstCycle = true; // don't display swipe button in first cycle
 bool isButtonSwiped = false; // for showing/hiding certain widgets
 bool isPermissionGranted = false; // for location permission
 bool isPermissionButtonVisible = true; // for intro page
+bool isMoving = false; // to check if moving
 bool isMarkerDeleted = false; // to check if marker was deleted
 bool isMyMarkerPlotted = false; // if user has already marked location
 bool isMyMarkerFetched = false; // if user has swiped correctly

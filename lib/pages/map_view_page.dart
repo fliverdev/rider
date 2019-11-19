@@ -132,7 +132,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         _deleteMarker(documentId);
         isMarkerDeleted = true;
 
-        if (documentId == widget.identity && isButtonSwiped) {
+        if (documentId == widget.identity && isButtonSwiped && !isMoving) {
           // only if you delete your own marker
           showDialog(
             context: context,
@@ -186,10 +186,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           longitude2: markerPosition.longitude.toDouble(),
         ); // distance between current location and my marker
 
-        if (currentGcd.haversineDistance() >= hotspotRadius) {
+        if (currentGcd.haversineDistance() >= hotspotRadius && !isMoving) {
           print('User moved outside hotspot, deleting...');
           _deleteMarker(documentId);
           isMarkerDeleted = true;
+          isMoving = true;
 
           showDialog(
             context: context,
@@ -226,6 +227,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isMoving = false;
                     });
                     // displays swipe button etc. again
                   },
@@ -304,7 +306,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               backgroundColor: MyColors.black,
             ),
           );
-          if (!isTipShown2) {
+          if (!isTipShown2 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown2', true);
             showDialog(
@@ -356,7 +358,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               backgroundColor: MyColors.black,
             ),
           );
-          if (!isTipShown1) {
+          if (!isTipShown1 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown1', true);
             showDialog(
