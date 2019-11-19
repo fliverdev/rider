@@ -35,12 +35,14 @@ class MyMapViewPage extends StatefulWidget {
 class _MyMapViewPageState extends State<MyMapViewPage> {
   @override
   void initState() {
+    print('initState() called');
     super.initState();
-    position = _setCurrentLocation();
     print('UUID is ${widget.identity}');
+    position = _setCurrentLocation();
   } // gets current user location when the app launches
 
   void _onMapCreated(GoogleMapController controller) {
+    print('_onMapCreated() called');
     mapController = controller;
 
     if (isFirstLaunch) {
@@ -60,14 +62,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   }
 
   Future<Position> _setCurrentLocation() async {
-    staticLocation = await Geolocator().getCurrentPosition();
-    return staticLocation;
+    print('_setCurrentLocation() called');
+    currentLocation = await Geolocator().getCurrentPosition();
+    myMarkerLocation = currentLocation;
+    return currentLocation;
   }
 
   Future<void> _writeToDb() async {
-    staticLocation = await Geolocator().getCurrentPosition();
+    print('_writeToDb() called');
+    myMarkerLocation = await Geolocator().getCurrentPosition();
     GeoFirePoint geoPoint = Geoflutterfire().point(
-        latitude: staticLocation.latitude, longitude: staticLocation.longitude);
+        latitude: myMarkerLocation.latitude,
+        longitude: myMarkerLocation.longitude);
 
     Firestore.instance.collection('markers').document(widget.identity).setData({
       'position': geoPoint.data,
@@ -76,17 +82,22 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // writes current location & time to firestore
 
   void _fetchMarkersFromDb() {
-    Firestore.instance.collection('markers').getDocuments().then((docs) {
+    print('_fetchMarkersFromDb() called');
+    Firestore.instance.collection('markers').getDocuments().then((docs) async {
       var docLength = docs.documents.length;
       var clients = List(docLength);
       for (int i = 0; i < docLength; i++) {
         clients[i] = docs.documents[i];
+      }
+      if (!isFirstCycle) {
+        currentLocation = await Geolocator().getCurrentPosition();
       }
       _populateMarkers(clients);
     });
   } // fetches markers from firestore
 
   Future _populateMarkers(clients) async {
+    print('_populateMarkers() called');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isTipShown1 = prefs.getBool('isTipShown1') ?? false;
     bool isTipShown2 = prefs.getBool('isTipShown2') ?? false;
@@ -97,6 +108,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
+      print('_populateMarkers() loop $i/${clients.length}');
       var documentId = clients[i].documentID;
       var markerId = MarkerId(documentId);
       var markerData = clients[i].data;
@@ -107,12 +119,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
       var timeDiff = DateTime.now().difference(markerTimestamp);
 
-      var staticGcd = GreatCircleDistance.fromDegrees(
-        latitude1: staticLocation.latitude.toDouble(),
-        longitude1: staticLocation.longitude.toDouble(),
+      var myMarkerGcd = GreatCircleDistance.fromDegrees(
+        latitude1: myMarkerLocation.latitude.toDouble(),
+        longitude1: myMarkerLocation.longitude.toDouble(),
         latitude2: markerPosition.latitude.toDouble(),
         longitude2: markerPosition.longitude.toDouble(),
-      ); // distance between static location and any marker
+      ); // distance between my marker location and other markers
 
       isMarkerDeleted = false;
 
@@ -122,8 +134,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         _deleteMarker(documentId);
         isMarkerDeleted = true;
 
-        if (documentId == widget.identity && isButtonSwiped) {
+        if (documentId == widget.identity && isButtonSwiped && !isMoving) {
           // only if you delete your own marker
+          myMarkerLocation = currentLocation;
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -154,7 +167,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                   onPressed: () {
                     Navigator.pop(context);
                     locationAnimation = 0;
-                    _animateToLocation(staticLocation, locationAnimation);
+                    _animateToLocation(currentLocation, locationAnimation);
                     setState(() {
                       isFirstCycle = true;
                       isButtonSwiped = false;
@@ -167,79 +180,80 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             ),
           );
         }
+      } else if (documentId == widget.identity) {
+        // to check if user is moving
+        var currentGcd = GreatCircleDistance.fromDegrees(
+          latitude1: currentLocation.latitude.toDouble(),
+          longitude1: currentLocation.longitude.toDouble(),
+          latitude2: markerPosition.latitude.toDouble(),
+          longitude2: markerPosition.longitude.toDouble(),
+        ); // distance between current location and my marker
+
+        if (currentGcd.haversineDistance() >= hotspotRadius && !isMoving) {
+          print('User moved outside hotspot, deleting...');
+          _deleteMarker(documentId);
+          myMarkerLocation = currentLocation;
+          isMarkerDeleted = true;
+          isMoving = true;
+
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              title: Text(
+                'You\'re Moving!',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.titleStyleLight
+                    : MyTextStyles.titleStyleDark,
+              ),
+              content: Text(
+                'You moved outside your hotspot, so your marker has been deleted.'
+                '\n\nIf you\'re still looking for a taxi, please mark your location again!',
+                style: isThemeCurrentlyDark(context)
+                    ? MyTextStyles.bodyStyleLight
+                    : MyTextStyles.bodyStyleDark,
+              ),
+              actions: <Widget>[
+                RaisedButton(
+                  child: Text('Okay'),
+                  color: invertColorsTheme(context),
+                  textColor: invertInvertColorsStrong(context),
+                  elevation: 3.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    locationAnimation = 0;
+                    _animateToLocation(currentLocation, locationAnimation);
+                    setState(() {
+                      isFirstCycle = true;
+                      isButtonSwiped = false;
+                      isMyMarkerPlotted = false;
+                      isMoving = false;
+                    });
+                    // displays swipe button etc. again
+                  },
+                ),
+              ],
+            ),
+          );
+        }
       }
-//      else if (documentId == widget.identity) {
-//        // to check if user is moving
-//        dynamicLocation = await Geolocator().getCurrentPosition();
-//
-//        var dynamicGcd = GreatCircleDistance.fromDegrees(
-//          latitude1: dynamicLocation.latitude.toDouble(),
-//          longitude1: dynamicLocation.longitude.toDouble(),
-//          latitude2: markerPosition.latitude.toDouble(),
-//          longitude2: markerPosition.longitude.toDouble(),
-//        ); // distance between dynamic location and my marker
-//
-//        if (dynamicGcd.haversineDistance() >= hotspotRadius) {
-//          print('User moved outside hotspot, deleting...');
-//          _deleteMarker(documentId);
-//          isMarkerDeleted = true;
-//
-//          showDialog(
-//            context: context,
-//            barrierDismissible: false,
-//            child: AlertDialog(
-//              shape: RoundedRectangleBorder(
-//                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-//              title: Text(
-//                'You\'re Moving!',
-//                style: isThemeCurrentlyDark(context)
-//                    ? MyTextStyles.titleStyleLight
-//                    : MyTextStyles.titleStyleDark,
-//              ),
-//              content: Text(
-//                'You moved outside your hotspot, so your marker has been deleted.'
-//                '\n\nIf you\'re still looking for a taxi, please mark your location again!',
-//                style: isThemeCurrentlyDark(context)
-//                    ? MyTextStyles.bodyStyleLight
-//                    : MyTextStyles.bodyStyleDark,
-//              ),
-//              actions: <Widget>[
-//                RaisedButton(
-//                  child: Text('Okay'),
-//                  color: invertColorsTheme(context),
-//                  textColor: invertInvertColorsStrong(context),
-//                  elevation: 3.0,
-//                  shape: RoundedRectangleBorder(
-//                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-//                  onPressed: () {
-//                    Navigator.pop(context);
-//                    locationAnimation = 0;
-//                    _animateToLocation(staticLocation, locationAnimation);
-//                    setState(() {
-//                      isFirstCycle = true;
-//                      isButtonSwiped = false;
-//                      isMyMarkerPlotted = false;
-//                    });
-//                    // displays swipe button etc. again
-//                  },
-//                ),
-//              ],
-//            ),
-//          );
-//        }
-//      }
       if (!isMarkerDeleted) {
         if (documentId == widget.identity && !isMyMarkerPlotted) {
           print('$documentId is plotted');
           isMyMarkerPlotted = true;
           isButtonSwiped = true;
           locationAnimation = 1;
-          _animateToLocation(staticLocation, locationAnimation);
+          myMarkerLocation = markerPosition;
+          _animateToLocation(myMarkerLocation, locationAnimation);
         }
 
-        if (hotspotRadius >= staticGcd.haversineDistance()) {
+        if (hotspotRadius >= myMarkerGcd.haversineDistance()) {
           allMarkersWithinRadius
-              .add(markerId); // contains nearby markers within 100m
+              .add(markerId); // contains markers near my marker
           isMarkerWithinRadius = true;
         }
 
@@ -260,9 +274,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         );
 
         setState(() {
-          if (displayMarkersRadius >= staticGcd.haversineDistance()) {
+          if (displayMarkersRadius >= myMarkerGcd.haversineDistance()) {
             markers[markerId] = marker;
-          } // adds markers within 5km only, rest aren't considered at all
+          } // adds markers within 5km of my marker
         });
       }
       currentMarkersWithinRadius = allMarkersWithinRadius.length;
@@ -296,7 +310,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               backgroundColor: MyColors.black,
             ),
           );
-          if (!isTipShown2) {
+          if (!isTipShown2 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown2', true);
             showDialog(
@@ -334,7 +348,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             );
           }
           locationAnimation = 1;
-          _animateToLocation(staticLocation, locationAnimation);
+          _animateToLocation(myMarkerLocation, locationAnimation);
         } else {
           // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
@@ -348,7 +362,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               backgroundColor: MyColors.black,
             ),
           );
-          if (!isTipShown1) {
+          if (!isTipShown1 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown1', true);
             showDialog(
@@ -401,16 +415,16 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       isMyMarkerFetched = true; // basically skips it the first time
     }
 
-    if (currentMarkersWithinRadius >= 3) {
+    if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
       print('Generating hotspot...');
       setState(() {
         hotspots.add(Circle(
-          circleId: CircleId(staticLocation.toString()),
-          center: LatLng(staticLocation.latitude, staticLocation.longitude),
+          circleId: CircleId(widget.identity),
+          center: LatLng(myMarkerLocation.latitude, myMarkerLocation.longitude),
           radius: hotspotRadius,
           fillColor: MyColors.translucentColor,
           strokeColor: MyColors.primaryColor,
-          strokeWidth: 15,
+          strokeWidth: isIOS(context) ? 8 : 20,
         ));
       });
     }
@@ -419,6 +433,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // populates & manages markers within 5km
 
   void _deleteMarker(documentId) {
+    print('_deleteMarker() called');
     print('Deleting marker $documentId...');
     Firestore.instance.collection('markers').document(documentId).delete();
     setState(() {
@@ -427,6 +442,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // deletes markers from firestore
 
   void _animateToLocation(location, animation) async {
+    print('_animateToLocation called');
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
@@ -441,6 +457,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('Widget build() called');
     Icon toggleLightsIcon = isThemeCurrentlyDark(context)
         ? Icon(Icons.brightness_7)
         : Icon(Icons.brightness_2);
@@ -478,8 +495,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         compassEnabled: false,
                         mapToolbarEnabled: false,
                         initialCameraPosition: CameraPosition(
-                          target: LatLng(staticLocation.latitude,
-                              staticLocation.longitude),
+                          target: LatLng(currentLocation.latitude,
+                              currentLocation.longitude),
                           zoom: zoom[0],
                           bearing: bearing[0],
                           tilt: tilt[0],
@@ -560,7 +577,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 _writeToDb();
                                 _fetchMarkersFromDb();
                                 _animateToLocation(
-                                    staticLocation, locationAnimation);
+                                    currentLocation, locationAnimation);
                               }
                             },
                           ),
@@ -586,12 +603,13 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         label: 'Recenter',
                         labelStyle: MyTextStyles.labelStyle,
                         onTap: () async {
-                          staticLocation =
+                          currentLocation =
                               await Geolocator().getCurrentPosition();
                           locationAnimation == 0
                               ? locationAnimation = 1
                               : locationAnimation = 0;
-                          _animateToLocation(staticLocation, locationAnimation);
+                          _animateToLocation(
+                              currentLocation, locationAnimation);
                         },
                       ),
                       SpeedDialChild(
@@ -689,11 +707,5 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             }
           });
     });
-  }
-
-  @override
-  void dispose() {
-    subscription.cancel();
-    super.dispose();
   }
 }
