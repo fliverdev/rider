@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
-import 'package:rider/utils/variables.dart';
 import 'package:share/share.dart';
 
 void showNearbyRidersAlert(BuildContext context) {
@@ -41,7 +40,8 @@ void showNearbyRidersAlert(BuildContext context) {
   );
 }
 
-void showNotEnoughRidersAlert(BuildContext context) {
+void showNotEnoughRidersAlert(
+    BuildContext context, currentMarkersWithinRadius) {
   showDialog(
     context: context,
     child: AlertDialog(

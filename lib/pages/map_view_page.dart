@@ -16,7 +16,6 @@ import 'package:rider/utils/emergency_call.dart';
 import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
-import 'package:rider/utils/variables.dart';
 import 'package:rider/widgets/alerts.dart';
 import 'package:rider/widgets/fetching_location.dart';
 import 'package:rider/widgets/no_connection.dart';
@@ -33,6 +32,41 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
+  var currentLocation;
+  var myMarkerLocation;
+  var markerColor;
+  var locationAnimation = 0; // used to switch between 2 kinds of animations
+  var previousMarkersWithinRadius = 0;
+  var currentMarkersWithinRadius = 0;
+  var allMarkersWithinRadius = [];
+
+  final zoom = [15.0, 17.5]; // zoom levels (0/1)
+  final bearing = [0.0, 90.0]; // bearing level (0/1)
+  final tilt = [0.0, 45.0]; // axis tilt (0/1)
+
+  final hotspotRadius = 100.0; // radius that defines if a marker is 'nearby'
+  final displayMarkersRadius = 5000.0; // radius up to which markers are loaded
+
+  final markerRefreshInterval =
+      Duration(seconds: 5); // timeout to repopulate markers
+  final markerExpireInterval =
+      Duration(minutes: 15); // timeout to delete old markers
+
+  bool isFirstLaunch = true; // for dark mode fix
+  bool isFirstCycle = true; // don't display swipe button in first cycle
+  bool isButtonSwiped = false; // for showing/hiding certain widgets
+  bool isMoving = false; // to check if moving
+  bool isMarkerDeleted = false; // to check if marker was deleted
+  bool isMyMarkerPlotted = false; // if user has already marked location
+  bool isMarkerWithinRadius = false; // to identify nearby markers
+
+  GoogleMapController mapController;
+  Future<Position> position;
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  Set<Circle> hotspots = {};
+  GlobalKey<ScaffoldState> scaffoldKey =
+      GlobalKey<ScaffoldState>(); // for snackbar
+
   @override
   void initState() {
     print('initState() called');
@@ -332,7 +366,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown1', true);
-            showNotEnoughRidersAlert(context);
+            showNotEnoughRidersAlert(context, currentMarkersWithinRadius);
           }
         }
       }
@@ -357,7 +391,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         strokeWidth: isIOS(context) ? 8 : 20,
       ));
     });
-  }
+  } // creates and displays a hotspot
 
   void _deleteMarker(documentId) {
     print('_deleteMarker() called');

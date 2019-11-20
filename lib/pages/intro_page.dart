@@ -5,7 +5,6 @@ import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/permission_helper.dart';
 import 'package:rider/utils/text_styles.dart';
-import 'package:rider/utils/variables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyIntroPage extends StatefulWidget {
@@ -23,6 +22,8 @@ class MyIntroPage extends StatefulWidget {
 }
 
 class _MyIntroPageState extends State<MyIntroPage> {
+  String permissionStatusMessage = '';
+  bool isPermissionButtonVisible = true;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.8;
