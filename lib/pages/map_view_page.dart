@@ -339,21 +339,25 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
 
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
-      print('Generating hotspot...');
-      setState(() {
-        hotspots.add(Circle(
-          circleId: CircleId(widget.identity),
-          center: LatLng(myMarkerLocation.latitude, myMarkerLocation.longitude),
-          radius: hotspotRadius,
-          fillColor: MyColors.translucentColor,
-          strokeColor: MyColors.primaryColor,
-          strokeWidth: isIOS(context) ? 8 : 20,
-        ));
-      });
+      _generateHotspot();
     }
     previousMarkersWithinRadius = currentMarkersWithinRadius;
     print('Previous markers: $previousMarkersWithinRadius');
   } // populates & manages markers within 5km
+
+  void _generateHotspot() {
+    print('Generating hotspot...');
+    setState(() {
+      hotspots.add(Circle(
+        circleId: CircleId(widget.identity),
+        center: LatLng(myMarkerLocation.latitude, myMarkerLocation.longitude),
+        radius: hotspotRadius,
+        fillColor: MyColors.translucentColor,
+        strokeColor: MyColors.primaryColor,
+        strokeWidth: isIOS(context) ? 8 : 20,
+      ));
+    });
+  }
 
   void _deleteMarker(documentId) {
     print('_deleteMarker() called');
@@ -364,7 +368,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } // deletes markers from firestore
 
-  void _animateToLocation(location, animation) async {
+  void _animateToLocation(location, animation) {
     print('_animateToLocation called');
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
