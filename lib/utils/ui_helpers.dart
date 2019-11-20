@@ -6,14 +6,6 @@ void doNothing() {
   print('Nothing is happening here (yet)');
 } //better than doing null-ing, right? ;)
 
-bool isIOS(BuildContext context) {
-  if (Theme.of(context).platform == TargetPlatform.iOS) {
-    return true;
-  } else {
-    return false;
-  }
-} // check if android or ios
-
 bool isThemeCurrentlyDark(BuildContext context) {
   if (Theme.of(context).brightness == Brightness.dark) {
     return true;

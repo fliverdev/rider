@@ -1,29 +1,24 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:liquid_swipe/Constants/Helpers.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
-import 'package:rider/utils/permission_helpers.dart';
+import 'package:rider/utils/permission_helper.dart';
 import 'package:rider/utils/text_styles.dart';
+import 'package:rider/utils/variables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyIntroPage extends StatefulWidget {
   final SharedPreferences helper;
   final bool flag;
-  final String identity;
-  MyIntroPage(
-      {Key key,
-      @required this.helper,
-      @required this.flag,
-      @required this.identity})
+  MyIntroPage({Key key, @required this.helper, @required this.flag})
       : super(key: key);
   @override
   _MyIntroPageState createState() => _MyIntroPageState();
 }
 
 class _MyIntroPageState extends State<MyIntroPage> {
-  String permissionStatusMessage = '';
-  bool isPermissionButtonVisible = true;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.8;
@@ -55,7 +50,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 30.0,
+                  height: 40.0,
                 ),
                 Text(
                   'Welcome to Fliver!',
@@ -74,7 +69,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: Colors.white, // TODO: change to MyColors.white
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,7 +94,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     width: 152.0,
                     height: 114.0,
                     child: Image.asset(
-                      'assets/other/marker.gif', // replace with swipe gif
+                      'assets/other/marker.gif',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -108,12 +103,57 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                   Text(
                     'When you want a taxi, just open the app and swipe the button to mark your location.'
-                    '\n\nIf there are 3 or more Riders nearby, a hotspot will be created and Drivers will be notified. Then they\'ll come to pick you and your friends up!'
-                    '\n\nWe need access to your phone\'s location, so please grant it below.',
+                    '\n\nIf there are 3 or more Riders in your area, a hotspot will be created and Drivers will be notified.'
+                    '\n\nThe Drivers will see where there is high demand and will come accordingly to pick you and your friends up!',
+                    style: MyTextStyles.bodyStyleDark,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+      Container(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 100.0,
+                  ),
+                  Text(
+                    'Location Permissions',
+                    style: MyTextStyles.titleStyleDark,
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    width: 120.0,
+                    height: 90.0,
+                    child: Image.asset(
+                      'assets/other/toggle.gif',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    'We need to access your phone\'s location in order to find nearby Riders and notify Drivers when there is demand in your area.'
+                    '\n\nDon\'t worry - we believe in your privacy and keep your location completely anonymous without requiring any additional details or permissions.'
+                    '\n\nThe source code is also available on GitHub, in case you\'re still doubtful😉',
                     style: MyTextStyles.bodyStyleDark,
                   ),
                   SizedBox(
-                    height: 30.0,
+                    height: 20.0,
                   ),
                   Visibility(
                     visible: isPermissionButtonVisible,
@@ -124,19 +164,10 @@ class _MyIntroPageState extends State<MyIntroPage> {
                       elevation: 3.0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                      onPressed: () async {
-                        final requestLocation =
-                            await requestLocationPermission();
-                        final locationChecker = checkLocationPermission();
-                        locationChecker.then((isPermissionGranted) {
-                          isPermissionGranted
-                              ? permissionStatusMessage =
-                                  'Swipe left to continue'
-                              : permissionStatusMessage =
-                                  'Please grant location access!';
-                          setState(() {
-                            isPermissionButtonVisible = false;
-                          });
+                      onPressed: () {
+                        requestLocationPermission();
+                        setState(() {
+                          isPermissionButtonVisible = false;
                         });
                       },
                     ),
@@ -144,7 +175,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   Visibility(
                     visible: !isPermissionButtonVisible,
                     child: Text(
-                      '$permissionStatusMessage',
+                      'Swipe left to continue',
                       style: MyTextStyles.bodyStyleDarkItalic,
                     ),
                   ),
@@ -155,7 +186,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: MyColors.white,
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -208,19 +239,13 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  onPressed: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-
-                    widget.helper.setBool('isFirstLaunch', false);
-                    widget.helper.setString('uuid', widget.identity);
-
+                  onPressed: () {
                     DynamicTheme.of(context).setBrightness(Brightness.light);
+                    widget.helper.setBool('isFirstLaunch', false);
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MyMapViewPage(
-                                helper: prefs, identity: widget.identity)),
+                            builder: (context) => MyMapViewPage()),
                         (Route<dynamic> route) => false);
                   },
                 ),
@@ -283,19 +308,13 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  onPressed: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-
-                    widget.helper.setBool('isFirstLaunch', false);
-                    widget.helper.setString('uuid', widget.identity);
-
+                  onPressed: () {
                     DynamicTheme.of(context).setBrightness(Brightness.dark);
+                    widget.helper.setBool('isFirstLaunch', false);
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MyMapViewPage(
-                                helper: prefs, identity: widget.identity)),
+                            builder: (context) => MyMapViewPage()),
                         (Route<dynamic> route) => false);
                   },
                 ),
@@ -309,12 +328,13 @@ class _MyIntroPageState extends State<MyIntroPage> {
     return LiquidSwipe(
       pages: pages,
       fullTransitionValue: 350.0,
-      enableLoop: false,
+      enableLoop: false, // last screen shouldn't go back to first
       enableSlideIcon: true,
       slideIconWidget: Icon(
         Icons.arrow_back_ios,
-        color: MyColors.black,
+        color: MyColors.black, // gets hidden in dark mode screen
       ),
+      waveType: WaveType.liquidReveal, // another one is circularReveal
     );
   }
 }
