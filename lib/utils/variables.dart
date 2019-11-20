@@ -37,7 +37,6 @@ bool isPermissionButtonVisible = true; // for intro page
 bool isMoving = false; // to check if moving
 bool isMarkerDeleted = false; // to check if marker was deleted
 bool isMyMarkerPlotted = false; // if user has already marked location
-bool isMyMarkerFetched = false; // if user has swiped correctly
 bool isMarkerWithinRadius = false; // to identify nearby markers
 
 String permissionStatusMessage = '';
