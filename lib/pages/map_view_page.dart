@@ -17,10 +17,10 @@ import 'package:rider/utils/map_style.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/utils/variables.dart';
+import 'package:rider/widgets/alerts.dart';
 import 'package:rider/widgets/fetching_location.dart';
 import 'package:rider/widgets/no_connection.dart';
 import 'package:rider/widgets/swipe_button.dart';
-import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -312,39 +312,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown2', true);
-            showDialog(
-              context: context,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                title: Text(
-                  'Nearby Riders',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.titleStyleLight
-                      : MyTextStyles.titleStyleDark,
-                ),
-                content: Text(
-                  'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
-                  '\n\nEach time this threshold is reached, a hotspot is created to notify Drivers of demand so that they can come to pick you and your friends up.',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.bodyStyleLight
-                      : MyTextStyles.bodyStyleDark,
-                ),
-                actions: <Widget>[
-                  RaisedButton(
-                    child: Text('Okay'),
-                    color: invertColorsTheme(context),
-                    textColor: invertInvertColorsStrong(context),
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-            );
+            showNearbyRidersAlert(context);
           }
           locationAnimation = 1;
           _animateToLocation(myMarkerLocation, locationAnimation);
@@ -364,50 +332,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown1', true);
-            showDialog(
-              context: context,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                title: Text(
-                  'Not Enough Riders',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.titleStyleLight
-                      : MyTextStyles.titleStyleDark,
-                ),
-                content: Text(
-                  'Drivers get notified when there are 3 or more Riders in the same area.'
-                  '\n\nRight now, there are only ${currentMarkersWithinRadius - 1} other Riders near you, so tell your friends to download the app and mark their locations!',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.bodyStyleLight
-                      : MyTextStyles.bodyStyleDark,
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Cancel'),
-                    textColor: invertColorsStrong(context),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  RaisedButton(
-                    child: Text('Share'),
-                    color: invertColorsTheme(context),
-                    textColor: invertInvertColorsStrong(context),
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Share.share(
-                          'Download Fliver Rider now and help me get a taxi! https://github.com/fliverdev/rider');
-                    },
-                  ),
-                ],
-              ),
-            );
+            showNotEnoughRidersAlert(context);
           }
         }
       }
