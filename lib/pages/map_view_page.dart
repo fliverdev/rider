@@ -9,7 +9,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/credits_page.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_styles.dart';
@@ -153,12 +152,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
       var timeDiff = DateTime.now().difference(markerTimestamp);
 
-      var myMarkerGcd = GreatCircleDistance.fromDegrees(
-        latitude1: myMarkerLocation.latitude.toDouble(),
-        longitude1: myMarkerLocation.longitude.toDouble(),
-        latitude2: markerPosition.latitude.toDouble(),
-        longitude2: markerPosition.longitude.toDouble(),
-      ); // distance between my marker location and other markers
+      var myMarkerDistance = await Geolocator().distanceBetween(
+        myMarkerLocation.latitude.toDouble(),
+        myMarkerLocation.longitude.toDouble(),
+        markerPosition.latitude.toDouble(),
+        markerPosition.longitude.toDouble(),
+      ); // distance between my marker and other markers
 
       isMarkerDeleted = false;
 
@@ -216,14 +215,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       } else if (documentId == widget.identity) {
         // to check if user is moving
-        var currentGcd = GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude.toDouble(),
-          longitude1: currentLocation.longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble(),
+        var currentLocationDistance = await Geolocator().distanceBetween(
+          currentLocation.latitude.toDouble(),
+          currentLocation.longitude.toDouble(),
+          markerPosition.latitude.toDouble(),
+          markerPosition.longitude.toDouble(),
         ); // distance between current location and my marker
 
-        if (currentGcd.haversineDistance() >= hotspotRadius && !isMoving) {
+        if (currentLocationDistance >= hotspotRadius && !isMoving) {
           print('User moved outside hotspot, deleting...');
           _deleteMarker(documentId);
           myMarkerLocation = currentLocation;
@@ -285,7 +284,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           _animateToLocation(myMarkerLocation, locationAnimation);
         }
 
-        if (hotspotRadius >= myMarkerGcd.haversineDistance()) {
+        if (hotspotRadius >= myMarkerDistance) {
           allMarkersWithinRadius
               .add(markerId); // contains markers near my marker
           isMarkerWithinRadius = true;
@@ -308,7 +307,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         );
 
         setState(() {
-          if (displayMarkersRadius >= myMarkerGcd.haversineDistance()) {
+          if (displayMarkersRadius >= myMarkerDistance) {
             markers[markerId] = marker;
           } // adds markers within 5km of my marker
         });
