@@ -292,8 +292,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     if (isButtonSwiped) {
       // do all this only after user swipes & r/w of markers occurs once
-      if (isMyMarkerFetched &&
-          currentMarkersWithinRadius != previousMarkersWithinRadius) {
+      if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
         print(
             'Current markers: $currentMarkersWithinRadius, previous markers: $previousMarkersWithinRadius');
@@ -412,7 +411,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         }
       }
-      isMyMarkerFetched = true; // basically skips it the first time
     }
 
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
