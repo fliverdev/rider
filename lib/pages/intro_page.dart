@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
-import 'package:rider/utils/permission_helper.dart';
+import 'package:rider/utils/permission_helpers.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
