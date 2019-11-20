@@ -9,18 +9,16 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/pages/credits_page.dart';
 import 'package:rider/utils/colors.dart';
-import 'package:rider/utils/emergency_call.dart';
-import 'package:rider/utils/map_style.dart';
+import 'package:rider/utils/map_styles.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
-import 'package:rider/utils/variables.dart';
+import 'package:rider/widgets/alerts.dart';
+import 'package:rider/widgets/emergency_call.dart';
 import 'package:rider/widgets/fetching_location.dart';
 import 'package:rider/widgets/no_connection.dart';
 import 'package:rider/widgets/swipe_button.dart';
-import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyMapViewPage extends StatefulWidget {
@@ -33,6 +31,41 @@ class MyMapViewPage extends StatefulWidget {
 }
 
 class _MyMapViewPageState extends State<MyMapViewPage> {
+  var currentLocation;
+  var myMarkerLocation;
+  var markerColor;
+  var locationAnimation = 0; // used to switch between 2 kinds of animations
+  var previousMarkersWithinRadius = 0;
+  var currentMarkersWithinRadius = 0;
+  var allMarkersWithinRadius = [];
+
+  final zoom = [15.0, 17.5]; // zoom levels (0/1)
+  final bearing = [0.0, 90.0]; // bearing level (0/1)
+  final tilt = [0.0, 45.0]; // axis tilt (0/1)
+
+  final hotspotRadius = 100.0; // radius that defines if a marker is 'nearby'
+  final displayMarkersRadius = 5000.0; // radius up to which markers are loaded
+
+  final markerRefreshInterval =
+      Duration(seconds: 5); // timeout to repopulate markers
+  final markerExpireInterval =
+      Duration(minutes: 15); // timeout to delete old markers
+
+  bool isFirstLaunch = true; // for dark mode fix
+  bool isFirstCycle = true; // don't display swipe button in first cycle
+  bool isButtonSwiped = false; // for showing/hiding certain widgets
+  bool isMoving = false; // to check if moving
+  bool isMarkerDeleted = false; // to check if marker was deleted
+  bool isMyMarkerPlotted = false; // if user has already marked location
+  bool isMarkerWithinRadius = false; // to identify nearby markers
+
+  GoogleMapController mapController;
+  Future<Position> position;
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  Set<Circle> hotspots = {};
+  GlobalKey<ScaffoldState> scaffoldKey =
+      GlobalKey<ScaffoldState>(); // for snackbar
+
   @override
   void initState() {
     print('initState() called');
@@ -119,12 +152,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
       var timeDiff = DateTime.now().difference(markerTimestamp);
 
-      var myMarkerGcd = GreatCircleDistance.fromDegrees(
-        latitude1: myMarkerLocation.latitude.toDouble(),
-        longitude1: myMarkerLocation.longitude.toDouble(),
-        latitude2: markerPosition.latitude.toDouble(),
-        longitude2: markerPosition.longitude.toDouble(),
-      ); // distance between my marker location and other markers
+      var myMarkerDistance = await Geolocator().distanceBetween(
+        myMarkerLocation.latitude.toDouble(),
+        myMarkerLocation.longitude.toDouble(),
+        markerPosition.latitude.toDouble(),
+        markerPosition.longitude.toDouble(),
+      ); // distance between my marker and other markers
 
       isMarkerDeleted = false;
 
@@ -182,14 +215,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       } else if (documentId == widget.identity) {
         // to check if user is moving
-        var currentGcd = GreatCircleDistance.fromDegrees(
-          latitude1: currentLocation.latitude.toDouble(),
-          longitude1: currentLocation.longitude.toDouble(),
-          latitude2: markerPosition.latitude.toDouble(),
-          longitude2: markerPosition.longitude.toDouble(),
+        var currentLocationDistance = await Geolocator().distanceBetween(
+          currentLocation.latitude.toDouble(),
+          currentLocation.longitude.toDouble(),
+          markerPosition.latitude.toDouble(),
+          markerPosition.longitude.toDouble(),
         ); // distance between current location and my marker
 
-        if (currentGcd.haversineDistance() >= hotspotRadius && !isMoving) {
+        if (currentLocationDistance >= hotspotRadius && !isMoving) {
           print('User moved outside hotspot, deleting...');
           _deleteMarker(documentId);
           myMarkerLocation = currentLocation;
@@ -251,7 +284,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           _animateToLocation(myMarkerLocation, locationAnimation);
         }
 
-        if (hotspotRadius >= myMarkerGcd.haversineDistance()) {
+        if (hotspotRadius >= myMarkerDistance) {
           allMarkersWithinRadius
               .add(markerId); // contains markers near my marker
           isMarkerWithinRadius = true;
@@ -274,7 +307,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         );
 
         setState(() {
-          if (displayMarkersRadius >= myMarkerGcd.haversineDistance()) {
+          if (displayMarkersRadius >= myMarkerDistance) {
             markers[markerId] = marker;
           } // adds markers within 5km of my marker
         });
@@ -312,39 +345,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown2', true);
-            showDialog(
-              context: context,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                title: Text(
-                  'Nearby Riders',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.titleStyleLight
-                      : MyTextStyles.titleStyleDark,
-                ),
-                content: Text(
-                  'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
-                  '\n\nEach time this threshold is reached, a hotspot is created to notify Drivers of demand so that they can come to pick you and your friends up.',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.bodyStyleLight
-                      : MyTextStyles.bodyStyleDark,
-                ),
-                actions: <Widget>[
-                  RaisedButton(
-                    child: Text('Okay'),
-                    color: invertColorsTheme(context),
-                    textColor: invertInvertColorsStrong(context),
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-            );
+            showNearbyRidersAlert(context);
           }
           locationAnimation = 1;
           _animateToLocation(myMarkerLocation, locationAnimation);
@@ -364,71 +365,32 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             prefs.setBool('isTipShown1', true);
-            showDialog(
-              context: context,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                title: Text(
-                  'Not Enough Riders',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.titleStyleLight
-                      : MyTextStyles.titleStyleDark,
-                ),
-                content: Text(
-                  'Drivers get notified when there are 3 or more Riders in the same area.'
-                  '\n\nRight now, there are only ${currentMarkersWithinRadius - 1} other Riders near you, so tell your friends to download the app and mark their locations!',
-                  style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.bodyStyleLight
-                      : MyTextStyles.bodyStyleDark,
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Cancel'),
-                    textColor: invertColorsStrong(context),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  RaisedButton(
-                    child: Text('Share'),
-                    color: invertColorsTheme(context),
-                    textColor: invertInvertColorsStrong(context),
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Share.share(
-                          'Download Fliver Rider now and help me get a taxi! https://github.com/fliverdev/rider');
-                    },
-                  ),
-                ],
-              ),
-            );
+            showNotEnoughRidersAlert(context, currentMarkersWithinRadius);
           }
         }
       }
     }
 
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
-      print('Generating hotspot...');
-      setState(() {
-        hotspots.add(Circle(
-          circleId: CircleId(widget.identity),
-          center: LatLng(myMarkerLocation.latitude, myMarkerLocation.longitude),
-          radius: hotspotRadius,
-          fillColor: MyColors.translucentColor,
-          strokeColor: MyColors.primaryColor,
-          strokeWidth: isIOS(context) ? 8 : 20,
-        ));
-      });
+      _generateHotspot();
     }
     previousMarkersWithinRadius = currentMarkersWithinRadius;
     print('Previous markers: $previousMarkersWithinRadius');
   } // populates & manages markers within 5km
+
+  void _generateHotspot() {
+    print('Generating hotspot...');
+    setState(() {
+      hotspots.add(Circle(
+        circleId: CircleId(widget.identity),
+        center: LatLng(myMarkerLocation.latitude, myMarkerLocation.longitude),
+        radius: hotspotRadius,
+        fillColor: MyColors.translucentColor,
+        strokeColor: MyColors.primaryColor,
+        strokeWidth: isIOS(context) ? 8 : 20,
+      ));
+    });
+  } // creates and displays a hotspot
 
   void _deleteMarker(documentId) {
     print('_deleteMarker() called');
@@ -439,7 +401,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     });
   } // deletes markers from firestore
 
-  void _animateToLocation(location, animation) async {
+  void _animateToLocation(location, animation) {
     print('_animateToLocation called');
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(

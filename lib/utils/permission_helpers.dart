@@ -1,5 +1,4 @@
 import 'package:permission_handler/permission_handler.dart';
-import 'package:rider/utils/variables.dart';
 
 Future<Map<PermissionGroup, PermissionStatus>>
     requestLocationPermission() async {
@@ -9,6 +8,7 @@ Future<Map<PermissionGroup, PermissionStatus>>
 } // return is needed for await (future stuff)
 
 Future<bool> checkLocationPermission() async {
+  bool isPermissionGranted = false;
   PermissionStatus permissionStatus =
       await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
 
