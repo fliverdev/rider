@@ -1,4 +1,4 @@
-<p align="center"><img height="125px" width="125px" src="./branding/rickshaw.png" alt="Fliver Rider"/><img height="125px" width="400" src="./branding/fliver-black.png" alt="Fliver Rider"/></p>
+<p align="center"><img height="110px" width="110px" src="./branding/rickshaw.png" alt="Fliver Rider"/><img height="100px" width="315px" src="./branding/text-black.png" alt="Fliver Rider"/></p>
 
 # Fliver Rider for iOS & Android
 
@@ -7,7 +7,7 @@
 [![Issues](https://img.shields.io/github/issues/fliverdev/rider.svg)](https://github.com/fliverdev/rider/issues)
 [![License](https://img.shields.io/github/license/fliverdev/rider.svg)](https://opensource.org/licenses/GPL-3.0)
 
-Fliver is a smartphone app to help ease the process of getting a taxi. When you need one, simply open the app and swipe the button - that's it. If there are 3 or more Riders within the same area, Drivers will be notified and can come to your spot to pick you up. It's that simple!
+Fliver is a smartphone app to help ease the process of getting a rickshaw. When you need one, simply open the app and swipe the button - that's it. If there are 3 or more Riders within the same area, Drivers will be notified and can come to your spot to pick you up. It's that simple!
 
 This is the Rider app repository for Riders to mark their locations and notify a Driver. It is part of the Final Year Project of a bunch of Computer Engineering students.
 
