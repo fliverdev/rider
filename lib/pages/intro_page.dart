@@ -39,12 +39,15 @@ class _MyIntroPageState extends State<MyIntroPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 150.0,
-                  height: 150.0,
+                  width: 170.0,
+                  height: 54.0,
                   child: Image.asset(
-                    'assets/logo/fliver-black.png',
+                    'assets/logo/text-black.png',
                     fit: BoxFit.cover,
                   ),
+                ),
+                SizedBox(
+                  height: 30.0,
                 ),
                 Container(
                   width: 150.0,
@@ -107,7 +110,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     height: 10.0,
                   ),
                   Text(
-                    'When you want a taxi, just open the app and swipe the button to mark your location.'
+                    'When you want a rickshaw, just open the app and swipe the button to mark your location.'
                     '\n\nIf there are 3 or more Riders nearby, a hotspot will be created and Drivers will be notified. Then they\'ll come to pick you and your friends up!'
                     '\n\nWe need access to your phone\'s location, so please grant it below.',
                     style: MyTextStyles.bodyStyleDark,
@@ -165,12 +168,15 @@ class _MyIntroPageState extends State<MyIntroPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 125.0,
-                  height: 125.0,
+                  width: 150.0,
+                  height: 47.5,
                   child: Image.asset(
-                    'assets/logo/fliver-black.png',
+                    'assets/logo/text-black.png',
                     fit: BoxFit.cover,
                   ),
+                ),
+                SizedBox(
+                  height: 30.0,
                 ),
                 Text(
                   'Select an app theme',
@@ -240,12 +246,15 @@ class _MyIntroPageState extends State<MyIntroPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 125.0,
-                  height: 125.0,
+                  width: 150.0,
+                  height: 47.5,
                   child: Image.asset(
-                    'assets/logo/fliver-green.png',
+                    'assets/logo/text-green.png',
                     fit: BoxFit.cover,
                   ),
+                ),
+                SizedBox(
+                  height: 30.0,
                 ),
                 Text(
                   'Select an app theme',
