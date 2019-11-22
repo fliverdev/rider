@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rider/pages/intro_page.dart';
 import 'package:rider/pages/map_view_page.dart';
+import 'package:rider/pages/onboarding_page.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -21,7 +21,7 @@ class _FirstPageState extends State<FirstPage> {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => MyIntroPage(
+              builder: (context) => MyOnboardingPage(
                     helper: prefs,
                     flag: isFirstLaunch,
                     identity: uuid,

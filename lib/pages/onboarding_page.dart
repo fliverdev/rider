@@ -3,25 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
-import 'package:rider/utils/permission_helpers.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MyIntroPage extends StatefulWidget {
+class MyOnboardingPage extends StatefulWidget {
   final SharedPreferences helper;
   final bool flag;
   final String identity;
-  MyIntroPage(
+  MyOnboardingPage(
       {Key key,
       @required this.helper,
       @required this.flag,
       @required this.identity})
       : super(key: key);
   @override
-  _MyIntroPageState createState() => _MyIntroPageState();
+  _MyOnboardingPageState createState() => _MyOnboardingPageState();
 }
 
-class _MyIntroPageState extends State<MyIntroPage> {
+class _MyOnboardingPageState extends State<MyOnboardingPage> {
   String permissionStatusMessage = '';
   bool isPermissionButtonVisible = true;
   @override
@@ -47,7 +46,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 30.0,
+                  height: 50.0,
                 ),
                 Container(
                   width: 150.0,
@@ -58,7 +57,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 30.0,
+                  height: 50.0,
                 ),
                 Text(
                   'Welcome to Fliver!',
@@ -69,7 +68,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                 ),
                 Text(
                   'Swipe left to get started.',
-                  style: MyTextStyles.bodyStyleDark,
+                  style: MyTextStyles.subTitleStyleDark,
                 ),
               ],
             )
@@ -77,7 +76,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
         ),
       ),
       Container(
-        color: Colors.white, // TODO: change to MyColors.white
+        color: MyColors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,67 +88,105 @@ class _MyIntroPageState extends State<MyIntroPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 100.0,
-                  ),
-                  Text(
-                    'Simple as a Swipe!',
-                    style: MyTextStyles.titleStyleDark,
-                  ),
-                  SizedBox(
-                    height: 10.0,
+                    height: 60.0,
                   ),
                   Container(
-                    width: 152.0,
-                    height: 114.0,
+                    width: 253.0,
+                    height: 120.0,
                     child: Image.asset(
-                      'assets/other/marker.gif', // replace with swipe gif
+                      'assets/other/howto.gif',
                       fit: BoxFit.cover,
                     ),
                   ),
                   SizedBox(
                     height: 10.0,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: 40.0,
+                        height: 40.0,
+                        child: Image.asset(
+                          'assets/other/arrow.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Text(
+                        'Waiting for a rickshaw?',
+                        style: MyTextStyles.subTitleStyleDark,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
                   Text(
-                    'When you want a rickshaw, just open the app and swipe the button to mark your location.'
-                    '\n\nIf there are 3 or more Riders nearby, a hotspot will be created and Drivers will be notified. Then they\'ll come to pick you and your friends up!'
-                    '\n\nWe need access to your phone\'s location, so please grant it below.',
+                    'Just swipe the button to notify Drivers nearby about your location.',
                     style: MyTextStyles.bodyStyleDark,
                   ),
                   SizedBox(
                     height: 30.0,
                   ),
-                  Visibility(
-                    visible: isPermissionButtonVisible,
-                    child: RaisedButton(
-                      child: Text('Grant Access'),
-                      color: MyColors.black,
-                      textColor: MyColors.white,
-                      elevation: 3.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                      onPressed: () async {
-                        final requestLocation =
-                            await requestLocationPermission();
-                        final locationChecker = checkLocationPermission();
-                        locationChecker.then((isPermissionGranted) {
-                          isPermissionGranted
-                              ? permissionStatusMessage =
-                                  'Swipe left to continue'
-                              : permissionStatusMessage =
-                                  'Please grant location access!';
-                          setState(() {
-                            isPermissionButtonVisible = false;
-                          });
-                        });
-                      },
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: 36.0,
+                        height: 42.0,
+                        child: Image.asset(
+                          'assets/other/notification.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Text(
+                        'How are Drivers notified?',
+                        style: MyTextStyles.subTitleStyleDark,
+                      ),
+                    ],
                   ),
-                  Visibility(
-                    visible: !isPermissionButtonVisible,
-                    child: Text(
-                      '$permissionStatusMessage',
-                      style: MyTextStyles.bodyStyleDarkItalic,
-                    ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    'When 3 or more Riders near you mark their location, a hotspot is created and Drivers get notified.',
+                    style: MyTextStyles.bodyStyleDark,
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: 36.0,
+                        height: 42.0,
+                        child: Image.asset(
+                          'assets/other/rickshaw-mini.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Text(
+                        'What\'s next?',
+                        style: MyTextStyles.subTitleStyleDark,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    'Drivers will see the areas of high demand and come accordingly to pick you and others up!',
+                    style: MyTextStyles.bodyStyleDark,
                   ),
                 ],
               ),
