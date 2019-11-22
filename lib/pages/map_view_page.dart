@@ -465,21 +465,21 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         circles: hotspots,
                       ),
                       Positioned(
-                        top: 10.0,
+                        top: 45.0,
                         left: 20.0,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              width: 90.0,
-                              height: 90.0,
+                              width: 95.0,
+                              height: 30.0,
                               child: isThemeCurrentlyDark(context)
                                   ? Image.asset(
-                                      'assets/logo/fliver-green.png',
+                                      'assets/logo/text-green.png',
                                       fit: BoxFit.cover,
                                     )
                                   : Image.asset(
-                                      'assets/logo/fliver-black.png',
+                                      'assets/logo/text-black.png',
                                       fit: BoxFit.cover,
                                     ),
                             ),

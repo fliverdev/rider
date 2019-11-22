@@ -39,12 +39,15 @@ class _MyIntroPageState extends State<MyIntroPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 150.0,
-                  height: 150.0,
+                  width: 170.0,
+                  height: 54.0,
                   child: Image.asset(
-                    'assets/logo/fliver-black.png',
+                    'assets/logo/text-black.png',
                     fit: BoxFit.cover,
                   ),
+                ),
+                SizedBox(
+                  height: 30.0,
                 ),
                 Container(
                   width: 150.0,
@@ -165,12 +168,15 @@ class _MyIntroPageState extends State<MyIntroPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 125.0,
-                  height: 125.0,
+                  width: 150.0,
+                  height: 47.5,
                   child: Image.asset(
-                    'assets/logo/fliver-black.png',
+                    'assets/logo/text-black.png',
                     fit: BoxFit.cover,
                   ),
+                ),
+                SizedBox(
+                  height: 30.0,
                 ),
                 Text(
                   'Select an app theme',
@@ -240,12 +246,15 @@ class _MyIntroPageState extends State<MyIntroPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 125.0,
-                  height: 125.0,
+                  width: 150.0,
+                  height: 47.5,
                   child: Image.asset(
-                    'assets/logo/fliver-green.png',
+                    'assets/logo/text-green.png',
                     fit: BoxFit.cover,
                   ),
+                ),
+                SizedBox(
+                  height: 30.0,
                 ),
                 Text(
                   'Select an app theme',
