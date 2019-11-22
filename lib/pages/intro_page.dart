@@ -110,7 +110,7 @@ class _MyIntroPageState extends State<MyIntroPage> {
                     height: 10.0,
                   ),
                   Text(
-                    'When you want a taxi, just open the app and swipe the button to mark your location.'
+                    'When you want a rickshaw, just open the app and swipe the button to mark your location.'
                     '\n\nIf there are 3 or more Riders nearby, a hotspot will be created and Drivers will be notified. Then they\'ll come to pick you and your friends up!'
                     '\n\nWe need access to your phone\'s location, so please grant it below.',
                     style: MyTextStyles.bodyStyleDark,

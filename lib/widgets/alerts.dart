@@ -80,7 +80,7 @@ void showNotEnoughRidersAlert(
           onPressed: () {
             Navigator.pop(context);
             Share.share(
-                'Download Fliver Rider now and help me get a taxi! https://github.com/fliverdev/rider');
+                'Download Fliver Rider now and help me get a rickshaw! https://github.com/fliverdev/rider');
           },
         ),
       ],
