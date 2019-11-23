@@ -56,4 +56,4 @@ flutter:
 
     - family: AvenirNextRounded
       fonts:
-        - asset: assets/fonts/AvenirNextRounded/AvenirNextRounded-Regular.ttf
+        - asset: assets/fonts/AvenirNextRounded/AvenirNextRounded-Medium.ttf

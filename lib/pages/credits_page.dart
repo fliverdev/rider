@@ -93,8 +93,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'I like developing apps.',
                               style: isThemeCurrentlyDark(context)
-                                  ? BodyStyles.white
-                                  : BodyStyles.black,
+                                  ? BodyStylesItalic.white
+                                  : BodyStylesItalic.black,
                             ),
                           ],
                         ),
@@ -138,8 +138,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'I like to code.',
                               style: isThemeCurrentlyDark(context)
-                                  ? BodyStyles.white
-                                  : BodyStyles.black,
+                                  ? BodyStylesItalic.white
+                                  : BodyStylesItalic.black,
                             ),
                           ],
                         ),
@@ -182,8 +182,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'I like designing UI.',
                               style: isThemeCurrentlyDark(context)
-                                  ? BodyStyles.white
-                                  : BodyStyles.black,
+                                  ? BodyStylesItalic.white
+                                  : BodyStylesItalic.black,
                             ),
                           ],
                         ),
