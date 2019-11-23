@@ -61,18 +61,12 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   height: 50.0,
                 ),
                 Text(
-                  'Welcome to Fliver!',
+                  'Welcome to Fliver!\nSwipe left to get started.',
                   style: TitleStyles.black,
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  'Swipe left to get started.',
-                  style: SubTitleStyles.black,
+                  textAlign: TextAlign.center,
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -89,7 +83,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 60.0,
+                    height: 70.0,
                   ),
                   Container(
                     width: 253.0,
@@ -100,98 +94,143 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 10.0,
+                    height: 20.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        width: 40.0,
-                        height: 40.0,
-                        child: Image.asset(
-                          'assets/other/arrow.png',
-                          fit: BoxFit.cover,
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 36.0,
+                            height: 36.0,
+                            child: Image.asset(
+                              'assets/other/arrow.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         width: 10.0,
                       ),
-                      Text(
-                        'Waiting for a rickshaw?',
-                        style: SubTitleStyles.black,
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Waiting for a Rickshaw?',
+                              style: SubTitleStyles.black,
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Text(
+                              'Swipe the button to notify nearby Drivers about your location.',
+                              style: BodyStyles.black,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    'Just swipe the button to notify Drivers nearby about your location.',
-                    style: BodyStyles.black,
                   ),
                   SizedBox(
                     height: 30.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        width: 36.0,
-                        height: 42.0,
-                        child: Image.asset(
-                          'assets/other/notification.png',
-                          fit: BoxFit.cover,
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 32.0,
+                            height: 38.0,
+                            child: Image.asset(
+                              'assets/other/notification.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         width: 10.0,
                       ),
-                      Text(
-                        'How are Drivers notified?',
-                        style: SubTitleStyles.black,
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'How do Drivers know?',
+                              style: SubTitleStyles.black,
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Text(
+                              'When 3 or more Riders in an area mark their location, a hotspot is created and Drivers get notified.',
+                              style: BodyStyles.black,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    'When 3 or more Riders near you mark their location, a hotspot is created and Drivers get notified.',
-                    style: BodyStyles.black,
                   ),
                   SizedBox(
                     height: 30.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        width: 36.0,
-                        height: 42.0,
-                        child: Image.asset(
-                          'assets/other/rickshaw-mini.png',
-                          fit: BoxFit.cover,
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 32.0,
+                            height: 38.0,
+                            child: Image.asset(
+                              'assets/other/rickshaw-mini.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         width: 10.0,
                       ),
-                      Text(
-                        'What\'s next?',
-                        style: SubTitleStyles.black,
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'What\'s next?',
+                              style: SubTitleStyles.black,
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Text(
+                              'Drivers will see the areas of high demand and come to pick you and your friends up!',
+                              style: BodyStyles.black,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    'Drivers will see the areas of high demand and come accordingly to pick you and others up!',
-                    style: BodyStyles.black,
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

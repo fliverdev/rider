@@ -19,14 +19,17 @@ class TitleStyles {
 class SubTitleStyles {
   static const white = TextStyle(
     fontSize: 18.0,
+    fontWeight: FontWeight.w700,
     color: MyColors.white,
   );
   static const black = TextStyle(
     fontSize: 18.0,
+    fontWeight: FontWeight.w700,
     color: MyColors.black,
   );
   static const primary = TextStyle(
     fontSize: 18.0,
+    fontWeight: FontWeight.w700,
     color: MyColors.primary,
   );
 }
