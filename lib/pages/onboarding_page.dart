@@ -29,7 +29,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
     double width = MediaQuery.of(context).size.width * 0.8;
     final pages = [
       Container(
-        color: MyColors.primaryColor,
+        color: MyColors.primary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,14 +62,14 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                 ),
                 Text(
                   'Welcome to Fliver!',
-                  style: MyTextStyles.titleStyleDark,
+                  style: TitleStyles.black,
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
                 Text(
                   'Swipe left to get started.',
-                  style: MyTextStyles.subTitleStyleDark,
+                  style: SubTitleStyles.black,
                 ),
               ],
             )
@@ -118,7 +118,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       ),
                       Text(
                         'Waiting for a rickshaw?',
-                        style: MyTextStyles.subTitleStyleDark,
+                        style: SubTitleStyles.black,
                       ),
                     ],
                   ),
@@ -127,7 +127,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   ),
                   Text(
                     'Just swipe the button to notify Drivers nearby about your location.',
-                    style: MyTextStyles.bodyStyleDark,
+                    style: BodyStyles.black,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -148,7 +148,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       ),
                       Text(
                         'How are Drivers notified?',
-                        style: MyTextStyles.subTitleStyleDark,
+                        style: SubTitleStyles.black,
                       ),
                     ],
                   ),
@@ -157,7 +157,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   ),
                   Text(
                     'When 3 or more Riders near you mark their location, a hotspot is created and Drivers get notified.',
-                    style: MyTextStyles.bodyStyleDark,
+                    style: BodyStyles.black,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -178,7 +178,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       ),
                       Text(
                         'What\'s next?',
-                        style: MyTextStyles.subTitleStyleDark,
+                        style: SubTitleStyles.black,
                       ),
                     ],
                   ),
@@ -187,126 +187,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   ),
                   Text(
                     'Drivers will see the areas of high demand and come accordingly to pick you and others up!',
-                    style: MyTextStyles.bodyStyleDark,
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-      Container(
-        color: MyColors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 60.0,
-                  ),
-                  Container(
-                    width: 253.0,
-                    height: 120.0,
-                    child: Image.asset(
-                      'assets/other/howto.gif',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: 40.0,
-                        height: 40.0,
-                        child: Image.asset(
-                          'assets/other/arrow.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.0,
-                      ),
-                      Text(
-                        'Waiting for a rickshaw?',
-                        style: MyTextStyles.subTitleStyleDark,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    'Just swipe the button to notify Drivers nearby about your location.',
-                    style: MyTextStyles.bodyStyleDark,
-                  ),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: 36.0,
-                        height: 42.0,
-                        child: Image.asset(
-                          'assets/other/notification.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.0,
-                      ),
-                      Text(
-                        'How are Drivers notified?',
-                        style: MyTextStyles.subTitleStyleDark,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    'When 3 or more Riders near you mark their location, a hotspot is created and Drivers get notified.',
-                    style: MyTextStyles.bodyStyleDark,
-                  ),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: 36.0,
-                        height: 42.0,
-                        child: Image.asset(
-                          'assets/other/rickshaw-mini.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.0,
-                      ),
-                      Text(
-                        'What\'s next?',
-                        style: MyTextStyles.subTitleStyleDark,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    'Drivers will see the areas of high demand and come accordingly to pick you and others up!',
-                    style: MyTextStyles.bodyStyleDark,
+                    style: BodyStyles.black,
                   ),
                 ],
               ),
@@ -331,7 +212,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   ),
                   Text(
                     'Choose a theme',
-                    style: MyTextStyles.titleStyleLight,
+                    style: TitleStyles.white,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -366,7 +247,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   ),
                   RaisedButton(
                     child: Text('Let\'s Go!'),
-                    color: MyColors.primaryColor,
+                    color: MyColors.primary,
                     textColor: MyColors.black,
                     elevation: 3.0,
                     shape: RoundedRectangleBorder(

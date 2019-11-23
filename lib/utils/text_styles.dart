@@ -1,78 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
 
-// use these for any text styling, add more if needed
-// TODO: group three styles per class
+class TitleStyles {
+  static const white = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.w500,
+    color: MyColors.white,
+  );
+  static const black = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.w500,
+    color: MyColors.black,
+  );
+  static const primary = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.w500,
+    color: MyColors.primary,
+  );
+}
 
-class MyTextStyles {
-  static const titleStyleLight = TextStyle(
-    fontSize: 22.0,
-    fontWeight: FontWeight.w700,
+class SubTitleStyles {
+  static const white = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w500,
     color: MyColors.white,
   );
-  static const titleStyleDark = TextStyle(
-    fontSize: 22.0,
-    fontWeight: FontWeight.w700,
+  static const black = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w500,
     color: MyColors.black,
   );
-  static const titleStylePrimary = TextStyle(
-    fontSize: 22.0,
-    fontWeight: FontWeight.w700,
-    color: MyColors.primaryColor,
+  static const primary = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w500,
+    color: MyColors.primary,
   );
+}
 
-  static const subTitleStyleLight = TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.w600,
+class BodyStyles {
+  static const white = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
     color: MyColors.white,
   );
-  static const subTitleStyleDark = TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.w600,
+  static const black = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
     color: MyColors.black,
   );
-  static const subTitleStylePrimary = TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.w600,
-    color: MyColors.primaryColor,
+  static const primary = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w400,
+    color: MyColors.primary,
   );
+}
 
-  static const bodyStyleLight = TextStyle(
-    fontSize: 16.0,
+class LabelStyles {
+  static const white = TextStyle(
+    fontSize: 14.0,
     fontWeight: FontWeight.w400,
     color: MyColors.white,
   );
-  static const bodyStyleDark = TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    color: MyColors.black,
-  );
-  static const bodyStylePrimary = TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    color: MyColors.primaryColor,
-  );
-  static const bodyStyleLightItalic = TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    fontStyle: FontStyle.italic,
-    color: MyColors.white,
-  );
-  static const bodyStyleDarkItalic = TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    fontStyle: FontStyle.italic,
-    color: MyColors.black,
-  );
-  static const bodyStylePrimaryItalic = TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    fontStyle: FontStyle.italic,
-    color: MyColors.primaryColor,
-  );
-  static const labelStyle = TextStyle(
+  static const black = TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.w400,
     color: MyColors.black,
+  );
+  static const primary = TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.w400,
+    color: MyColors.primary,
   );
 }

@@ -24,17 +24,17 @@ bool isThemeCurrentlyDark(BuildContext context) {
 
 Color invertColorsTheme(BuildContext context) {
   if (isThemeCurrentlyDark(context)) {
-    return MyColors.primaryColor;
+    return MyColors.primary;
   } else {
-    return MyColors.accentColor;
+    return MyColors.accent;
   }
 } //returns appropriate theme colors for ui elements
 
 Color invertInvertColorsTheme(BuildContext context) {
   if (isThemeCurrentlyDark(context)) {
-    return MyColors.accentColor;
+    return MyColors.accent;
   } else {
-    return MyColors.primaryColor;
+    return MyColors.primary;
   }
 } //keeps the same colors lol
 
