@@ -83,18 +83,18 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 70.0,
+                    height: 55.0,
                   ),
                   Container(
-                    width: 253.0,
-                    height: 120.0,
+                    width: 295.0,
+                    height: 140.0,
                     child: Image.asset(
                       'assets/other/howto.gif',
                       fit: BoxFit.cover,
                     ),
                   ),
                   SizedBox(
-                    height: 20.0,
+                    height: 15.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
