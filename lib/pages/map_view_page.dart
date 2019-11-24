@@ -57,6 +57,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   bool isMoving = false; // to check if moving
   bool isMarkerDeleted = false; // to check if marker was deleted
   bool isMyMarkerPlotted = false; // if user has already marked location
+  bool isMyMarkerFetched = false; // if user's marker has been fetched
   bool isMarkerWithinRadius = false; // to identify nearby markers
 
   GoogleMapController mapController;
@@ -122,7 +123,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       for (int i = 0; i < docLength; i++) {
         clients[i] = docs.documents[i];
       }
-      if (!isFirstCycle) {
+      if (!isFirstCycle && isMyMarkerFetched) {
         currentLocation = await Geolocator().getCurrentPosition();
       }
       _populateMarkers(clients);
@@ -141,7 +142,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
-      print('_populateMarkers() loop $i/${clients.length}');
+      print('_populateMarkers() loop ${i + 1}/${clients.length}');
       var documentId = clients[i].documentID;
       var markerId = MarkerId(documentId);
       var markerData = clients[i].data;
@@ -275,13 +276,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       }
       if (!isMarkerDeleted) {
-        if (documentId == widget.identity && !isMyMarkerPlotted) {
-          print('$documentId is plotted');
-          isMyMarkerPlotted = true;
-          isButtonSwiped = true;
-          locationAnimation = 1;
-          myMarkerLocation = markerPosition;
-          _animateToLocation(myMarkerLocation, locationAnimation);
+        if (documentId == widget.identity) {
+          // my marker
+          isMyMarkerFetched = true;
+
+          if (!isMyMarkerPlotted) {
+            print('$documentId is plotted');
+            isMyMarkerPlotted = true;
+            isButtonSwiped = true;
+            locationAnimation = 1;
+            myMarkerLocation = markerPosition;
+            _animateToLocation(myMarkerLocation, locationAnimation);
+          }
         }
 
         if (hotspotRadius >= myMarkerDistance) {
@@ -327,8 +333,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       // do all this only after user swipes & r/w of markers occurs once
       if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
-        print(
-            'Current markers: $currentMarkersWithinRadius, previous markers: $previousMarkersWithinRadius');
+        print('Number of markers changed!');
+        print('Current markers: $currentMarkersWithinRadius');
+        print('Previous markers: $previousMarkersWithinRadius');
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
           scaffoldKey.currentState.showSnackBar(
@@ -376,6 +383,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
     previousMarkersWithinRadius = currentMarkersWithinRadius;
     print('Previous markers: $previousMarkersWithinRadius');
+    print('Cycle complete');
   } // populates & manages markers within 5km
 
   void _generateHotspot() {
@@ -395,6 +403,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void _deleteMarker(documentId) {
     print('_deleteMarker() called');
     print('Deleting marker $documentId...');
+    isMyMarkerFetched = false;
     Firestore.instance.collection('markers').document(documentId).delete();
     setState(() {
       markers.remove(MarkerId(documentId));
@@ -563,8 +572,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         label: 'Recenter',
                         labelStyle: LabelStyles.black,
                         onTap: () async {
-                          currentLocation =
-                              await Geolocator().getCurrentPosition();
                           locationAnimation == 0
                               ? locationAnimation = 1
                               : locationAnimation = 0;

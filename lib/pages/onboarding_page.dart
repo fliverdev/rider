@@ -83,7 +83,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 55.0,
+                    height: 60.0,
                   ),
                   Container(
                     width: 295.0,
@@ -94,7 +94,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 15.0,
+                    height: 20.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
