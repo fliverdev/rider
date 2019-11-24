@@ -71,7 +71,7 @@ class SwipeButtonState extends State<SwipeButton>
         children: <Widget>[
           DecoratedBox(
             decoration: BoxDecoration(
-              color: MyColors.accentColor,
+              color: MyColors.accent,
               borderRadius: BorderRadius.all(Radius.circular(50.0)),
             ),
             child: ClipRRect(
@@ -109,7 +109,7 @@ class SwipeButtonState extends State<SwipeButton>
                 height: widget.height,
                 margin: EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                  color: MyColors.primaryColor,
+                  color: MyColors.primary,
                   borderRadius: BorderRadius.all(Radius.circular(50.0)),
                 ),
                 child: widget.thumb,

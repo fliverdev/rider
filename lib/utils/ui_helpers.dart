@@ -14,6 +14,14 @@ bool isIOS(BuildContext context) {
   }
 } // check if android or ios
 
+bool isColorCurrentlyDark(Color dynamicColor) {
+  if (dynamicColor == MyColors.black) {
+    return true;
+  } else {
+    return false;
+  }
+} //returns current color status
+
 bool isThemeCurrentlyDark(BuildContext context) {
   if (Theme.of(context).brightness == Brightness.dark) {
     return true;
@@ -24,17 +32,17 @@ bool isThemeCurrentlyDark(BuildContext context) {
 
 Color invertColorsTheme(BuildContext context) {
   if (isThemeCurrentlyDark(context)) {
-    return MyColors.primaryColor;
+    return MyColors.primary;
   } else {
-    return MyColors.accentColor;
+    return MyColors.accent;
   }
 } //returns appropriate theme colors for ui elements
 
 Color invertInvertColorsTheme(BuildContext context) {
   if (isThemeCurrentlyDark(context)) {
-    return MyColors.accentColor;
+    return MyColors.accent;
   } else {
-    return MyColors.primaryColor;
+    return MyColors.primary;
   }
 } //keeps the same colors lol
 

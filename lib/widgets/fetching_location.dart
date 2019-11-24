@@ -31,8 +31,8 @@ class FetchingLocation extends StatelessWidget {
                 Text(
                   'Fetching location...',
                   style: isThemeCurrentlyDark(context)
-                      ? MyTextStyles.titleStyleLight
-                      : MyTextStyles.titleStyleDark,
+                      ? TitleStyles.white
+                      : TitleStyles.black,
                 ),
               ],
             ),

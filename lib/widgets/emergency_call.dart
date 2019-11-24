@@ -14,8 +14,8 @@ void showEmergencyPopup(BuildContext context) {
           title: Text(
             'Emergency Helpline',
             style: isThemeCurrentlyDark(context)
-                ? MyTextStyles.titleStyleLight
-                : MyTextStyles.titleStyleDark,
+                ? TitleStyles.white
+                : TitleStyles.black,
           ),
           content: Text(
             'You can call Emergency Services or the Regional Transport Office of India to file a complaint in case of accident, rude behaviour of drivers, etc.'
@@ -23,8 +23,8 @@ void showEmergencyPopup(BuildContext context) {
             'guarantee your complaint being lodged as we have no '
             'affiliation with these government organizations.',
             style: isThemeCurrentlyDark(context)
-                ? MyTextStyles.bodyStyleLight
-                : MyTextStyles.bodyStyleDark,
+                ? BodyStyles.white
+                : BodyStyles.black,
           ),
           actions: <Widget>[
             FlatButton(
@@ -38,8 +38,8 @@ void showEmergencyPopup(BuildContext context) {
             ),
             RaisedButton(
               child: Text('RTO'),
-              color: MyColors.primaryColor,
-              textColor: MyColors.accentColor,
+              color: MyColors.primary,
+              textColor: MyColors.accent,
               elevation: 3.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),

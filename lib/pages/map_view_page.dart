@@ -57,6 +57,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   bool isMoving = false; // to check if moving
   bool isMarkerDeleted = false; // to check if marker was deleted
   bool isMyMarkerPlotted = false; // if user has already marked location
+  bool isMyMarkerFetched = false; // if user's marker has been fetched
   bool isMarkerWithinRadius = false; // to identify nearby markers
 
   GoogleMapController mapController;
@@ -122,7 +123,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       for (int i = 0; i < docLength; i++) {
         clients[i] = docs.documents[i];
       }
-      if (!isFirstCycle) {
+      if (!isFirstCycle && isMyMarkerFetched) {
         currentLocation = await Geolocator().getCurrentPosition();
       }
       _populateMarkers(clients);
@@ -141,7 +142,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
-      print('_populateMarkers() loop $i/${clients.length}');
+      print('_populateMarkers() loop ${i + 1}/${clients.length}');
       var documentId = clients[i].documentID;
       var markerId = MarkerId(documentId);
       var markerData = clients[i].data;
@@ -179,15 +180,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               title: Text(
                 'Marker Expired',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.titleStyleLight
-                    : MyTextStyles.titleStyleDark,
+                    ? TitleStyles.white
+                    : TitleStyles.black,
               ),
               content: Text(
                 'Markers get deleted automatically after 15 minutes.'
                 '\n\nIf you\'re still looking for a rickshaw, please mark your location again!',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.bodyStyleLight
-                    : MyTextStyles.bodyStyleDark,
+                    ? BodyStyles.white
+                    : BodyStyles.black,
               ),
               actions: <Widget>[
                 RaisedButton(
@@ -238,15 +239,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               title: Text(
                 'You\'re Moving!',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.titleStyleLight
-                    : MyTextStyles.titleStyleDark,
+                    ? TitleStyles.white
+                    : TitleStyles.black,
               ),
               content: Text(
                 'You moved outside your hotspot, so your marker has been deleted.'
                 '\n\nIf you\'re still looking for a rickshaw, please mark your location again!',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.bodyStyleLight
-                    : MyTextStyles.bodyStyleDark,
+                    ? BodyStyles.white
+                    : BodyStyles.black,
               ),
               actions: <Widget>[
                 RaisedButton(
@@ -275,13 +276,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       }
       if (!isMarkerDeleted) {
-        if (documentId == widget.identity && !isMyMarkerPlotted) {
-          print('$documentId is plotted');
-          isMyMarkerPlotted = true;
-          isButtonSwiped = true;
-          locationAnimation = 1;
-          myMarkerLocation = markerPosition;
-          _animateToLocation(myMarkerLocation, locationAnimation);
+        if (documentId == widget.identity) {
+          // my marker
+          isMyMarkerFetched = true;
+
+          if (!isMyMarkerPlotted) {
+            print('$documentId is plotted');
+            isMyMarkerPlotted = true;
+            isButtonSwiped = true;
+            locationAnimation = 1;
+            myMarkerLocation = markerPosition;
+            _animateToLocation(myMarkerLocation, locationAnimation);
+          }
         }
 
         if (hotspotRadius >= myMarkerDistance) {
@@ -327,8 +333,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
       // do all this only after user swipes & r/w of markers occurs once
       if (currentMarkersWithinRadius != previousMarkersWithinRadius) {
         // if nearby markers increase/decrease
-        print(
-            'Current markers: $currentMarkersWithinRadius, previous markers: $previousMarkersWithinRadius');
+        print('Number of markers changed!');
+        print('Current markers: $currentMarkersWithinRadius');
+        print('Previous markers: $previousMarkersWithinRadius');
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
           scaffoldKey.currentState.showSnackBar(
@@ -336,8 +343,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               content: Text(
                 'There are $currentMarkersWithinRadius Riders in your area!',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.bodyStylePrimaryItalic
-                    : MyTextStyles.bodyStyleLightItalic,
+                    ? BodyStyles.primary
+                    : BodyStyles.white,
               ),
               backgroundColor: MyColors.black,
             ),
@@ -356,8 +363,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               content: Text(
                 'Waiting for ${3 - currentMarkersWithinRadius} more Riders',
                 style: isThemeCurrentlyDark(context)
-                    ? MyTextStyles.bodyStylePrimaryItalic
-                    : MyTextStyles.bodyStyleLightItalic,
+                    ? BodyStyles.primary
+                    : BodyStyles.white,
               ),
               backgroundColor: MyColors.black,
             ),
@@ -376,6 +383,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     }
     previousMarkersWithinRadius = currentMarkersWithinRadius;
     print('Previous markers: $previousMarkersWithinRadius');
+    print('Cycle complete');
   } // populates & manages markers within 5km
 
   void _generateHotspot() {
@@ -385,8 +393,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         circleId: CircleId(widget.identity),
         center: LatLng(myMarkerLocation.latitude, myMarkerLocation.longitude),
         radius: hotspotRadius,
-        fillColor: MyColors.translucentColor,
-        strokeColor: MyColors.primaryColor,
+        fillColor: MyColors.translucent,
+        strokeColor: MyColors.primary,
         strokeWidth: isIOS(context) ? 8 : 20,
       ));
     });
@@ -395,6 +403,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   void _deleteMarker(documentId) {
     print('_deleteMarker() called');
     print('Deleting marker $documentId...');
+    isMyMarkerFetched = false;
     Firestore.instance.collection('markers').document(documentId).delete();
     setState(() {
       markers.remove(MarkerId(documentId));
@@ -500,8 +509,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                               size: 20.0,
                             ),
                             tooltip: 'Emergency',
-                            foregroundColor: MyColors.primaryColor,
-                            backgroundColor: MyColors.accentColor,
+                            foregroundColor: MyColors.primary,
+                            backgroundColor: MyColors.accent,
                             elevation: 5.0,
                             onPressed: () {
                               showEmergencyPopup(context);
@@ -525,7 +534,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             content: Center(
                               child: Text(
                                 'Swipe to mark location       ',
-                                style: MyTextStyles.bodyStyleLight,
+                                style: BodyStyles.white,
                               ),
                             ),
                             onChanged: (result) {
@@ -561,10 +570,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Recenter',
-                        labelStyle: MyTextStyles.labelStyle,
+                        labelStyle: LabelStyles.black,
                         onTap: () async {
-                          currentLocation =
-                              await Geolocator().getCurrentPosition();
                           locationAnimation == 0
                               ? locationAnimation = 1
                               : locationAnimation = 0;
@@ -577,7 +584,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: toggleLightsText,
-                        labelStyle: MyTextStyles.labelStyle,
+                        labelStyle: LabelStyles.black,
                         onTap: () {
                           DynamicTheme.of(context).setBrightness(
                               Theme.of(context).brightness == Brightness.dark
@@ -591,7 +598,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
                         label: 'Credits',
-                        labelStyle: MyTextStyles.labelStyle,
+                        labelStyle: LabelStyles.black,
                         onTap: () async {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
@@ -615,15 +622,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 title: Text(
                                   'Credits',
                                   style: isThemeCurrentlyDark(context)
-                                      ? MyTextStyles.titleStyleLight
-                                      : MyTextStyles.titleStyleDark,
+                                      ? TitleStyles.white
+                                      : TitleStyles.black,
                                 ),
                                 content: Text(
                                   'Fliver was developed by three Computer Engineering students from MPSTME, NMIMS.'
                                   '\n\nTap anyone\'s name to open up their profile!',
                                   style: isThemeCurrentlyDark(context)
-                                      ? MyTextStyles.bodyStyleLight
-                                      : MyTextStyles.bodyStyleDark,
+                                      ? BodyStyles.white
+                                      : BodyStyles.black,
                                 ),
                                 actions: <Widget>[
                                   RaisedButton(
@@ -655,7 +662,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         foregroundColor: MyColors.white,
                         backgroundColor: MaterialColors.red,
                         label: 'Emergency',
-                        labelStyle: MyTextStyles.labelStyle,
+                        labelStyle: LabelStyles.black,
                         onTap: () {
                           showEmergencyPopup(context);
                         },

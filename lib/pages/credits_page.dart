@@ -48,8 +48,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                   Text(
                     'Credits',
                     style: isThemeCurrentlyDark(context)
-                        ? MyTextStyles.titleStyleLight
-                        : MyTextStyles.titleStyleDark,
+                        ? TitleStyles.white
+                        : TitleStyles.black,
                   ),
                 ],
               ),
@@ -84,8 +84,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'Urmil Shroff',
                               style: isThemeCurrentlyDark(context)
-                                  ? MyTextStyles.titleStyleLight
-                                  : MyTextStyles.titleStyleDark,
+                                  ? TitleStyles.white
+                                  : TitleStyles.black,
                             ),
                             SizedBox(
                               height: 5.0,
@@ -93,14 +93,14 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'I like developing apps.',
                               style: isThemeCurrentlyDark(context)
-                                  ? MyTextStyles.bodyStyleLightItalic
-                                  : MyTextStyles.bodyStyleDarkItalic,
+                                  ? BodyStylesItalic.white
+                                  : BodyStylesItalic.black,
                             ),
                           ],
                         ),
                       ],
                     ),
-                    splashColor: MyColors.primaryColor,
+                    splashColor: MyColors.primary,
                     onTap: () => _launchURL('https://urmilshroff.tech'),
                   ),
                   SexyTile(
@@ -129,8 +129,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'Priyansh Ramnani',
                               style: isThemeCurrentlyDark(context)
-                                  ? MyTextStyles.titleStyleLight
-                                  : MyTextStyles.titleStyleDark,
+                                  ? TitleStyles.white
+                                  : TitleStyles.black,
                             ),
                             SizedBox(
                               height: 5.0,
@@ -138,14 +138,14 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'I like to code.',
                               style: isThemeCurrentlyDark(context)
-                                  ? MyTextStyles.bodyStyleLightItalic
-                                  : MyTextStyles.bodyStyleDarkItalic,
+                                  ? BodyStylesItalic.white
+                                  : BodyStylesItalic.black,
                             ),
                           ],
                         ),
                       ],
                     ),
-                    splashColor: MyColors.primaryColor,
+                    splashColor: MyColors.primary,
                     onTap: () => _launchURL('https://github.com/prince1998'),
                   ),
                   SexyTile(
@@ -173,8 +173,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'Vinay Kolwankar',
                               style: isThemeCurrentlyDark(context)
-                                  ? MyTextStyles.titleStyleLight
-                                  : MyTextStyles.titleStyleDark,
+                                  ? TitleStyles.white
+                                  : TitleStyles.black,
                             ),
                             SizedBox(
                               height: 5.0,
@@ -182,14 +182,14 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                             Text(
                               'I like designing UI.',
                               style: isThemeCurrentlyDark(context)
-                                  ? MyTextStyles.bodyStyleLightItalic
-                                  : MyTextStyles.bodyStyleDarkItalic,
+                                  ? BodyStylesItalic.white
+                                  : BodyStylesItalic.black,
                             ),
                           ],
                         ),
                       ],
                     ),
-                    splashColor: MyColors.primaryColor,
+                    splashColor: MyColors.primary,
                     onTap: () => _launchURL('http://www.decaf.co.in'),
                   ),
                   Container(
@@ -202,8 +202,8 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                           '\nCompletely free & Open Source'
                           '\nMade with ❤️ in Mumbai, India',
                           style: isThemeCurrentlyDark(context)
-                              ? MyTextStyles.bodyStyleLight
-                              : MyTextStyles.bodyStyleDark,
+                              ? BodyStyles.white
+                              : BodyStyles.black,
                           textAlign: TextAlign.center,
                         ),
                         Row(

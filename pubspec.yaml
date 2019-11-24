@@ -50,6 +50,6 @@ flutter:
      - assets/other/
 
   fonts:
-    - family: LexendDeca
+    - family: AvenirNextRounded
       fonts:
-        - asset: assets/fonts/LexendDeca/LexendDeca-Regular.ttf
+        - asset: assets/fonts/AvenirNextRounded/AvenirNextRounded-Medium.ttf

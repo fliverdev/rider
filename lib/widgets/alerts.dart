@@ -13,15 +13,14 @@ void showNearbyRidersAlert(BuildContext context) {
       title: Text(
         'Nearby Riders',
         style: isThemeCurrentlyDark(context)
-            ? MyTextStyles.titleStyleLight
-            : MyTextStyles.titleStyleDark,
+            ? TitleStyles.white
+            : TitleStyles.black,
       ),
       content: Text(
         'Congratulations! Looks like there are 3 or more Fliver Riders in your area.'
         '\n\nEach time this threshold is reached, a hotspot is created to notify Drivers of demand so that they can come to pick you and your friends up.',
-        style: isThemeCurrentlyDark(context)
-            ? MyTextStyles.bodyStyleLight
-            : MyTextStyles.bodyStyleDark,
+        style:
+            isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
       ),
       actions: <Widget>[
         RaisedButton(
@@ -50,15 +49,14 @@ void showNotEnoughRidersAlert(
       title: Text(
         'Not Enough Riders',
         style: isThemeCurrentlyDark(context)
-            ? MyTextStyles.titleStyleLight
-            : MyTextStyles.titleStyleDark,
+            ? TitleStyles.white
+            : TitleStyles.black,
       ),
       content: Text(
         'Drivers get notified when there are 3 or more Riders in the same area.'
         '\n\nRight now, there are only ${currentMarkersWithinRadius - 1} other Riders near you, so tell your friends to download the app and mark their locations!',
-        style: isThemeCurrentlyDark(context)
-            ? MyTextStyles.bodyStyleLight
-            : MyTextStyles.bodyStyleDark,
+        style:
+            isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
       ),
       actions: <Widget>[
         FlatButton(
