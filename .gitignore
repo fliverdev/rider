@@ -76,3 +76,4 @@ ios/Flutter/flutter_export_environment.sh
 ios/Podfile.lock
 ios/Runner.xcodeproj/project.pbxproj
 ios/Flutter/Flutter.podspec
+.flutter-plugins-dependencies

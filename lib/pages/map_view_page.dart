@@ -335,7 +335,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         // if nearby markers increase/decrease
         print('Number of markers changed!');
         print('Current markers: $currentMarkersWithinRadius');
-        print('Previous markers: $previousMarkersWithinRadius');
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
           scaffoldKey.currentState.showSnackBar(
@@ -381,9 +380,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
       _generateHotspot();
     }
-    previousMarkersWithinRadius = currentMarkersWithinRadius;
     print('Previous markers: $previousMarkersWithinRadius');
     print('Cycle complete');
+    previousMarkersWithinRadius = currentMarkersWithinRadius;
   } // populates & manages markers within 5km
 
   void _generateHotspot() {
