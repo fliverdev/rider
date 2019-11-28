@@ -316,6 +316,9 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       color: isColorCurrentlyDark(dynamicColor)
                           ? MyColors.primary
                           : MyColors.black,
+                      splashColor: isColorCurrentlyDark(dynamicColor)
+                          ? MyColors.black
+                          : MyColors.primary,
                       elevation: 3.0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50.0)),
