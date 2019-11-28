@@ -14,6 +14,14 @@ bool isIOS(BuildContext context) {
   }
 } // check if android or ios
 
+bool isColorCurrentlyDark(Color dynamicColor) {
+  if (dynamicColor == MyColors.black) {
+    return true;
+  } else {
+    return false;
+  }
+} //returns current color status
+
 bool isThemeCurrentlyDark(BuildContext context) {
   if (Theme.of(context).brightness == Brightness.dark) {
     return true;

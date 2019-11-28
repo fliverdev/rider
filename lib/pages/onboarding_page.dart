@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
+import 'package:rider/utils/ui_helpers.dart';
+import 'package:rider/widgets/sexy_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'map_view_page.dart';
@@ -22,8 +24,7 @@ class MyOnboardingPage extends StatefulWidget {
 }
 
 class _MyOnboardingPageState extends State<MyOnboardingPage> {
-  String permissionStatusMessage = '';
-  bool isPermissionButtonVisible = true;
+  Color dynamicColor = MyColors.black;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.8;
@@ -83,11 +84,11 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 70.0,
+                    height: 60.0,
                   ),
                   Container(
-                    width: 253.0,
-                    height: 120.0,
+                    width: 295.0,
+                    height: 140.0,
                     child: Image.asset(
                       'assets/other/howto.gif',
                       fit: BoxFit.cover,
@@ -235,7 +236,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
         ),
       ),
       Container(
-        color: MyColors.black,
+        color: dynamicColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -251,61 +252,94 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   ),
                   Text(
                     'Choose a theme',
-                    style: TitleStyles.white,
+                    style: isColorCurrentlyDark(dynamicColor)
+                        ? TitleStyles.white
+                        : TitleStyles.black,
                   ),
                   SizedBox(
-                    height: 30.0,
+                    height: 20.0,
                   ),
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Container(
-                        width: 250.0,
-                        height: 180.0,
-                        child: Image.asset(
-                          'assets/other/light.png',
-                          fit: BoxFit.cover,
+                      SexyTile(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: Image.asset(
+                            'assets/other/light.png',
+                            fit: BoxFit.cover,
+                            width: 250.0,
+                            height: 180.0,
+                          ),
                         ),
+                        onTap: () {
+                          setState(() {
+                            dynamicColor = MyColors.white;
+                          });
+                        },
                       ),
                       SizedBox(
-                        height: 30.0,
+                        height: 10.0,
                       ),
-                      Container(
-                        width: 250.0,
-                        height: 180.0,
-                        child: Image.asset(
-                          'assets/other/dark.png',
-                          fit: BoxFit.cover,
+                      SexyTile(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: Image.asset(
+                            'assets/other/dark.png',
+                            fit: BoxFit.cover,
+                            width: 250.0,
+                            height: 180.0,
+                          ),
                         ),
+                        onTap: () {
+                          setState(() {
+                            dynamicColor = MyColors.black;
+                          });
+                        },
                       ),
                     ],
                   ),
                   SizedBox(
                     height: 30.0,
                   ),
-                  RaisedButton(
-                    child: Text('Let\'s Go!'),
-                    color: MyColors.primary,
-                    textColor: MyColors.black,
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
+                  ButtonTheme(
+                    height: 50.0,
+                    minWidth: 180.0,
+                    child: RaisedButton(
+                      child: Text(
+                        'Let\'s Go!',
+                        style: isColorCurrentlyDark(dynamicColor)
+                            ? BodyStyles.black
+                            : BodyStyles.white,
+                      ),
+                      color: isColorCurrentlyDark(dynamicColor)
+                          ? MyColors.primary
+                          : MyColors.black,
+                      elevation: 3.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                      ),
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
 
-                      widget.helper.setBool('isFirstLaunch', false);
-                      widget.helper.setString('uuid', widget.identity);
+                        widget.helper.setBool('isFirstLaunch', false);
+                        widget.helper.setString('uuid', widget.identity);
 
-                      DynamicTheme.of(context).setBrightness(Brightness.dark);
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MyMapViewPage(
-                                  helper: prefs, identity: widget.identity)),
-                          (Route<dynamic> route) => false);
-                    },
+                        DynamicTheme.of(context).setBrightness(
+                            isColorCurrentlyDark(dynamicColor)
+                                ? Brightness.dark
+                                : Brightness.light);
+
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyMapViewPage(
+                                    helper: prefs, identity: widget.identity)),
+                            (Route<dynamic> route) => false);
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -322,7 +356,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
       enableSlideIcon: true,
       slideIconWidget: Icon(
         Icons.arrow_back_ios,
-        color: MyColors.black,
+        color: dynamicColor,
       ),
     );
   }
