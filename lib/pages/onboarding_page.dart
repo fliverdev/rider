@@ -324,9 +324,6 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                         borderRadius: BorderRadius.all(Radius.circular(50.0)),
                       ),
                       onPressed: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-
                         widget.helper.setBool('isFirstLaunch', false);
                         widget.helper.setString('uuid', widget.identity);
 
@@ -339,7 +336,8 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MyMapViewPage(
-                                    helper: prefs, identity: widget.identity)),
+                                    helper: widget.helper,
+                                    identity: widget.identity)),
                             (Route<dynamic> route) => false);
                       },
                     ),

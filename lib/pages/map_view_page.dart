@@ -132,9 +132,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
   Future _populateMarkers(clients) async {
     print('_populateMarkers() called');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isTipShown1 = prefs.getBool('isTipShown1') ?? false;
-    bool isTipShown2 = prefs.getBool('isTipShown2') ?? false;
+    bool isTipShown1 = widget.helper.getBool('isTipShown1') ?? false;
+    bool isTipShown2 = widget.helper.getBool('isTipShown2') ?? false;
 
     hotspots.clear();
     markers.clear();
@@ -350,7 +349,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           );
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
-            prefs.setBool('isTipShown2', true);
+            widget.helper.setBool('isTipShown2', true);
             showNearbyRidersAlert(context);
           }
           locationAnimation = 1;
@@ -370,7 +369,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           );
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
-            prefs.setBool('isTipShown1', true);
+            widget.helper.setBool('isTipShown1', true);
             showNotEnoughRidersAlert(context, currentMarkersWithinRadius);
           }
         }
@@ -599,10 +598,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         label: 'Credits',
                         labelStyle: LabelStyles.black,
                         onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
                           bool isTipShown3 =
-                              prefs.getBool('isTipShown3') ?? false;
+                              widget.helper.getBool('isTipShown3') ?? false;
 
                           if (isTipShown3) {
                             Navigator.push(context,
@@ -611,7 +608,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             }));
                           } else {
                             // display a tip only once
-                            prefs.setBool('isTipShown3', true);
+                            widget.helper.setBool('isTipShown3', true);
                             showDialog(
                               context: context,
                               child: AlertDialog(
