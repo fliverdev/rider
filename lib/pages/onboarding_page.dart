@@ -1,13 +1,13 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
+import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/notification_helpers.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/sexy_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'map_view_page.dart';
 
 class MyOnboardingPage extends StatefulWidget {
   final SharedPreferences helper;
@@ -232,6 +232,45 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+      Container(
+        color: MyColors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 60.0,
+                  ),
+                  Text(
+                    'Get Reminders',
+                    style: TitleStyles.black,
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  RaisedButton(
+                    child: Text('Pick Time'),
+                    color: MyColors.black,
+                    textColor: MyColors.white,
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () async {
+                      await createDailyNotification(context);
+                    },
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

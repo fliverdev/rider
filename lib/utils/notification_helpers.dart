@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+FlutterLocalNotificationsPlugin notificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 Future<void> initNotifications() async {
   print('initNotifications() called');
-
-  FlutterLocalNotificationsPlugin notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   var initSettingsAndroid = AndroidInitializationSettings('app_icon');
   var initSettingsIOS = IOSInitializationSettings();
@@ -23,45 +24,50 @@ Future<void> initNotifications() async {
   await notificationsPlugin.show(
       0, 'Notification Title', 'Notification Body', platformChannelSpecifics,
       payload: 'notification payload');
-//  await Navigator.push(
-//    context,
-//    new MaterialPageRoute(builder: (context) => SecondScreen(payload)),
-//  );
-//  var scheduledNotificationTime =
-//      Time(selectedTime.hour, selectedTime.minute, 0);
-//
-//  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-//      "goalNotificationChannelId",
-//      "Goal Deadlines",
-//      "Reminders to complete your goals in time",
-//      importance: Importance.Max,
-//      priority: Priority.High,
-//      ticker: 'ticker',
-//      icon: '@mipmap/ic_launcher',
-//      largeIcon: '@mipmap/ic_launcher',
-//      largeIconBitmapSource: BitmapSource.Drawable);
-//
-//  var iosPlatformChannelSpecifics = IOSNotificationDetails();
-//
-//  var platformChannelSpecifics = NotificationDetails(
-//      androidPlatformChannelSpecifics, iosPlatformChannelSpecifics);
-//
-//  await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
-//      0,
-//      "Reminder: $goalTitle",
-//      "Hope you're working on completing your goal!",
-//      Day.Wednesday,
-//      scheduledNotificationTime,
-//      platformChannelSpecifics);
-//
-//  var time = Time(0, 40, 0);
-//  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-//      'repeatDailyAtTime channel id',
-//      'repeatDailyAtTime channel name',
-//      'repeatDailyAtTime description');
-//  var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-//  var platformChannelSpecifics = NotificationDetails(
-//      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-//  await flutterLocalNotificationsPlugin.showDailyAtTime(0, 'Ride with Fliver!',
-//      'Daily notification shown!', time, platformChannelSpecifics);
+}
+
+Future<TimeOfDay> pickTime(BuildContext context, TimeOfDay selectedTime) async {
+  print('pickTime() called');
+
+  TimeOfDay pickedTime = await showTimePicker(
+    context: context,
+    initialTime: selectedTime,
+  );
+  if (pickedTime != null) {
+    selectedTime = pickedTime;
+  }
+  return selectedTime;
+}
+
+Future<void> createDailyNotification(BuildContext context) async {
+  print('createDailyNotification() called');
+
+  TimeOfDay selectedTime = TimeOfDay.now(); // initial time is current time
+  selectedTime = await pickTime(context, selectedTime);
+  var notificationTime = Time(selectedTime.hour, selectedTime.minute, 0);
+
+  print('selectedTime: $selectedTime, notificationTime: $notificationTime');
+
+  var androidSpecifics = AndroidNotificationDetails(
+    'notificationChannelId',
+    'Location Marking Suggestions',
+    'Reminders to mark your location when you usually need a Rickshaw',
+    importance: Importance.High,
+    priority: Priority.High,
+    ticker: 'ticker',
+    icon: 'app_icon',
+  );
+  var iOSSpecifics = IOSNotificationDetails();
+
+  var platformChannelSpecifics =
+      NotificationDetails(androidSpecifics, iOSSpecifics);
+
+  await notificationsPlugin.showWeeklyAtDayAndTime(
+    0,
+    'Looking for a Rickshaw?',
+    'Open Fliver and mark your location!',
+    Day.Sunday, // TODO: replace with selectedDay
+    notificationTime,
+    platformChannelSpecifics,
+  );
 }
