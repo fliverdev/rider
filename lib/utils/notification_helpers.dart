@@ -18,12 +18,18 @@ Future<void> initNotifications() async {
       'your channel id', 'your channel name', 'your channel description',
       importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
   var iOSSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics =
-      NotificationDetails(androidSpecifics, iOSSpecifics);
+  var platformSpecifics = NotificationDetails(androidSpecifics, iOSSpecifics);
 
-  await notificationsPlugin.show(
-      0, 'Notification Title', 'Notification Body', platformChannelSpecifics,
-      payload: 'notification payload');
+//  await notificationsPlugin.show(
+//      0, 'Notification Title', 'Notification Body', platformChannelSpecifics,
+//      payload: 'notification payload');
+  await notificationsPlugin.showDailyAtTime(
+    0,
+    'main(): Looking for a Rickshaw?',
+    'Open Fliver and mark your location!',
+    Time(3, 6, 0),
+    platformSpecifics,
+  );
 }
 
 Future<TimeOfDay> pickTime(BuildContext context, TimeOfDay selectedTime) async {
@@ -52,22 +58,20 @@ Future<void> createDailyNotification(BuildContext context) async {
     'notificationChannelId',
     'Location Marking Suggestions',
     'Reminders to mark your location when you usually need a Rickshaw',
-    importance: Importance.High,
+    importance: Importance.Max,
     priority: Priority.High,
     ticker: 'ticker',
     icon: 'app_icon',
   );
   var iOSSpecifics = IOSNotificationDetails();
 
-  var platformChannelSpecifics =
-      NotificationDetails(androidSpecifics, iOSSpecifics);
+  var platformSpecifics = NotificationDetails(androidSpecifics, iOSSpecifics);
 
-  await notificationsPlugin.showWeeklyAtDayAndTime(
+  await notificationsPlugin.showDailyAtTime(
     0,
     'Looking for a Rickshaw?',
     'Open Fliver and mark your location!',
-    Day.Sunday, // TODO: replace with selectedDay
     notificationTime,
-    platformChannelSpecifics,
+    platformSpecifics,
   );
 }
