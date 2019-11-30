@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0
   flare_flutter: ^1.6.2
+  flutter_local_notifications: ^0.8.4
   flutter_offline: ^0.2.4
   flutter_speed_dial: ^1.2.1
   geoflutterfire: ^2.0.3
