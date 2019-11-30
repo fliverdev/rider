@@ -23,13 +23,13 @@ Future<void> initNotifications() async {
 //  await notificationsPlugin.show(
 //      0, 'Notification Title', 'Notification Body', platformChannelSpecifics,
 //      payload: 'notification payload');
-  await notificationsPlugin.showDailyAtTime(
-    0,
-    'main(): Looking for a Rickshaw?',
-    'Open Fliver and mark your location!',
-    Time(3, 6, 0),
-    platformSpecifics,
-  );
+//  await notificationsPlugin.showDailyAtTime(
+//    0,
+//    'main(): Looking for a Rickshaw?',
+//    'Open Fliver and mark your location!',
+//    Time(3, 6, 0),
+//    platformSpecifics,
+//  );
 }
 
 Future<TimeOfDay> pickTime(BuildContext context, TimeOfDay selectedTime) async {
@@ -41,8 +41,8 @@ Future<TimeOfDay> pickTime(BuildContext context, TimeOfDay selectedTime) async {
   );
   if (pickedTime != null) {
     selectedTime = pickedTime;
-  }
-  return selectedTime;
+  } // will still notify at current time
+  return selectedTime; // TODO: fix time == null
 }
 
 Future<void> createDailyNotification(BuildContext context) async {
@@ -58,7 +58,7 @@ Future<void> createDailyNotification(BuildContext context) async {
     'notificationChannelId',
     'Location Marking Suggestions',
     'Reminders to mark your location when you usually need a Rickshaw',
-    importance: Importance.Max,
+    importance: Importance.High,
     priority: Priority.High,
     ticker: 'ticker',
     icon: 'app_icon',
