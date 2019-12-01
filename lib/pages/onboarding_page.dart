@@ -1,13 +1,14 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
+import 'package:rider/pages/map_view_page.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/notification_helpers.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/sexy_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'map_view_page.dart';
 
 class MyOnboardingPage extends StatefulWidget {
   final SharedPreferences helper;
@@ -24,7 +25,11 @@ class MyOnboardingPage extends StatefulWidget {
 }
 
 class _MyOnboardingPageState extends State<MyOnboardingPage> {
+  TimeOfDay selectedTime;
+  String notificationStatusMessage = 'When do you usually look for a Rickshaw?';
+  String notificationButtonMessage = 'Select Time';
   Color dynamicColor = MyColors.black;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.8;
@@ -62,8 +67,16 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   height: 50.0,
                 ),
                 Text(
-                  'Welcome to Fliver!\nSwipe left to get started.',
-                  style: TitleStyles.black,
+                  'Welcome to Fliver!',
+                  style: HeadingStyles.black,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Text(
+                  'Swipe left to get started.',
+                  style: SubHeadingStyles.black,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -125,13 +138,13 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                           children: <Widget>[
                             Text(
                               'Waiting for a Rickshaw?',
-                              style: SubTitleStyles.black,
+                              style: SubHeadingStyles.black,
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 5.0,
                             ),
                             Text(
-                              'Swipe the button to notify nearby Drivers about your location.',
+                              'Swipe the button to let nearby Drivers know about your location.',
                               style: BodyStyles.black,
                             ),
                           ],
@@ -170,10 +183,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                           children: <Widget>[
                             Text(
                               'How do Drivers know?',
-                              style: SubTitleStyles.black,
+                              style: SubHeadingStyles.black,
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 5.0,
                             ),
                             Text(
                               'When 3 or more Riders in an area mark their location, a hotspot is created and Drivers get notified.',
@@ -215,10 +228,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                           children: <Widget>[
                             Text(
                               'What\'s next?',
-                              style: SubTitleStyles.black,
+                              style: SubHeadingStyles.black,
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 5.0,
                             ),
                             Text(
                               'Drivers will see the areas of high demand and come to pick you and your friends up!',
@@ -232,6 +245,77 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+      Container(
+        color: MyColors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Get Reminders',
+                    style: HeadingStyles.black,
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    width: 150.0,
+                    height: 150.0,
+                    child: FlareActor(
+                      'assets/flare/alarm_clock.flr',
+                      animation: 'animation',
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    '$notificationStatusMessage',
+                    style: SubHeadingStyles.black,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      accentColor: MyColors.primary,
+                    ),
+                    child: Builder(
+                      builder: (context) => RaisedButton(
+                        child: Text('$notificationButtonMessage'),
+                        color: MyColors.black,
+                        textColor: MyColors.white,
+                        elevation: 3.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0))),
+                        onPressed: () async {
+                          selectedTime = await pickTime(context);
+
+                          if (selectedTime != null) {
+                            setState(() {
+                              notificationStatusMessage =
+                                  'Reminder set for ${selectedTime.hour}:${selectedTime.minute}!';
+                              notificationButtonMessage = 'Edit Time';
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -251,10 +335,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     height: 60.0,
                   ),
                   Text(
-                    'Choose a theme',
+                    'Select a Theme',
                     style: isColorCurrentlyDark(dynamicColor)
-                        ? TitleStyles.white
-                        : TitleStyles.black,
+                        ? HeadingStyles.white
+                        : HeadingStyles.black,
                   ),
                   SizedBox(
                     height: 20.0,
@@ -316,16 +400,20 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       color: isColorCurrentlyDark(dynamicColor)
                           ? MyColors.primary
                           : MyColors.black,
+                      splashColor: isColorCurrentlyDark(dynamicColor)
+                          ? MyColors.black
+                          : MyColors.primary,
                       elevation: 3.0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50.0)),
                       ),
                       onPressed: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-
                         widget.helper.setBool('isFirstLaunch', false);
                         widget.helper.setString('uuid', widget.identity);
+
+                        if (selectedTime != null) {
+                          await createDailyNotification(context, selectedTime);
+                        }
 
                         DynamicTheme.of(context).setBrightness(
                             isColorCurrentlyDark(dynamicColor)
@@ -336,7 +424,8 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MyMapViewPage(
-                                    helper: prefs, identity: widget.identity)),
+                                    helper: widget.helper,
+                                    identity: widget.identity)),
                             (Route<dynamic> route) => false);
                       },
                     ),
