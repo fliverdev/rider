@@ -1,4 +1,5 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/pages/map_view_page.dart';
@@ -62,8 +63,16 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   height: 50.0,
                 ),
                 Text(
-                  'Welcome to Fliver!\nSwipe left to get started.',
-                  style: TitleStyles.black,
+                  'Welcome to Fliver!',
+                  style: HeadingStyles.black,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Text(
+                  'Swipe left to get started.',
+                  style: SubHeadingStyles.black,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -125,13 +134,13 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                           children: <Widget>[
                             Text(
                               'Waiting for a Rickshaw?',
-                              style: SubTitleStyles.black,
+                              style: SubHeadingStyles.black,
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 5.0,
                             ),
                             Text(
-                              'Swipe the button to notify nearby Drivers about your location.',
+                              'Swipe the button to let nearby Drivers know about your location.',
                               style: BodyStyles.black,
                             ),
                           ],
@@ -170,10 +179,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                           children: <Widget>[
                             Text(
                               'How do Drivers know?',
-                              style: SubTitleStyles.black,
+                              style: SubHeadingStyles.black,
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 5.0,
                             ),
                             Text(
                               'When 3 or more Riders in an area mark their location, a hotspot is created and Drivers get notified.',
@@ -215,10 +224,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                           children: <Widget>[
                             Text(
                               'What\'s next?',
-                              style: SubTitleStyles.black,
+                              style: SubHeadingStyles.black,
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 5.0,
                             ),
                             Text(
                               'Drivers will see the areas of high demand and come to pick you and your friends up!',
@@ -250,9 +259,20 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   SizedBox(
                     height: 60.0,
                   ),
+                  Container(
+                    width: 125.0,
+                    height: 125.0,
+                    child: FlareActor(
+                      'assets/flare/alarm_clock.flr',
+                      animation: 'animation',
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
                   Text(
                     'Get Reminders',
-                    style: TitleStyles.black,
+                    style: HeadingStyles.black,
                   ),
                   SizedBox(
                     height: 30.0,
@@ -290,10 +310,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     height: 60.0,
                   ),
                   Text(
-                    'Choose a theme',
+                    'Pick a Theme',
                     style: isColorCurrentlyDark(dynamicColor)
-                        ? TitleStyles.white
-                        : TitleStyles.black,
+                        ? HeadingStyles.white
+                        : HeadingStyles.black,
                   ),
                   SizedBox(
                     height: 20.0,
