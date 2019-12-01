@@ -25,6 +25,7 @@ class MyOnboardingPage extends StatefulWidget {
 }
 
 class _MyOnboardingPageState extends State<MyOnboardingPage> {
+  TimeOfDay selectedTime;
   Color dynamicColor = MyColors.black;
   @override
   Widget build(BuildContext context) {
@@ -277,16 +278,29 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                   SizedBox(
                     height: 30.0,
                   ),
-                  RaisedButton(
-                    child: Text('Pick Time'),
-                    color: MyColors.black,
-                    textColor: MyColors.white,
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    onPressed: () async {
-                      await createDailyNotification(context);
-                    },
+                  Text(
+                    '$selectedTime',
+                    style: BodyStyles.black,
+                  ),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      primaryColor: MyColors.primary,
+                      accentColor: MyColors.primary,
+                    ),
+                    child: Builder(
+                      builder: (context) => RaisedButton(
+                        child: Text('Pick Time'),
+                        color: MyColors.black,
+                        textColor: MyColors.white,
+                        elevation: 3.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0))),
+                        onPressed: () async {
+                          selectedTime = await createDailyNotification(context);
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
