@@ -26,7 +26,10 @@ class MyOnboardingPage extends StatefulWidget {
 
 class _MyOnboardingPageState extends State<MyOnboardingPage> {
   TimeOfDay selectedTime;
+  String notificationStatusMessage = 'When do you usually look for a Rickshaw?';
+  String notificationButtonMessage = 'Select Time';
   Color dynamicColor = MyColors.black;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.8;
@@ -254,15 +257,19 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
             Container(
               width: width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  Text(
+                    'Get Reminders',
+                    style: HeadingStyles.black,
+                  ),
                   SizedBox(
-                    height: 60.0,
+                    height: 10.0,
                   ),
                   Container(
-                    width: 125.0,
-                    height: 125.0,
+                    width: 150.0,
+                    height: 150.0,
                     child: FlareActor(
                       'assets/flare/alarm_clock.flr',
                       animation: 'animation',
@@ -272,24 +279,20 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     height: 10.0,
                   ),
                   Text(
-                    'Get Reminders',
-                    style: HeadingStyles.black,
+                    '$notificationStatusMessage',
+                    style: SubHeadingStyles.black,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(
                     height: 30.0,
                   ),
-                  Text(
-                    '$selectedTime',
-                    style: BodyStyles.black,
-                  ),
                   Theme(
                     data: Theme.of(context).copyWith(
-                      primaryColor: MyColors.primary,
                       accentColor: MyColors.primary,
                     ),
                     child: Builder(
                       builder: (context) => RaisedButton(
-                        child: Text('Pick Time'),
+                        child: Text('$notificationButtonMessage'),
                         color: MyColors.black,
                         textColor: MyColors.white,
                         elevation: 3.0,
@@ -297,7 +300,15 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(5.0))),
                         onPressed: () async {
-                          selectedTime = await createDailyNotification(context);
+                          selectedTime = await pickTime(context);
+
+                          if (selectedTime != null) {
+                            setState(() {
+                              notificationStatusMessage =
+                                  'Reminder set for ${selectedTime.hour}:${selectedTime.minute}!';
+                              notificationButtonMessage = 'Edit Time';
+                            });
+                          }
                         },
                       ),
                     ),
@@ -324,7 +335,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     height: 60.0,
                   ),
                   Text(
-                    'Pick a Theme',
+                    'Select a Theme',
                     style: isColorCurrentlyDark(dynamicColor)
                         ? HeadingStyles.white
                         : HeadingStyles.black,
@@ -399,6 +410,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       onPressed: () async {
                         widget.helper.setBool('isFirstLaunch', false);
                         widget.helper.setString('uuid', widget.identity);
+
+                        if (selectedTime != null) {
+                          await createDailyNotification(context, selectedTime);
+                        }
 
                         DynamicTheme.of(context).setBrightness(
                             isColorCurrentlyDark(dynamicColor)

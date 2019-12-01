@@ -15,26 +15,21 @@ Future<void> initNotifications() async {
   notificationsPlugin.initialize(initSettings);
 }
 
-Future<TimeOfDay> pickTime(BuildContext context, TimeOfDay selectedTime) async {
+Future<TimeOfDay> pickTime(BuildContext context) async {
   print('pickTime() called');
 
   TimeOfDay pickedTime = await showTimePicker(
     context: context,
-    initialTime: selectedTime,
+    initialTime: TimeOfDay.now(),
   );
 
-  if (pickedTime != null) {
-    selectedTime = pickedTime;
-  } // will still notify at current time
-
-  return selectedTime; // TODO: fix time == null
+  return pickedTime;
 }
 
-Future<TimeOfDay> createDailyNotification(BuildContext context) async {
+Future<void> createDailyNotification(
+    BuildContext context, TimeOfDay selectedTime) async {
   print('createDailyNotification() called');
 
-  TimeOfDay selectedTime = TimeOfDay.now(); // initial time is current time
-  selectedTime = await pickTime(context, selectedTime);
   var notificationTime = Time(selectedTime.hour, selectedTime.minute, 0);
 
   var androidSpecifics = AndroidNotificationDetails(
@@ -50,12 +45,11 @@ Future<TimeOfDay> createDailyNotification(BuildContext context) async {
 
   await notificationsPlugin.showDailyAtTime(
     0,
-    'Looking for a Rickshaw?',
+    'Hunting for a Rickshaw?',
     'Open Fliver and mark your location!',
     notificationTime,
     platformSpecifics,
   );
 
-  print('Notification set for $selectedTime');
-  return selectedTime;
+  print('Notification created: $notificationTime');
 }
