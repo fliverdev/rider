@@ -300,6 +300,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(5.0))),
                         onPressed: () async {
+                          initNotifications();
                           selectedTime = await pickTime(context);
 
                           if (selectedTime != null) {
