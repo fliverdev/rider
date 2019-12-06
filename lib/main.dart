@@ -9,12 +9,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
-      defaultBrightness: Brightness.dark,
+      defaultBrightness: Brightness.light,
       data: (brightness) => ThemeData(
         fontFamily: 'AvenirNextRounded',
         primaryColor: MyColors.primary,
         accentColor: MyColors.accent,
-        brightness: brightness, // default is dark
+        brightness: brightness, // default is light
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(

@@ -16,24 +16,6 @@ class TitleStyles {
   );
 }
 
-class SubTitleStyles {
-  static const white = TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.w700,
-    color: MyColors.white,
-  );
-  static const black = TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.w700,
-    color: MyColors.black,
-  );
-  static const primary = TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.w700,
-    color: MyColors.primary,
-  );
-}
-
 class BodyStyles {
   static const white = TextStyle(
     fontSize: 16.0,
@@ -64,6 +46,42 @@ class BodyStylesItalic {
     fontSize: 16.0,
     color: MyColors.primary,
     fontStyle: FontStyle.italic,
+  );
+}
+
+class HeadingStyles {
+  static const white = TextStyle(
+    fontSize: 24.0,
+    fontWeight: FontWeight.w700,
+    color: MyColors.white,
+  );
+  static const black = TextStyle(
+    fontSize: 24.0,
+    fontWeight: FontWeight.w700,
+    color: MyColors.black,
+  );
+  static const primary = TextStyle(
+    fontSize: 24.0,
+    fontWeight: FontWeight.w700,
+    color: MyColors.primary,
+  );
+}
+
+class SubHeadingStyles {
+  static const white = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w700,
+    color: MyColors.white,
+  );
+  static const black = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w700,
+    color: MyColors.black,
+  );
+  static const primary = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w700,
+    color: MyColors.primary,
   );
 }
 
