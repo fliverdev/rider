@@ -13,12 +13,13 @@ In order to resolve this, you must replace the encrypted files with files contai
 
 ### Android Manifest
 
-Replace the encrypted `AndroidManifest.xml` with the following contents:
+Replace the encrypted `AndroidManifest.xml` with the following contents, and replace "YOUR_API_KEY" with your own:
 
 ```
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.fliver.rider">
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="Fliver Rider"
@@ -42,6 +43,12 @@ Replace the encrypted `AndroidManifest.xml` with the following contents:
         <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="YOUR_API_KEY"/>
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
     </application>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 </manifest>
@@ -49,7 +56,7 @@ Replace the encrypted `AndroidManifest.xml` with the following contents:
 
 ### iOS App Delegate
 
-Replace the encrypted `AppDelegate.swift` with the following contents:
+Replace the encrypted `AppDelegate.swift` with the following contents, and replace "YOUR_API_KEY" with your own:
 
 ```
 import UIKit
