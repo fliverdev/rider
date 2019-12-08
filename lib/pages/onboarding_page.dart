@@ -265,7 +265,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     style: HeadingStyles.black,
                   ),
                   SizedBox(
-                    height: 10.0,
+                    height: 30.0,
                   ),
                   Container(
                     width: 150.0,
@@ -276,7 +276,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 10.0,
+                    height: 30.0,
                   ),
                   Text(
                     '$notificationStatusMessage',

@@ -37,7 +37,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var locationAnimation = 0; // used to switch between 2 kinds of animations
   var previousMarkersWithinRadius = 0;
   var currentMarkersWithinRadius = 0;
-  var allMarkersWithinRadius = [];
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
   final bearing = [0.0, 90.0]; // bearing level (0/1)
@@ -137,7 +136,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     hotspots.clear();
     markers.clear();
-    allMarkersWithinRadius.clear();
+    currentMarkersWithinRadius = 0;
     // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
@@ -290,10 +289,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
 
         if (hotspotRadius >= myMarkerDistance) {
-          allMarkersWithinRadius
-              .add(markerId); // contains markers near my marker
+          currentMarkersWithinRadius += 1; // no. of markers near my marker
           isMarkerWithinRadius = true;
-        }
+        } // TODO: fix this ffs!
+        // this is the source of issue #11
+        // see https://github.com/fliverdev/rider/issues/11
 
         if (isMarkerWithinRadius) {
           if (documentId == widget.identity) {
@@ -317,7 +317,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           } // adds markers within 5km of my marker
         });
       }
-      currentMarkersWithinRadius = allMarkersWithinRadius.length;
       isMarkerWithinRadius = false;
       isMarkerDeleted = false;
     }
