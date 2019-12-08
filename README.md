@@ -7,9 +7,11 @@
 [![Issues](https://img.shields.io/github/issues/fliverdev/rider.svg)](https://github.com/fliverdev/rider/issues)
 [![License](https://img.shields.io/github/license/fliverdev/rider.svg)](https://opensource.org/licenses/GPL-3.0)
 
-Fliver is a smartphone app to help ease the process of getting a rickshaw. When you need one, simply open the app and swipe the button - that's it. If there are 3 or more Riders within the same area, Drivers will be notified and can come to your spot to pick you up. It's that simple!
+Fliver is a smartphone app to cater to the gross mismanagement of autorickshaw services in India. When you need an autorickshaw, you can simply open the app and mark your location. When there are 3 or more Riders in the same area, Drivers get notified and can view the areas of high demand, and accordingly come to pick Riders up.
 
-This is the Rider app repository for Riders to mark their locations and notify a Driver. It is part of the Final Year Project of a bunch of Computer Engineering students.
+The entire project is open source and free of charge. There are no additional costs for Riders besides for the regular metered rickshaw fare, and there is no commission that Drivers need to pay. Fliver is a completely non-profit project, created to benefit Indian citizens.
+
+This is the Rider app repository for Riders to mark their locations and notify a Driver. It is part of the Final Year Project of three Computer Engineering students.
 
 ## Building
 
