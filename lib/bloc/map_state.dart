@@ -1,8 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-@immutable
-abstract class MapState {
-  MapState([List props = const []]) : super();
+abstract class MapState extends Equatable {
+  const MapState();
+
+  @override
+  List<Object> get props => [];
 }
 
 class InitialMapState extends MapState {}
@@ -10,7 +13,7 @@ class InitialMapState extends MapState {}
 class LocationFound extends MapState {
   final curLoc;
 
-  LocationFound(this.curLoc) : super([curLoc]);
+  LocationFound(this.curLoc);
 }
 
 class Loading extends MapState {}
