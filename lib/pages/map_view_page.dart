@@ -95,13 +95,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   Future<Position> _setCurrentLocation() async {
     print('_setCurrentLocation() called');
     currentLocation = await Geolocator().getCurrentPosition();
-    myMarkerLocation = currentLocation;
     return currentLocation;
   }
 
   Future<void> _writeToDb() async {
     print('_writeToDb() called');
-    myMarkerLocation = await Geolocator().getCurrentPosition();
+    myMarkerLocation = currentLocation;
     GeoFirePoint geoPoint = Geoflutterfire().point(
         latitude: myMarkerLocation.latitude,
         longitude: myMarkerLocation.longitude);
