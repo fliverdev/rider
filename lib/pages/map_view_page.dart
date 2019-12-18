@@ -35,8 +35,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var myMarkerLocation;
   var markerColor;
   var locationAnimation = 0; // used to switch between 2 kinds of animations
-  var previousMarkersWithinRadius = 0;
-  var currentMarkersWithinRadius = 0;
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
   final bearing = [0.0, 90.0]; // bearing level (0/1)
@@ -97,13 +95,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   Future<Position> _setCurrentLocation() async {
     print('_setCurrentLocation() called');
     currentLocation = await Geolocator().getCurrentPosition();
-    myMarkerLocation = currentLocation;
     return currentLocation;
   }
 
   Future<void> _writeToDb() async {
     print('_writeToDb() called');
-    myMarkerLocation = await Geolocator().getCurrentPosition();
+    myMarkerLocation = currentLocation;
     GeoFirePoint geoPoint = Geoflutterfire().point(
         latitude: myMarkerLocation.latitude,
         longitude: myMarkerLocation.longitude);
@@ -134,9 +131,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     bool isTipShown1 = widget.helper.getBool('isTipShown1') ?? false;
     bool isTipShown2 = widget.helper.getBool('isTipShown2') ?? false;
 
+    var previousMarkersWithinRadius = 0;
+    var currentMarkersWithinRadius = 0;
+
     hotspots.clear();
     markers.clear();
-    currentMarkersWithinRadius = 0;
     // clearing lists needed to regenerate necessary markers
 
     for (int i = 0; i < clients.length; i++) {
