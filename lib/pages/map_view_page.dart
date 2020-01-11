@@ -95,6 +95,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   Future<Position> _setCurrentLocation() async {
     print('_setCurrentLocation() called');
     currentLocation = await Geolocator().getCurrentPosition();
+    myMarkerLocation = currentLocation;
     return currentLocation;
   }
 
