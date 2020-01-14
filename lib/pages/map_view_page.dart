@@ -562,20 +562,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     animatedIcon: AnimatedIcons.menu_close,
                     elevation: 5.0,
                     children: [
-                      SpeedDialChild(
-                        child: Icon(Icons.my_location),
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: 'Recenter',
-                        labelStyle: LabelStyles.black,
-                        onTap: () async {
-                          locationAnimation == 0
-                              ? locationAnimation = 1
-                              : locationAnimation = 0;
-                          _animateToLocation(
-                              currentLocation, locationAnimation);
-                        },
-                      ),
+//                      SpeedDialChild(
+//                        child: Icon(Icons.my_location),
+//                        foregroundColor: invertColorsTheme(context),
+//                        backgroundColor: invertInvertColorsTheme(context),
+//                        label: 'Recenter',
+//                        labelStyle: LabelStyles.black,
+//                        onTap: () async {
+//                          locationAnimation == 0
+//                              ? locationAnimation = 1
+//                              : locationAnimation = 0;
+//                          _animateToLocation(
+//                              currentLocation, locationAnimation);
+//                        },
+//                      ),
                       SpeedDialChild(
                         child: toggleLightsIcon,
                         foregroundColor: invertColorsTheme(context),
