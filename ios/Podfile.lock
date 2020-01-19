@@ -12,6 +12,8 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
+  - Firebase/Analytics (6.6.0):
+    - Firebase/Core
   - Firebase/Core (6.6.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.1.0)
@@ -20,6 +22,10 @@ PODS:
   - Firebase/Firestore (6.6.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 1.4.3)
+  - firebase_analytics (0.0.1):
+    - Firebase/Analytics (~> 6.0)
+    - Firebase/Core
+    - Flutter
   - firebase_core (0.0.1):
     - Firebase/Core
     - Flutter
@@ -146,6 +152,7 @@ PODS:
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
@@ -187,6 +194,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
+  firebase_analytics:
+    :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
@@ -217,6 +226,7 @@ SPEC CHECKSUMS:
   cloud_firestore: 41f84086d2e1a5c216a6af07ef050758de825ff0
   connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
   Firebase: a2b5951f30ff38fd3b3bdae9c7d340f940fd3c51
+  firebase_analytics: d83001d25b9a58ca5eda8db0ef566c02d7af5258
   firebase_core: b3b02d0b5e9d01aab5e50ba7cbcf84c73cb6883c
   FirebaseAnalytics: 48414ae5cbf6976d8a2f7177e0466540e5ab33ce
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc

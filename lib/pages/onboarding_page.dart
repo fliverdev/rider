@@ -1,4 +1,6 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
@@ -14,12 +16,17 @@ class MyOnboardingPage extends StatefulWidget {
   final SharedPreferences helper;
   final bool flag;
   final String identity;
-  MyOnboardingPage(
-      {Key key,
-      @required this.helper,
-      @required this.flag,
-      @required this.identity})
-      : super(key: key);
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
+
+  MyOnboardingPage({
+    Key key,
+    @required this.helper,
+    @required this.flag,
+    @required this.identity,
+    @required this.analytics,
+    @required this.observer,
+  }) : super(key: key);
   @override
   _MyOnboardingPageState createState() => _MyOnboardingPageState();
 }
@@ -425,8 +432,11 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MyMapViewPage(
-                                    helper: widget.helper,
-                                    identity: widget.identity)),
+                                      helper: widget.helper,
+                                      identity: widget.identity,
+                                      analytics: widget.analytics,
+                                      observer: widget.observer,
+                                    )),
                             (Route<dynamic> route) => false);
                       },
                     ),
