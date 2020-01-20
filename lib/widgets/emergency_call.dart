@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
@@ -46,6 +47,7 @@ void showEmergencyPopup(BuildContext context) {
               onPressed: () {
                 Navigator.pop(context);
                 launch('tel:1800220110');
+                logAnalyticsEvent('rto_click');
               },
             ),
             RaisedButton(
@@ -58,6 +60,7 @@ void showEmergencyPopup(BuildContext context) {
               onPressed: () {
                 Navigator.pop(context);
                 launch('tel:112');
+                logAnalyticsEvent('sos_click');
               },
             ),
           ],

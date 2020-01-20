@@ -3,6 +3,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/pages/map_view_page.dart';
+import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/notification_helpers.dart';
 import 'package:rider/utils/text_styles.dart';
@@ -420,6 +421,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                             isColorCurrentlyDark(dynamicColor)
                                 ? Brightness.dark
                                 : Brightness.light);
+
+                        isThemeCurrentlyDark(context)
+                            ? logAnalyticsEvent('dark_mode')
+                            : logAnalyticsEvent('light_mode');
 
                         Navigator.pushAndRemoveUntil(
                             context,

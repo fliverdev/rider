@@ -12,6 +12,7 @@ dependencies:
   cloud_firestore: ^0.12.9
   cupertino_icons: ^0.1.2
   dynamic_theme: ^1.0.0
+  firebase_analytics: ^5.0.9
   flare_flutter: ^1.6.2
   flutter_local_notifications: ^0.8.4
   flutter_offline: ^0.2.4

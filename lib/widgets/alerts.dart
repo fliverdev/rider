@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:share/share.dart';
@@ -79,6 +80,7 @@ void showNotEnoughRidersAlert(
             Navigator.pop(context);
             Share.share(
                 'Download Fliver Rider now and help me get a rickshaw! https://play.google.com/store/apps/details?id=dev.fliver.rider');
+            logAnalyticsEvent('share_click');
           },
         ),
       ],
