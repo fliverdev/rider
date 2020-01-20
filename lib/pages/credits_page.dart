@@ -1,5 +1,3 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
@@ -9,15 +7,6 @@ import 'package:rider/widgets/sexy_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MyCreditsPage extends StatefulWidget {
-  final FirebaseAnalytics analytics;
-  final FirebaseAnalyticsObserver observer;
-
-  MyCreditsPage({
-    Key key,
-    @required this.analytics,
-    @required this.observer,
-  }) : super(key: key);
-
   @override
   _MyCreditsPageState createState() => _MyCreditsPageState();
 }

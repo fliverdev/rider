@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -26,16 +24,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MyMapViewPage extends StatefulWidget {
   final SharedPreferences helper;
   final String identity;
-  final FirebaseAnalytics analytics;
-  final FirebaseAnalyticsObserver observer;
-
-  MyMapViewPage({
-    Key key,
-    @required this.helper,
-    @required this.identity,
-    @required this.analytics,
-    @required this.observer,
-  }) : super(key: key);
+  MyMapViewPage({Key key, @required this.helper, @required this.identity})
+      : super(key: key);
   @override
   _MyMapViewPageState createState() => _MyMapViewPageState();
 }
@@ -431,27 +421,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     );
   } // dat cool animation tho
 
-  Future<void> _sendAnalyticsEvent() async {
-    print('Logging...');
-    await widget.analytics.logEvent(
-      name: 'test_event',
-      parameters: <String, dynamic>{
-        'string': 'string',
-        'int': 42,
-        'long': 12345678910,
-        'double': 42.0,
-        'bool': true,
-      },
-    );
-    print('Logged');
-  }
-
-  Future<void> _sendAnalyticsEvent2() async {
-    print('Logging 2...');
-    await widget.analytics.logEvent(name: 'test_event2');
-    print('Logged 2');
-  }
-
   @override
   Widget build(BuildContext context) {
     print('Widget build() called');
@@ -572,7 +541,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 });
                                 locationAnimation = 1;
                                 _writeToDb();
-                                _sendAnalyticsEvent();
                                 _fetchMarkersFromDb();
                                 _animateToLocation(
                                     currentLocation, locationAnimation);
@@ -631,15 +599,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         onTap: () async {
                           bool isTipShown3 =
                               widget.helper.getBool('isTipShown3') ?? false;
-                          _sendAnalyticsEvent2();
 
                           if (isTipShown3) {
                             Navigator.push(context,
                                 CupertinoPageRoute(builder: (context) {
-                              return MyCreditsPage(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                              );
+                              return MyCreditsPage();
                             }));
                           } else {
                             // display a tip only once
@@ -678,10 +642,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                       Navigator.push(context,
                                           CupertinoPageRoute(
                                               builder: (context) {
-                                        return MyCreditsPage(
-                                          analytics: widget.analytics,
-                                          observer: widget.observer,
-                                        );
+                                        return MyCreditsPage();
                                       }));
                                     },
                                   ),
