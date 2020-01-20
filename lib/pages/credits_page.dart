@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
@@ -101,7 +102,10 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                       ],
                     ),
                     splashColor: MyColors.primary,
-                    onTap: () => _launchURL('https://urmilshroff.tech'),
+                    onTap: () {
+                      _launchURL('https://urmilshroff.tech');
+                      logAnalyticsEvent('url_click_urmil');
+                    },
                   ),
                   SexyTile(
                     child: Row(
@@ -146,7 +150,10 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                       ],
                     ),
                     splashColor: MyColors.primary,
-                    onTap: () => _launchURL('https://github.com/prince1998'),
+                    onTap: () {
+                      _launchURL('https://github.com/prince1998');
+                      logAnalyticsEvent('url_click_priyansh');
+                    },
                   ),
                   SexyTile(
                     child: Row(
@@ -190,7 +197,10 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                       ],
                     ),
                     splashColor: MyColors.primary,
-                    onTap: () => _launchURL('http://www.decaf.co.in'),
+                    onTap: () {
+                      _launchURL('http://www.decaf.co.in');
+                      logAnalyticsEvent('url_click_vinay');
+                    },
                   ),
                   Container(
                     child: Column(
@@ -216,8 +226,11 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
-                              onPressed: () => _launchURL(
-                                  'https://github.com/fliverdev/rider'),
+                              onPressed: () {
+                                _launchURL(
+                                    'https://github.com/fliverdev/rider');
+                                logAnalyticsEvent('url_click_github');
+                              },
                             ),
                             FlatButton(
                               child: Text('Feedback'),
@@ -225,8 +238,11 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
-                              onPressed: () => _launchURL(
-                                  'mailto:urmilshroff@gmail.com?subject=Fliver Rider feedback'),
+                              onPressed: () {
+                                _launchURL('mailto:urmilshroff@gmail'
+                                    '.com?subject=Fliver Rider feedback');
+                                logAnalyticsEvent('url_click_feedback');
+                              },
                             ),
                           ],
                         ),

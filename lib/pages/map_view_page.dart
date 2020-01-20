@@ -10,6 +10,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/pages/credits_page.dart';
+import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_styles.dart';
 import 'package:rider/utils/text_styles.dart';
@@ -205,6 +206,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
                     });
+                    logAnalyticsEvent('marker_expired');
                     // displays swipe button etc. again
                   },
                 ),
@@ -265,6 +267,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isMyMarkerPlotted = false;
                       isMoving = false;
                     });
+                    logAnalyticsEvent('user_moved');
                     // displays swipe button etc. again
                   },
                 ),
@@ -291,9 +294,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         if (hotspotRadius >= myMarkerDistance) {
           currentMarkersWithinRadius += 1; // no. of markers near my marker
           isMarkerWithinRadius = true;
-        } // TODO: fix this ffs!
-        // this is the source of issue #11
-        // see https://github.com/fliverdev/rider/issues/11
+        }
 
         if (isMarkerWithinRadius) {
           if (documentId == widget.identity) {
@@ -541,6 +542,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 });
                                 locationAnimation = 1;
                                 _writeToDb();
+                                logAnalyticsEvent('location_marked');
                                 _fetchMarkersFromDb();
                                 _animateToLocation(
                                     currentLocation, locationAnimation);
@@ -599,6 +601,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         onTap: () async {
                           bool isTipShown3 =
                               widget.helper.getBool('isTipShown3') ?? false;
+                          logAnalyticsEvent('credits_click');
 
                           if (isTipShown3) {
                             Navigator.push(context,
