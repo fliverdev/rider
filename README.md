@@ -40,6 +40,6 @@ This project is primarily developed by a bunch of Computer Engineering students 
 
 Take a look at the entire list of [contributors](https://github.com/fliverdev/rider/graphs/contributors) to see who all have helped with the project via pull requests.
 
-## License
+## Legal
 
-This project is licensed under the GNU GPL v3 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU GPL v3 - see the [LICENSE](LICENSE) file for details. Also view our [privacy policy](PRIVACY_POLICY.md).
