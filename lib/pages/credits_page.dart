@@ -233,6 +233,18 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                               },
                             ),
                             FlatButton(
+                              child: Text('Privacy Policy'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                _launchURL(
+                                    'https://fliverdev.github.io/privacy_policy/');
+                                logAnalyticsEvent('url_click_privacy_policy');
+                              },
+                            ),
+                            FlatButton(
                               child: Text('Feedback'),
                               textColor: invertColorsStrong(context),
                               shape: RoundedRectangleBorder(
