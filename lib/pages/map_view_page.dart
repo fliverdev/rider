@@ -184,7 +184,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ),
               content: Text(
                 'Markers get deleted automatically after 15 minutes.'
-                '\n\nIf you\'re still looking for a rickshaw, please mark your location again!',
+                '\n\nIf you\'re still looking for a Rickshaw, please mark '
+                'your location again!',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -244,14 +245,33 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
               ),
               content: Text(
                 'You moved outside your hotspot, so your marker has been deleted.'
-                '\n\nIf you\'re still looking for a rickshaw, please mark your location again!',
+                '\n\nDid you manage to find a Rickshaw?',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
               ),
               actions: <Widget>[
+                FlatButton(
+                  child: Text('No'),
+                  textColor: invertColorsStrong(context),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    locationAnimation = 0;
+                    _animateToLocation(currentLocation, locationAnimation);
+                    setState(() {
+                      isFirstCycle = true;
+                      isButtonSwiped = false;
+                      isMyMarkerPlotted = false;
+                      isMoving = false;
+                    });
+                    logAnalyticsEvent('user_moved');
+                    logAnalyticsEvent('rickshaw_not_found');
+                  },
+                ),
                 RaisedButton(
-                  child: Text('Okay'),
+                  child: Text('Yes'),
                   color: invertColorsTheme(context),
                   textColor: invertInvertColorsStrong(context),
                   elevation: 3.0,
@@ -268,7 +288,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isMoving = false;
                     });
                     logAnalyticsEvent('user_moved');
-                    // displays swipe button etc. again
+                    logAnalyticsEvent('rickshaw_found');
                   },
                 ),
               ],
