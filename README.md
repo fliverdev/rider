@@ -1,4 +1,4 @@
-<p align="center"><img height="110px" width="110px" src="./branding/rickshaw.png" alt="Fliver Rider"/><img height="100px" width="315px" src="./branding/text.png" alt="Fliver Rider"/></p>
+<p align="center"><img height="110px" width="110px" src="./branding/other/rickshaw.png" alt="Fliver Rider"/><img height="100px" width="315px" src="./branding/other/text.png" alt="Fliver Rider"/></p>
 
 # Fliver Rider for iOS & Android
 
@@ -25,6 +25,10 @@ To build and run the app on your device, do the following:
 -   Connect your devices/emulators and run the app using `flutter run` in the root of the project directory.
 
 **Note:** you can also run it in release mode using `flutter run --release` to improve performance and stability, however, debugging features will be disabled.
+
+## Screenshots
+
+<p><img height="306px" width="170px" src="./branding/screener/01.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/02.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/03.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/04.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/05.png" alt="Rider for Android"/></p>
 
 ## Contributing
 
