@@ -13,6 +13,10 @@ The entire project is open source and free of charge. There are no additional co
 
 This is the Rider app repository for Riders to mark their locations and notify a Driver. It is part of the Final Year Project of three Computer Engineering students.
 
+## Screenshots
+
+<p><img height="306px" width="170px" src="./branding/screener/01.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/02.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/03.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/04.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/05.png" alt="Rider for Android"/></p>
+
 ## Building
 
 **Important:** this project contains certain files that are encrypted due to the use of API keys, which is why it will not build directly on your machine. Please refer to [ENCRYPTION.md](ENCRYPTION.md) for more information.
@@ -25,10 +29,6 @@ To build and run the app on your device, do the following:
 -   Connect your devices/emulators and run the app using `flutter run` in the root of the project directory.
 
 **Note:** you can also run it in release mode using `flutter run --release` to improve performance and stability, however, debugging features will be disabled.
-
-## Screenshots
-
-<p><img height="306px" width="170px" src="./branding/screener/01.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/02.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/03.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/04.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/05.png" alt="Rider for Android"/></p>
 
 ## Contributing
 
