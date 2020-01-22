@@ -77,3 +77,4 @@ ios/Podfile.lock
 ios/Runner.xcodeproj/project.pbxproj
 ios/Flutter/Flutter.podspec
 .flutter-plugins-dependencies
+android/key.properties
