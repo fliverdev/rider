@@ -1,6 +1,6 @@
 name: rider
 description: The Fliver Rider app
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -14,7 +14,7 @@ dependencies:
   dynamic_theme: ^1.0.0
   firebase_analytics: ^5.0.9
   flare_flutter: ^1.6.2
-  flutter_local_notifications: ^0.8.4
+  flutter_local_notifications: ^1.1.2
   flutter_offline: ^0.2.4
   flutter_speed_dial: ^1.2.1
   geoflutterfire: ^2.0.3
