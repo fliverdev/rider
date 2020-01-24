@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Fliver Rider',
           theme: theme,
+          debugShowCheckedModeBanner: false,
           home: FirstPage(),
         );
       },
