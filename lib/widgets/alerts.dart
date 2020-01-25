@@ -79,7 +79,7 @@ void showNotEnoughRidersAlert(
           onPressed: () {
             Navigator.pop(context);
             Share.share(
-                'Download Fliver Rider now and help me get a rickshaw! https://play.google.com/store/apps/details?id=dev.fliver.rider');
+                'Download Fliver Rider now and help me get a rickshaw! https://github.com/fliverdev/rider');
             logAnalyticsEvent('share_click');
           },
         ),
