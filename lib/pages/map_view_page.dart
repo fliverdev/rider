@@ -9,7 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rider/pages/credits_page.dart';
+import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_styles.dart';
@@ -618,17 +618,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         child: Icon(Icons.info),
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
-                        label: 'Credits',
+                        label: 'About',
                         labelStyle: LabelStyles.black,
                         onTap: () async {
                           bool isTipShown3 =
                               widget.helper.getBool('isTipShown3') ?? false;
-                          logAnalyticsEvent('credits_click');
+                          logAnalyticsEvent('about_click');
 
                           if (isTipShown3) {
                             Navigator.push(context,
                                 CupertinoPageRoute(builder: (context) {
-                              return MyCreditsPage();
+                              return MyAboutPage();
                             }));
                           } else {
                             // display a tip only once
@@ -640,7 +640,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(10.0))),
                                 title: Text(
-                                  'Credits',
+                                  'About',
                                   style: isThemeCurrentlyDark(context)
                                       ? TitleStyles.white
                                       : TitleStyles.black,
@@ -667,7 +667,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                       Navigator.push(context,
                                           CupertinoPageRoute(
                                               builder: (context) {
-                                        return MyCreditsPage();
+                                        return MyAboutPage();
                                       }));
                                     },
                                   ),

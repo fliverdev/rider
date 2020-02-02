@@ -7,12 +7,12 @@ import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/sexy_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MyCreditsPage extends StatefulWidget {
+class MyAboutPage extends StatefulWidget {
   @override
-  _MyCreditsPageState createState() => _MyCreditsPageState();
+  _MyAboutPageState createState() => _MyAboutPageState();
 }
 
-class _MyCreditsPageState extends State<MyCreditsPage> {
+class _MyAboutPageState extends State<MyAboutPage> {
   _launchURL(String url) async {
     if (await canLaunch(url)) {
       print('Launching $url...');
