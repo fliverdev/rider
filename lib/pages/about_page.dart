@@ -5,23 +5,13 @@ import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/sexy_tile.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class MyCreditsPage extends StatefulWidget {
+class MyAboutPage extends StatefulWidget {
   @override
-  _MyCreditsPageState createState() => _MyCreditsPageState();
+  _MyAboutPageState createState() => _MyAboutPageState();
 }
 
-class _MyCreditsPageState extends State<MyCreditsPage> {
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      print('Launching $url...');
-      await launch(url);
-    } else {
-      print('Error launching $url!');
-    }
-  }
-
+class _MyAboutPageState extends State<MyAboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +93,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      _launchURL('https://urmilshroff.tech');
+                      launchUrl('https://urmilshroff.tech');
                       logAnalyticsEvent('url_click_urmil');
                     },
                   ),
@@ -151,7 +141,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      _launchURL('https://github.com/prince1998');
+                      launchUrl('https://github.com/prince1998');
                       logAnalyticsEvent('url_click_priyansh');
                     },
                   ),
@@ -198,7 +188,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      _launchURL('http://www.decaf.co.in');
+                      launchUrl('http://www.decaf.co.in');
                       logAnalyticsEvent('url_click_vinay');
                     },
                   ),
@@ -227,11 +217,28 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
                               onPressed: () {
-                                _launchURL(
-                                    'https://github.com/fliverdev/rider');
+                                launchUrl('https://github.com/fliverdev/rider');
                                 logAnalyticsEvent('url_click_github');
                               },
                             ),
+                            FlatButton(
+                              child: Text('Play Store'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                launchUrl(
+                                    'https://play.google.com/store/apps/details?id=dev.fliver.rider');
+                                logAnalyticsEvent('url_click_rate');
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
                             FlatButton(
                               child: Text('Privacy Policy'),
                               textColor: invertColorsStrong(context),
@@ -239,7 +246,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
                               onPressed: () {
-                                _launchURL(
+                                launchUrl(
                                     'https://fliverdev.github.io/privacy_policy/');
                                 logAnalyticsEvent('url_click_privacy_policy');
                               },
@@ -251,7 +258,7 @@ class _MyCreditsPageState extends State<MyCreditsPage> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
                               onPressed: () {
-                                _launchURL('mailto:urmilshroff@gmail'
+                                launchUrl('mailto:urmilshroff@gmail'
                                     '.com?subject=Fliver Rider feedback');
                                 logAnalyticsEvent('url_click_feedback');
                               },

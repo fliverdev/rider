@@ -1,10 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void doNothing() {
   print('Nothing is happening here (yet)');
 } //better than doing null-ing, right? ;)
+
+launchUrl(String url) async {
+  if (await canLaunch(url)) {
+    print('Launching $url...');
+    await launch(url);
+  } else {
+    print('Error launching $url!');
+  }
+}
 
 bool isIOS(BuildContext context) {
   if (Theme.of(context).platform == TargetPlatform.iOS) {
