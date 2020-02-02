@@ -44,6 +44,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   final hotspotRadius = 100.0; // radius that defines if a marker is 'nearby'
   final displayMarkersRadius = 5000.0; // radius up to which markers are loaded
 
+  final showAlertDelay =
+      Duration(seconds: 3); // wait time before displaying alerts
   final markerRefreshInterval =
       Duration(seconds: 5); // timeout to repopulate markers
   final markerExpireInterval =
@@ -370,6 +372,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown2', true);
+            await Future.delayed(showAlertDelay);
             showNearbyRidersAlert(context);
           }
           locationAnimation = 1;
@@ -390,6 +393,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown1', true);
+            await Future.delayed(showAlertDelay);
             showNotEnoughRidersAlert(context, currentMarkersWithinRadius);
           }
         }
