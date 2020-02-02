@@ -375,8 +375,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             await Future.delayed(showAlertDelay);
             showNearbyRidersAlert(context);
           }
-          locationAnimation = 1;
-          _animateToLocation(myMarkerLocation, locationAnimation);
         } else {
           // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
@@ -588,20 +586,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     animatedIcon: AnimatedIcons.menu_close,
                     elevation: 5.0,
                     children: [
-//                      SpeedDialChild(
-//                        child: Icon(Icons.my_location),
-//                        foregroundColor: invertColorsTheme(context),
-//                        backgroundColor: invertInvertColorsTheme(context),
-//                        label: 'Recenter',
-//                        labelStyle: LabelStyles.black,
-//                        onTap: () async {
-//                          locationAnimation == 0
-//                              ? locationAnimation = 1
-//                              : locationAnimation = 0;
-//                          _animateToLocation(
-//                              currentLocation, locationAnimation);
-//                        },
-//                      ),
+                      SpeedDialChild(
+                        child: Icon(Icons.my_location),
+                        foregroundColor: invertColorsTheme(context),
+                        backgroundColor: invertInvertColorsTheme(context),
+                        label: 'Recenter',
+                        labelStyle: LabelStyles.black,
+                        onTap: () async {
+                          locationAnimation == 0
+                              ? locationAnimation = 1
+                              : locationAnimation = 0;
+                          _animateToLocation(
+                              currentLocation, locationAnimation);
+                        },
+                      ),
                       SpeedDialChild(
                         child: toggleLightsIcon,
                         foregroundColor: invertColorsTheme(context),
