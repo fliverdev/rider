@@ -9,7 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rider/pages/credits_page.dart';
+import 'package:rider/pages/about_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_styles.dart';
@@ -35,6 +35,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
   var myMarkerLocation;
   var markerColor;
+  var infoWindowTitle;
+  var infoWindowSnippet;
   var locationAnimation = 0; // used to switch between 2 kinds of animations
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
@@ -44,6 +46,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   final hotspotRadius = 100.0; // radius that defines if a marker is 'nearby'
   final displayMarkersRadius = 5000.0; // radius up to which markers are loaded
 
+  final showAlertDelay =
+      Duration(seconds: 3); // wait time before displaying alerts
   final markerRefreshInterval =
       Duration(seconds: 5); // timeout to repopulate markers
   final markerExpireInterval =
@@ -132,6 +136,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     print('_populateMarkers() called');
     bool isTipShown1 = widget.helper.getBool('isTipShown1') ?? false;
     bool isTipShown2 = widget.helper.getBool('isTipShown2') ?? false;
+    bool isTipShown3 = widget.helper.getBool('isTipShown3') ?? false;
 
     var previousMarkersWithinRadius = 0;
     var currentMarkersWithinRadius = 0;
@@ -318,18 +323,26 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
         if (isMarkerWithinRadius) {
           if (documentId == widget.identity) {
-            markerColor = 218.0; // blue for own marker
+            markerColor = 218.0; // blue
+            infoWindowTitle = 'Your Marker';
+            infoWindowSnippet = 'This is your current location';
           } else {
-            markerColor = 165.0; // green for nearby markers
+            markerColor = 165.0; // green
+            infoWindowTitle = 'Nearby Rider';
+            infoWindowSnippet = 'Another Rider in your area';
           }
         } else {
-          markerColor = 34.0; //red for far away markers
+          markerColor = 34.0; //red
+          infoWindowTitle = 'Distant Rider';
+          infoWindowSnippet = 'A Rider not in your area';
         }
 
         var marker = Marker(
           markerId: markerId,
           position: markerPosition,
           icon: BitmapDescriptor.defaultMarkerWithHue(markerColor),
+          infoWindow:
+              InfoWindow(title: infoWindowTitle, snippet: infoWindowSnippet),
         );
 
         setState(() {
@@ -370,10 +383,15 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown2', true);
+            await Future.delayed(showAlertDelay);
             showNearbyRidersAlert(context);
           }
-          locationAnimation = 1;
-          _animateToLocation(myMarkerLocation, locationAnimation);
+          if (isTipShown1 && isTipShown2 && !isTipShown3) {
+            // display a tip only once
+            widget.helper.setBool('isTipShown3', true);
+            await Future.delayed(showAlertDelay);
+            showRateAlert(context);
+          }
         } else {
           // if less than 3 markers are nearby
           scaffoldKey.currentState.showSnackBar(
@@ -390,7 +408,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown1', true);
-            showNotEnoughRidersAlert(context, currentMarkersWithinRadius);
+            await Future.delayed(showAlertDelay);
+            showNotEnoughRidersAlert(context);
           }
         }
       }
@@ -584,20 +603,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     animatedIcon: AnimatedIcons.menu_close,
                     elevation: 5.0,
                     children: [
-//                      SpeedDialChild(
-//                        child: Icon(Icons.my_location),
-//                        foregroundColor: invertColorsTheme(context),
-//                        backgroundColor: invertInvertColorsTheme(context),
-//                        label: 'Recenter',
-//                        labelStyle: LabelStyles.black,
-//                        onTap: () async {
-//                          locationAnimation == 0
-//                              ? locationAnimation = 1
-//                              : locationAnimation = 0;
-//                          _animateToLocation(
-//                              currentLocation, locationAnimation);
-//                        },
-//                      ),
+                      SpeedDialChild(
+                        child: Icon(Icons.my_location),
+                        foregroundColor: invertColorsTheme(context),
+                        backgroundColor: invertInvertColorsTheme(context),
+                        label: 'Recenter',
+                        labelStyle: LabelStyles.black,
+                        onTap: () async {
+                          locationAnimation == 0
+                              ? locationAnimation = 1
+                              : locationAnimation = 0;
+                          _animateToLocation(
+                              currentLocation, locationAnimation);
+                        },
+                      ),
                       SpeedDialChild(
                         child: toggleLightsIcon,
                         foregroundColor: invertColorsTheme(context),
@@ -616,17 +635,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         child: Icon(Icons.info),
                         foregroundColor: invertColorsTheme(context),
                         backgroundColor: invertInvertColorsTheme(context),
-                        label: 'Credits',
+                        label: 'About',
                         labelStyle: LabelStyles.black,
                         onTap: () async {
                           bool isTipShown3 =
                               widget.helper.getBool('isTipShown3') ?? false;
-                          logAnalyticsEvent('credits_click');
+                          logAnalyticsEvent('about_click');
 
                           if (isTipShown3) {
                             Navigator.push(context,
                                 CupertinoPageRoute(builder: (context) {
-                              return MyCreditsPage();
+                              return MyAboutPage();
                             }));
                           } else {
                             // display a tip only once
@@ -638,14 +657,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(10.0))),
                                 title: Text(
-                                  'Credits',
+                                  'About',
                                   style: isThemeCurrentlyDark(context)
                                       ? TitleStyles.white
                                       : TitleStyles.black,
                                 ),
                                 content: Text(
-                                  'Fliver was developed by three Computer Engineering students from MPSTME, NMIMS.'
-                                  '\n\nTap anyone\'s name to open up their profile!',
+                                  'Fliver was developed by three Computer Engineering students from NMIMS MPSTME, Mumbai.'
+                                  '\n\nTap anyone\'s name to open their profile!',
                                   style: isThemeCurrentlyDark(context)
                                       ? BodyStyles.white
                                       : BodyStyles.black,
@@ -665,7 +684,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                       Navigator.push(context,
                                           CupertinoPageRoute(
                                               builder: (context) {
-                                        return MyCreditsPage();
+                                        return MyAboutPage();
                                       }));
                                     },
                                   ),
