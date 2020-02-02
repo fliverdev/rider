@@ -233,6 +233,24 @@ class _MyAboutPageState extends State<MyAboutPage> {
                               },
                             ),
                             FlatButton(
+                              child: Text('Play Store'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                _launchURL(
+                                    'https://play.google.com/store/apps/details?id=dev.fliver.rider');
+                                logAnalyticsEvent('url_click_rate');
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            FlatButton(
                               child: Text('Privacy Policy'),
                               textColor: invertColorsStrong(context),
                               shape: RoundedRectangleBorder(
