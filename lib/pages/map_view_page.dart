@@ -35,6 +35,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var currentLocation;
   var myMarkerLocation;
   var markerColor;
+  var infoWindowTitle;
+  var infoWindowSnippet;
   var locationAnimation = 0; // used to switch between 2 kinds of animations
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
@@ -321,18 +323,26 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
         if (isMarkerWithinRadius) {
           if (documentId == widget.identity) {
-            markerColor = 218.0; // blue for own marker
+            markerColor = 218.0; // blue
+            infoWindowTitle = 'Your Marker';
+            infoWindowSnippet = 'This is your current location';
           } else {
-            markerColor = 165.0; // green for nearby markers
+            markerColor = 165.0; // green
+            infoWindowTitle = 'Nearby Rider';
+            infoWindowSnippet = 'Another Rider in your area';
           }
         } else {
-          markerColor = 34.0; //red for far away markers
+          markerColor = 34.0; //red
+          infoWindowTitle = 'Distant Rider';
+          infoWindowSnippet = 'A Rider not in your area';
         }
 
         var marker = Marker(
           markerId: markerId,
           position: markerPosition,
           icon: BitmapDescriptor.defaultMarkerWithHue(markerColor),
+          infoWindow:
+              InfoWindow(title: infoWindowTitle, snippet: infoWindowSnippet),
         );
 
         setState(() {
