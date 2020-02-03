@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
@@ -37,6 +38,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var markerColor;
   var infoWindowTitle;
   var infoWindowSnippet;
+  var bottomPadding;
   var locationAnimation = 0; // used to switch between 2 kinds of animations
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
@@ -75,6 +77,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     super.initState();
     print('UUID is ${widget.identity}');
     position = _setCurrentLocation();
+    if (Device.get().isIphoneX) {
+      bottomPadding = 30.0;
+    } else {
+      bottomPadding = 15.0;
+    }
   } // gets current user location when the app launches
 
   void _onMapCreated(GoogleMapController controller) {
@@ -562,7 +569,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,
-                          bottom: 15.0,
+                          bottom: bottomPadding,
                           child: SwipeButton(
                             thumb: Icon(
                               Icons.arrow_forward_ios,
