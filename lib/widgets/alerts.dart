@@ -77,7 +77,7 @@ void showNotEnoughRidersAlert(BuildContext context) {
           onPressed: () {
             Navigator.pop(context);
             Share.share(
-                'Download Fliver Rider now and help me get a Rickshaw! https://play.google.com/store/apps/details?id=dev.fliver.rider');
+                'Download Fliver Rider now and help me get a Rickshaw! https://fliverdev.github.io/');
             logAnalyticsEvent('share_click');
           },
         ),
