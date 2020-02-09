@@ -238,6 +238,21 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  RaisedButton(
+                    child: Text('FAQ'),
+                    color: MyColors.black,
+                    textColor: MyColors.white,
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () async {
+                      launchUrl('https://fliverdev.github.io/faq/');
+                      logAnalyticsEvent('url_click_faq');
+                    },
+                  ),
                 ],
               ),
             ),
