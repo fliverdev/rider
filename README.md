@@ -13,7 +13,7 @@ The entire project is Open Source and free of charge. There are no additional co
 
 This is the Rider app repository for Riders to mark their locations and notify a Driver. It is part of the Final Year Project of three Computer Engineering students.
 
-[<img height="75" width="200" src="./branding/other/google-play-badge.png" alt="Play Store"/>](https://play.google.com/store/apps/details?id=dev.fliver.rider) [<img height="75" width="200" src="./branding/other/app-store-badge.png" alt="App Store"/>](https://apps.apple.com/us/app/fliver-rider/id1498074830?ls=1)
+[<img height="75" width="200" src="./branding/other/google-play-badge.png" alt="Play Store"/>](https://play.google.com/store/apps/details?id=dev.fliver.rider) [<img height="56" width="172" src="./branding/other/app-store-badge.png" alt="App Store"/>](https://apps.apple.com/us/app/fliver-rider/id1498074830?ls=1)
 
 ## Screenshots
 
