@@ -82,7 +82,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'I like developing apps.',
+                              'I like to develop apps.',
                               style: isThemeCurrentlyDark(context)
                                   ? BodyStylesItalic.white
                                   : BodyStylesItalic.black,
@@ -177,7 +177,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'I like designing UI.',
+                              'I like to design UI.',
                               style: isThemeCurrentlyDark(context)
                                   ? BodyStylesItalic.white
                                   : BodyStylesItalic.black,
@@ -211,34 +211,16 @@ class _MyAboutPageState extends State<MyAboutPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             FlatButton(
-                              child: Text('GitHub'),
+                              child: Text('FAQ'),
                               textColor: invertColorsStrong(context),
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
                               onPressed: () {
-                                launchUrl('https://github.com/fliverdev/rider');
-                                logAnalyticsEvent('url_click_github');
+                                launchUrl('https://fliverdev.github.io/faq/');
+                                logAnalyticsEvent('url_click_faq');
                               },
                             ),
-                            FlatButton(
-                              child: Text('Play Store'),
-                              textColor: invertColorsStrong(context),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0))),
-                              onPressed: () {
-                                launchUrl(
-                                    'https://play.google.com/store/apps/details?id=dev.fliver.rider');
-                                logAnalyticsEvent('url_click_rate');
-                              },
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
                             FlatButton(
                               child: Text('Privacy Policy'),
                               textColor: invertColorsStrong(context),
@@ -261,6 +243,35 @@ class _MyAboutPageState extends State<MyAboutPage> {
                                 launchUrl('mailto:urmilshroff@gmail'
                                     '.com?subject=Fliver Rider feedback');
                                 logAnalyticsEvent('url_click_feedback');
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            FlatButton(
+                              child: Text('GitHub'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                launchUrl('https://github.com/fliverdev/rider');
+                                logAnalyticsEvent('url_click_github');
+                              },
+                            ),
+                            FlatButton(
+                              child: Text('Play Store'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                launchUrl(
+                                    'https://play.google.com/store/apps/details?id=dev.fliver.rider');
+                                logAnalyticsEvent('url_click_rate');
                               },
                             ),
                           ],

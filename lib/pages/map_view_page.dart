@@ -93,7 +93,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     Timer.periodic(markerRefreshInterval, (Timer t) {
       print('$markerRefreshInterval seconds over, refreshing...');
-      _fetchMarkersFromDb(); // updates markers every 10 seconds
+      _fetchMarkersFromDb(); // really poor implementation, but markers weren't updating otherwise
     });
   }
 
@@ -118,6 +118,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // writes current location & time to firestore
 
   void _fetchMarkersFromDb() {
+    // TODO: improve this
     print('_fetchMarkersFromDb() called');
     Firestore.instance.collection('markers').getDocuments().then((docs) async {
       var docLength = docs.documents.length;
@@ -133,6 +134,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   } // fetches markers from firestore
 
   Future _populateMarkers(clients) async {
+    // very bad code, but fuck it
     print('_populateMarkers() called');
     bool isTipShown1 = widget.helper.getBool('isTipShown1') ?? false;
     bool isTipShown2 = widget.helper.getBool('isTipShown2') ?? false;
