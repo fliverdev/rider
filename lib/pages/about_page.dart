@@ -82,7 +82,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'I like developing apps.',
+                              'I like to develop apps.',
                               style: isThemeCurrentlyDark(context)
                                   ? BodyStylesItalic.white
                                   : BodyStylesItalic.black,
@@ -177,7 +177,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'I like designing UI.',
+                              'I like to design UI.',
                               style: isThemeCurrentlyDark(context)
                                   ? BodyStylesItalic.white
                                   : BodyStylesItalic.black,
@@ -211,14 +211,14 @@ class _MyAboutPageState extends State<MyAboutPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             FlatButton(
-                              child: Text('GitHub'),
+                              child: Text('FAQ'),
                               textColor: invertColorsStrong(context),
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0))),
                               onPressed: () {
-                                launchUrl('https://github.com/fliverdev/rider');
-                                logAnalyticsEvent('url_click_github');
+                                launchUrl('https://fliverdev.github.io/faq/');
+                                logAnalyticsEvent('url_click_faq');
                               },
                             ),
                             FlatButton(
