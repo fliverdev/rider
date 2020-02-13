@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rider/pages/chat_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
@@ -189,7 +190,11 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper) {
             if (inputText != '') {
               helper.setString('userName', inputText);
               Navigator.pop(context);
-              // open chatroom
+              Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                return MyChatPage(
+                  helper: helper,
+                );
+              }));
             }
           },
         ),

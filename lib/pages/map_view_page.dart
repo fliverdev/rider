@@ -10,6 +10,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/pages/about_page.dart';
+import 'package:rider/pages/chat_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_styles.dart';
@@ -618,7 +619,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                               showUserNameInputAlert(context, widget.helper);
                             } else {
                               print('$userName is logged in');
-                              // open chatroom
+                              Navigator.push(context,
+                                  CupertinoPageRoute(builder: (context) {
+                                return MyChatPage(
+                                  helper: widget.helper,
+                                );
+                              }));
                             }
                           },
                         ),
