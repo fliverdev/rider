@@ -5,7 +5,7 @@ class MyColors {
   static const primary = Color(0xff1de9b6);
   static const accent = Color(0xff212121);
   static const translucent = Color(0x60212121);
-  static const light = Color(0xfff5f5f5);
+  static const light = Color(0xffcfd8dc);
   static const dark = Color(0xff424242);
   static const white = Color(0xfffafafa);
   static const black = Color(0xff212121);

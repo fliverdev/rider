@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
@@ -14,10 +15,19 @@ class MyChatPage extends StatefulWidget {
 }
 
 class _MyChatPageState extends State<MyChatPage> {
+  bool isScrollDownVisible = true;
   TextEditingController _messageController = TextEditingController();
   ScrollController _scrollController = ScrollController();
 
-  Future<void> callback() async {
+  void _scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      curve: Curves.easeOut,
+      duration: Duration(milliseconds: 300),
+    );
+  }
+
+  Future<void> _sendMessage() async {
     String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
 
@@ -30,11 +40,7 @@ class _MyChatPageState extends State<MyChatPage> {
       });
 
       _messageController.clear();
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        curve: Curves.easeOut,
-        duration: Duration(milliseconds: 300),
-      );
+      _scrollDown();
     }
   }
 
@@ -89,8 +95,13 @@ class _MyChatPageState extends State<MyChatPage> {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
                       return Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: invertColorsTheme(context),
+                        child: Container(
+                          width: 100.0,
+                          height: 100.0,
+                          child: FlareActor(
+                            'assets/flare/loading.flr',
+                            animation: 'animation',
+                          ),
                         ),
                       );
 
@@ -106,10 +117,33 @@ class _MyChatPageState extends State<MyChatPage> {
                             ))
                         .toList();
 
-                    return ListView(
-                      controller: _scrollController,
+                    return Stack(
                       children: <Widget>[
-                        ...messages,
+                        ListView(
+                          controller: _scrollController,
+                          children: <Widget>[
+                            ...messages,
+                          ],
+                        ),
+                        Positioned(
+                          bottom: 10.0,
+                          right: 7.5,
+                          child: Visibility(
+                            visible: isScrollDownVisible,
+                            child: FloatingActionButton(
+                              mini: true,
+                              child: Icon(Icons.keyboard_arrow_down),
+                              foregroundColor: invertInvertColorsTheme(context),
+                              backgroundColor: invertColorsTheme(context),
+                              onPressed: () {
+                                _scrollDown();
+                                setState(() {
+                                  isScrollDownVisible = false;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   },
@@ -130,7 +164,6 @@ class _MyChatPageState extends State<MyChatPage> {
                   Expanded(
                     child: TextField(
                       controller: _messageController,
-                      onSubmitted: (value) => callback(),
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                         hintText: 'Type a message...',
@@ -157,7 +190,12 @@ class _MyChatPageState extends State<MyChatPage> {
                     child: Icon(Icons.send),
                     elevation: 5.0,
                     tooltip: 'Send',
-                    onPressed: callback,
+                    onPressed: () {
+                      _sendMessage();
+                      setState(() {
+                        isScrollDownVisible = false;
+                      });
+                    },
                   ),
                   SizedBox(
                     width: 15.0,
