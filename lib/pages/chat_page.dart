@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/message.dart';
-import 'package:rider/widgets/send_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyChatPage extends StatefulWidget {
@@ -24,9 +23,10 @@ class _MyChatPageState extends State<MyChatPage> {
 
     if (messageController.text.length > 0) {
       await Firestore.instance.collection('messages').add({
-        'text': messageController.text,
-        'from': identity,
-        'time': DateTime.now().toIso8601String().toString(),
+        'senderId': identity,
+        'senderName': name,
+        'messageText': messageController.text,
+        'timestamp': DateTime.now().toIso8601String().toString(),
       });
       messageController.clear();
       scrollController.animateTo(
@@ -46,11 +46,13 @@ class _MyChatPageState extends State<MyChatPage> {
       backgroundColor: invertInvertColorsStrong(context),
       body: Container(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(
                 top: 40.0,
-                left: 20.0,
+                left: 15.0,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -74,55 +76,91 @@ class _MyChatPageState extends State<MyChatPage> {
               ),
             ),
             Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: Firestore.instance
-                    .collection('messages')
-                    .orderBy('time')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Center(
-                      child: CircularProgressIndicator(),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 15.0,
+                  right: 15.0,
+                ),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance
+                      .collection('messages')
+                      .orderBy('timestamp')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: invertColorsTheme(context),
+                        ),
+                      );
+
+                    List<DocumentSnapshot> docs = snapshot.data.documents;
+
+                    List<Widget> messages = docs
+                        .map((doc) => Message(
+                              isMe: identity == doc.data['senderId'],
+                              senderId: doc.data['senderId'],
+                              senderName: doc.data['senderName'],
+                              messageText: doc.data['messageText'],
+                              timestamp: doc.data['timestamp'],
+                            ))
+                        .toList();
+
+                    return ListView(
+                      controller: scrollController,
+                      children: <Widget>[
+                        ...messages,
+                      ],
                     );
-
-                  List<DocumentSnapshot> docs = snapshot.data.documents;
-
-                  List<Widget> messages = docs
-                      .map((doc) => Message(
-                            from: doc.data['from'],
-                            text: doc.data['text'],
-                            me: identity == doc.data['from'],
-                          ))
-                      .toList();
-
-                  return ListView(
-                    controller: scrollController,
-                    children: <Widget>[
-                      ...messages,
-                    ],
-                  );
-                },
+                  },
+                ),
               ),
             ),
             Container(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(
+                    width: 15.0,
+                  ),
                   Expanded(
                     child: TextField(
-                      onSubmitted: (value) => callback(),
-                      decoration: InputDecoration(
-                        hintText: 'Enter a message',
-                        border: OutlineInputBorder(),
-                      ),
                       controller: messageController,
+                      onSubmitted: (value) => callback(),
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        hintText: 'Type a message',
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: invertColorsStrong(context),
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: invertColorsTheme(context),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  SendButton(
-                    text: 'Send',
-                    callback: callback,
-                  )
+                  FloatingActionButton(
+                    heroTag: 'chat',
+                    foregroundColor: invertInvertColorsTheme(context),
+                    backgroundColor: invertColorsTheme(context),
+                    child: Icon(Icons.send),
+                    elevation: 5.0,
+                    tooltip: 'Send',
+                    onPressed: callback,
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
                 ],
               ),
+            ),
+            SizedBox(
+              height: 10.0,
             ),
           ],
         ),

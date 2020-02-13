@@ -1,34 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:rider/utils/colors.dart';
+import 'package:rider/utils/text_styles.dart';
+import 'package:rider/utils/ui_helpers.dart';
 
 class Message extends StatelessWidget {
-  final String from;
-  final String text;
-  final bool me;
+  final bool isMe;
+  final String senderId;
+  final String senderName;
+  final String messageText;
+  final String timestamp;
 
-  const Message({Key key, this.from, this.text, this.me}) : super(key: key);
+  const Message({
+    Key key,
+    this.isMe,
+    this.senderId,
+    this.senderName,
+    this.messageText,
+    this.timestamp,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         crossAxisAlignment:
-            me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            from,
+          SizedBox(
+            height: 10.0,
           ),
           Material(
-            color: me ? MyColors.primary : MyColors.black,
-            borderRadius: BorderRadius.circular(10.0),
-            elevation: 5.0,
+            color: isMe ? MyColors.primary : invertInvertColorsMild(context),
+            borderRadius: BorderRadius.circular(8.0),
+            elevation: 1.0,
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-              child: Text(
-                text,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    '$senderName says:',
+                    style: isMe
+                        ? MessageSenderStyles.black
+                        : isThemeCurrentlyDark(context)
+                            ? MessageSenderStyles.white
+                            : MessageSenderStyles.black,
+                  ),
+                  Text(
+                    '$messageText',
+                    style: isMe
+                        ? MessageTextStyles.black
+                        : isThemeCurrentlyDark(context)
+                            ? MessageTextStyles.white
+                            : MessageTextStyles.black,
+                  ),
+                ],
               ),
             ),
-          )
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
         ],
       ),
     );
