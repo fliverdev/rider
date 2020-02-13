@@ -116,9 +116,12 @@ class _MyChatPageState extends State<MyChatPage> {
                 ),
               ),
             ),
+            SizedBox(
+              height: 10.0,
+            ),
             Container(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
@@ -145,7 +148,7 @@ class _MyChatPageState extends State<MyChatPage> {
                     ),
                   ),
                   SizedBox(
-                    width: 10.0,
+                    width: 15.0,
                   ),
                   FloatingActionButton(
                     heroTag: 'chat',
