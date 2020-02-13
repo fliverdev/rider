@@ -14,23 +14,24 @@ class MyChatPage extends StatefulWidget {
 }
 
 class _MyChatPageState extends State<MyChatPage> {
-  TextEditingController messageController = TextEditingController();
-  ScrollController scrollController = ScrollController();
+  TextEditingController _messageController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
 
   Future<void> callback() async {
     String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
 
-    if (messageController.text.length > 0) {
+    if (_messageController.text.length > 0) {
       await Firestore.instance.collection('messages').add({
         'senderId': identity,
         'senderName': name,
-        'messageText': messageController.text,
+        'messageText': _messageController.text,
         'timestamp': DateTime.now().toIso8601String().toString(),
       });
-      messageController.clear();
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
+
+      _messageController.clear();
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
         curve: Curves.easeOut,
         duration: Duration(milliseconds: 300),
       );
@@ -39,7 +40,6 @@ class _MyChatPageState extends State<MyChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
 
     return Scaffold(
@@ -107,7 +107,7 @@ class _MyChatPageState extends State<MyChatPage> {
                         .toList();
 
                     return ListView(
-                      controller: scrollController,
+                      controller: _scrollController,
                       children: <Widget>[
                         ...messages,
                       ],
@@ -126,11 +126,11 @@ class _MyChatPageState extends State<MyChatPage> {
                   ),
                   Expanded(
                     child: TextField(
-                      controller: messageController,
+                      controller: _messageController,
                       onSubmitted: (value) => callback(),
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
-                        hintText: 'Type a message',
+                        hintText: 'Type a message...',
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: invertColorsStrong(context),
@@ -143,6 +143,9 @@ class _MyChatPageState extends State<MyChatPage> {
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    width: 10.0,
                   ),
                   FloatingActionButton(
                     heroTag: 'chat',
