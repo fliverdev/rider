@@ -22,7 +22,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
             Padding(
               padding: EdgeInsets.only(
                 top: 40.0,
-                left: 20.0,
+                left: 15.0,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,

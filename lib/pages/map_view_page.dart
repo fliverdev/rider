@@ -10,6 +10,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/pages/about_page.dart';
+import 'package:rider/pages/chat_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_styles.dart';
@@ -597,114 +598,148 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ),
                 floatingActionButton: Visibility(
                   visible: isButtonSwiped || isMyMarkerPlotted,
-                  child: SpeedDial(
-                    heroTag: 'fab',
-                    closeManually: false,
-                    foregroundColor: invertInvertColorsTheme(context),
-                    backgroundColor: invertColorsTheme(context),
-                    animatedIcon: AnimatedIcons.menu_close,
-                    elevation: 5.0,
-                    children: [
-                      SpeedDialChild(
-                        child: Icon(Icons.my_location),
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: 'Recenter',
-                        labelStyle: LabelStyles.black,
-                        onTap: () async {
-                          locationAnimation == 0
-                              ? locationAnimation = 1
-                              : locationAnimation = 0;
-                          _animateToLocation(
-                              currentLocation, locationAnimation);
-                        },
-                      ),
-                      SpeedDialChild(
-                        child: toggleLightsIcon,
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: toggleLightsText,
-                        labelStyle: LabelStyles.black,
-                        onTap: () {
-                          DynamicTheme.of(context).setBrightness(
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Brightness.light
-                                  : Brightness.dark);
-                          _onMapCreated(mapController);
-                        },
-                      ),
-                      SpeedDialChild(
-                        child: Icon(Icons.info),
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: 'About',
-                        labelStyle: LabelStyles.black,
-                        onTap: () async {
-                          bool isTipShown3 =
-                              widget.helper.getBool('isTipShown3') ?? false;
-                          logAnalyticsEvent('about_click');
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        bottom: 65.0,
+                        right: 5.0,
+                        child: FloatingActionButton(
+                          heroTag: 'chat',
+                          foregroundColor: invertInvertColorsTheme(context),
+                          backgroundColor: invertColorsTheme(context),
+                          child: Icon(Icons.message),
+                          elevation: 5.0,
+                          tooltip: 'Chatroom',
+                          onPressed: () {
+                            String userName =
+                                widget.helper.getString('userName');
 
-                          if (isTipShown3) {
-                            Navigator.push(context,
-                                CupertinoPageRoute(builder: (context) {
-                              return MyAboutPage();
-                            }));
-                          } else {
-                            // display a tip only once
-                            widget.helper.setBool('isTipShown3', true);
-                            showDialog(
-                              context: context,
-                              child: AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                title: Text(
-                                  'About',
-                                  style: isThemeCurrentlyDark(context)
-                                      ? TitleStyles.white
-                                      : TitleStyles.black,
-                                ),
-                                content: Text(
-                                  'Fliver was developed by three Computer Engineering students from NMIMS MPSTME, Mumbai.'
-                                  '\n\nTap anyone\'s name to open their profile!',
-                                  style: isThemeCurrentlyDark(context)
-                                      ? BodyStyles.white
-                                      : BodyStyles.black,
-                                ),
-                                actions: <Widget>[
-                                  RaisedButton(
-                                    child: Text('Okay'),
-                                    color: invertColorsTheme(context),
-                                    textColor:
-                                        invertInvertColorsStrong(context),
-                                    elevation: 3.0,
+                            if (userName == null) {
+                              print('Username not set yet!');
+                              showUserNameInputAlert(context, widget.helper);
+                            } else {
+                              print('$userName is logged in');
+                              Navigator.push(context,
+                                  CupertinoPageRoute(builder: (context) {
+                                return MyChatPage(
+                                  helper: widget.helper,
+                                );
+                              }));
+                            }
+                          },
+                        ),
+                      ),
+                      SpeedDial(
+                        heroTag: 'fab',
+                        closeManually: false,
+                        foregroundColor: invertInvertColorsTheme(context),
+                        backgroundColor: invertColorsTheme(context),
+                        animatedIcon: AnimatedIcons.menu_close,
+                        elevation: 5.0,
+                        children: [
+                          SpeedDialChild(
+                            child: Icon(Icons.my_location),
+                            foregroundColor: invertColorsTheme(context),
+                            backgroundColor: invertInvertColorsTheme(context),
+                            label: 'Recenter',
+                            labelStyle: LabelStyles.black,
+                            onTap: () async {
+                              locationAnimation == 0
+                                  ? locationAnimation = 1
+                                  : locationAnimation = 0;
+                              _animateToLocation(
+                                  currentLocation, locationAnimation);
+                            },
+                          ),
+                          SpeedDialChild(
+                            child: toggleLightsIcon,
+                            foregroundColor: invertColorsTheme(context),
+                            backgroundColor: invertInvertColorsTheme(context),
+                            label: toggleLightsText,
+                            labelStyle: LabelStyles.black,
+                            onTap: () {
+                              DynamicTheme.of(context).setBrightness(
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Brightness.light
+                                      : Brightness.dark);
+                              _onMapCreated(mapController);
+                            },
+                          ),
+                          SpeedDialChild(
+                            child: Icon(Icons.info),
+                            foregroundColor: invertColorsTheme(context),
+                            backgroundColor: invertInvertColorsTheme(context),
+                            label: 'About',
+                            labelStyle: LabelStyles.black,
+                            onTap: () async {
+                              bool isTipShown3 =
+                                  widget.helper.getBool('isTipShown3') ?? false;
+                              logAnalyticsEvent('about_click');
+
+                              if (isTipShown3) {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                  return MyAboutPage();
+                                }));
+                              } else {
+                                // display a tip only once
+                                widget.helper.setBool('isTipShown3', true);
+                                showDialog(
+                                  context: context,
+                                  child: AlertDialog(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0))),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Navigator.push(context,
-                                          CupertinoPageRoute(
-                                              builder: (context) {
-                                        return MyAboutPage();
-                                      }));
-                                    },
+                                            Radius.circular(10.0))),
+                                    title: Text(
+                                      'About',
+                                      style: isThemeCurrentlyDark(context)
+                                          ? TitleStyles.white
+                                          : TitleStyles.black,
+                                    ),
+                                    content: Text(
+                                      'Fliver was developed by three Computer Engineering students from NMIMS MPSTME, Mumbai.'
+                                      '\n\nTap anyone\'s name to open their profile!',
+                                      style: isThemeCurrentlyDark(context)
+                                          ? BodyStyles.white
+                                          : BodyStyles.black,
+                                    ),
+                                    actions: <Widget>[
+                                      RaisedButton(
+                                        child: Text('Okay'),
+                                        color: invertColorsTheme(context),
+                                        textColor:
+                                            invertInvertColorsStrong(context),
+                                        elevation: 3.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0))),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.push(context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) {
+                                            return MyAboutPage();
+                                          }));
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      SpeedDialChild(
-                        child: Icon(Icons.warning),
-                        foregroundColor: MyColors.white,
-                        backgroundColor: MaterialColors.red,
-                        label: 'Emergency',
-                        labelStyle: LabelStyles.black,
-                        onTap: () {
-                          showEmergencyPopup(context);
-                        },
+                                );
+                              }
+                            },
+                          ),
+                          SpeedDialChild(
+                            child: Icon(Icons.warning),
+                            foregroundColor: MyColors.white,
+                            backgroundColor: MaterialColors.red,
+                            label: 'Emergency',
+                            labelStyle: LabelStyles.black,
+                            onTap: () {
+                              showEmergencyPopup(context);
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

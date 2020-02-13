@@ -99,3 +99,33 @@ class LabelStyles {
     color: MyColors.primary,
   );
 }
+
+class MessageSenderStyles {
+  static const white = TextStyle(
+    fontSize: 12.0,
+    color: MyColors.white,
+  );
+  static const black = TextStyle(
+    fontSize: 12.0,
+    color: MyColors.black,
+  );
+  static const primary = TextStyle(
+    fontSize: 12.0,
+    color: MyColors.primary,
+  );
+}
+
+class MessageTextStyles {
+  static const white = TextStyle(
+    fontSize: 16.0,
+    color: MyColors.white,
+  );
+  static const black = TextStyle(
+    fontSize: 16.0,
+    color: MyColors.black,
+  );
+  static const primary = TextStyle(
+    fontSize: 16.0,
+    color: MyColors.primary,
+  );
+}

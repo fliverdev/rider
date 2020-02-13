@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rider/pages/chat_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
+import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:share/share.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void showNearbyRidersAlert(BuildContext context) {
   showDialog(
@@ -19,7 +22,7 @@ void showNearbyRidersAlert(BuildContext context) {
       ),
       content: Text(
         'Congratulations! There are 3 or more Fliver Riders in your area.'
-        '\n\nWhenever this happens, a hotspot is created which Drivers can see and come to pick you up',
+        '\n\nWhenever this happens, a hotspot is created which Drivers can see to come and pick you up.',
         style:
             isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
       ),
@@ -125,6 +128,75 @@ void showRateAlert(BuildContext context) {
             launchUrl(
                 'https://play.google.com/store/apps/details?id=dev.fliver.rider');
             logAnalyticsEvent('url_click_rate');
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+void showUserNameInputAlert(BuildContext context, SharedPreferences helper) {
+  TextEditingController _controller = TextEditingController();
+  showDialog(
+    context: context,
+    child: AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      title: Text(
+        'What\'s your name?',
+        style: isThemeCurrentlyDark(context)
+            ? TitleStyles.white
+            : TitleStyles.black,
+      ),
+      content: TextField(
+        controller: _controller,
+        textCapitalization: TextCapitalization.sentences,
+        decoration: InputDecoration(
+          labelText: 'Enter a name',
+          labelStyle: isThemeCurrentlyDark(context)
+              ? LabelStyles.white
+              : LabelStyles.black,
+          hintText: 'To display in the public chat',
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: invertColorsStrong(context),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: MyColors.primary,
+            ),
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Cancel'),
+          textColor: invertColorsStrong(context),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        RaisedButton(
+          child: Text('Confirm'),
+          color: invertColorsTheme(context),
+          textColor: invertInvertColorsStrong(context),
+          elevation: 3.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          onPressed: () {
+            var inputText = _controller.text;
+            if (inputText != '') {
+              helper.setString('userName', inputText);
+              Navigator.pop(context);
+              Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                return MyChatPage(
+                  helper: helper,
+                );
+              }));
+            }
           },
         ),
       ],
