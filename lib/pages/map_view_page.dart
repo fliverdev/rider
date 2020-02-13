@@ -610,7 +610,16 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                           elevation: 5.0,
                           tooltip: 'Chatroom',
                           onPressed: () {
-                            doNothing();
+                            String userName =
+                                widget.helper.getString('userName');
+
+                            if (userName == null) {
+                              print('Username not set yet!');
+                              showUserNameInputAlert(context, widget.helper);
+                            } else {
+                              print('$userName is logged in');
+                              // open chatroom
+                            }
                           },
                         ),
                       ),
