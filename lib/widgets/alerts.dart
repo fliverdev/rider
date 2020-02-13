@@ -150,8 +150,9 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper) {
       ),
       content: TextField(
         controller: _controller,
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          labelText: 'Enter name',
+          labelText: 'Enter a name',
           labelStyle: isThemeCurrentlyDark(context)
               ? LabelStyles.white
               : LabelStyles.black,
