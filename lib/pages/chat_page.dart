@@ -29,13 +29,14 @@ class _MyChatPageState extends State<MyChatPage> {
     );
   }
 
-  Future<void> _sendMessage(TextEditingController ctrlr) async {
+  Future<void> _sendMessage(
+      TextEditingController ctrlr, String chatroom) async {
     TextEditingController _messageController = ctrlr;
     String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
 
     if (_messageController.text.length > 0) {
-      await Firestore.instance.collection('messages').add({
+      await Firestore.instance.collection(chatroom).add({
         'senderId': identity,
         'senderName': name,
         'messageText': _messageController.text,
@@ -228,7 +229,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           elevation: 5.0,
                           tooltip: 'Send',
                           onPressed: () {
-                            _sendMessage(_messageController1);
+                            _sendMessage(_messageController1, 'local_chat');
                             setState(() {
                               isScrollDownVisible1 = false;
                             });
@@ -362,7 +363,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           elevation: 5.0,
                           tooltip: 'Send',
                           onPressed: () {
-                            _sendMessage(_messageController2);
+                            _sendMessage(_messageController2, 'global_chat');
                             setState(() {
                               isScrollDownVisible2 = false;
                             });
