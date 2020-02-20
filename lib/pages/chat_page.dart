@@ -125,7 +125,7 @@ class _MyChatPageState extends State<MyChatPage> {
                       ),
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
-                            .collection('messages')
+                            .collection('local_chat')
                             .orderBy('timestamp')
                             .snapshots(),
                         builder: (context, snapshot) {
@@ -203,7 +203,7 @@ class _MyChatPageState extends State<MyChatPage> {
                             controller: _messageController1,
                             textCapitalization: TextCapitalization.sentences,
                             decoration: InputDecoration(
-                              hintText: 'Type a message...',
+                              hintText: 'Message in local chat',
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: invertColorsStrong(context),
@@ -259,7 +259,7 @@ class _MyChatPageState extends State<MyChatPage> {
                       ),
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
-                            .collection('messages')
+                            .collection('global_chat')
                             .orderBy('timestamp')
                             .snapshots(),
                         builder: (context, snapshot) {
@@ -337,7 +337,7 @@ class _MyChatPageState extends State<MyChatPage> {
                             controller: _messageController2,
                             textCapitalization: TextCapitalization.sentences,
                             decoration: InputDecoration(
-                              hintText: 'Type a message...',
+                              hintText: 'Message in global chat',
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: invertColorsStrong(context),
