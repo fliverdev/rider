@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/message.dart';
+import 'package:rider/widgets/message_placeholder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyChatPage extends StatefulWidget {
@@ -131,18 +131,13 @@ class _MyChatPageState extends State<MyChatPage> {
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
-                            return Center(
-                              child: Container(
-                                width: 100.0,
-                                height: 100.0,
-                                child: FlareActor(
-                                  'assets/flare/loading.flr',
-                                  animation: 'animation',
-                                ),
-                              ),
-                            );
+                            return messagePlaceholder(context, 'Loading...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
+
+                          if (docs.isEmpty)
+                            return messagePlaceholder(
+                                context, 'Start chatting!');
 
                           List<Widget> messages = docs
                               .map((doc) => Message(
@@ -265,18 +260,13 @@ class _MyChatPageState extends State<MyChatPage> {
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
-                            return Center(
-                              child: Container(
-                                width: 100.0,
-                                height: 100.0,
-                                child: FlareActor(
-                                  'assets/flare/loading.flr',
-                                  animation: 'animation',
-                                ),
-                              ),
-                            );
+                            return messagePlaceholder(context, 'Loading...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
+
+                          if (docs.isEmpty)
+                            return messagePlaceholder(
+                                context, 'Start chatting!');
 
                           List<Widget> messages = docs
                               .map((doc) => Message(
