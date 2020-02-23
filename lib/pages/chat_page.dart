@@ -37,6 +37,47 @@ class _MyChatPageState extends State<MyChatPage> {
     );
   }
 
+  String censor(String messageText) {
+    final List profanity = [
+      'fuck',
+      'bitch',
+      'bastard',
+      'sex',
+      'shit',
+      'cunt',
+      'pussy',
+      'vagina',
+      'dick',
+      'penis',
+      'cock',
+      'ass',
+      'nigg',
+      'whore',
+      'prostitute',
+      'retard',
+      'fag',
+      'chut',
+      'chod',
+      'gaand',
+      'bhosdike',
+      'kamina',
+      'kutta',
+      'rundi',
+      'randi',
+      'saala',
+      'bhungi',
+      'bhangi',
+    ]; // add more LOL
+
+    profanity.forEach((badWord) {
+      String lowerCaseMessage = messageText.toLowerCase();
+      if (lowerCaseMessage.contains(badWord)) {
+        messageText = lowerCaseMessage.replaceAll(badWord, '****');
+      }
+    });
+    return messageText;
+  }
+
   Message _messageChecker(DocumentSnapshot doc, String identity,
       String chatroom, LatLng myLocation) {
     bool isNear = false;
@@ -90,6 +131,7 @@ class _MyChatPageState extends State<MyChatPage> {
       DateTime now = DateTime.now();
       GeoFirePoint geoPoint = Geoflutterfire()
           .point(latitude: location.latitude, longitude: location.longitude);
+      messageText = censor(messageText);
 
       await Firestore.instance.collection(chatroom).add({
         'senderId': identity,
