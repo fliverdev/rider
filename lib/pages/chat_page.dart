@@ -20,7 +20,7 @@ class MyChatPage extends StatefulWidget {
 }
 
 class _MyChatPageState extends State<MyChatPage> {
-  bool noLocalMessages = true;
+  bool noHotspotMessages = true;
   bool isScrollDownVisible1 = true;
   bool isScrollDownVisible2 = true;
   ScrollController _scrollController = ScrollController();
@@ -51,7 +51,7 @@ class _MyChatPageState extends State<MyChatPage> {
       final documentId = doc.documentID;
       Firestore.instance.collection(chatroom).document(documentId).delete();
     } else {
-      if (chatroom == 'local_chat') {
+      if (chatroom == 'hotspot_chat') {
         final messageDistance = GreatCircleDistance.fromDegrees(
           latitude1: myLocation.latitude,
           longitude1: myLocation.longitude,
@@ -62,12 +62,12 @@ class _MyChatPageState extends State<MyChatPage> {
         if (chatRadius >= messageDistance) {
           // display if nearby
           isNear = true;
-          noLocalMessages = false;
+          noHotspotMessages = false;
         }
       }
       return Message(
         isMe: identity == doc.data['senderId'],
-        isNear: chatroom == 'local_chat' ? isNear : true,
+        isNear: chatroom == 'hotspot_chat' ? isNear : true,
         senderId: doc.data['senderId'],
         senderName: doc.data['senderName'],
         messageText: doc.data['messageText'],
@@ -145,7 +145,7 @@ class _MyChatPageState extends State<MyChatPage> {
                   tabs: [
                     Tab(
                       child: Text(
-                        'Local Chat',
+                        'Hotspot Chat',
                         style: isThemeCurrentlyDark(context)
                             ? LabelStyles.white
                             : LabelStyles.black,
@@ -180,24 +180,26 @@ class _MyChatPageState extends State<MyChatPage> {
                       ),
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
-                            .collection('local_chat')
+                            .collection('hotspot_chat')
                             .orderBy('timestampIso')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return messagePlaceholder(
-                                context, 'Loading messages...');
+                                context, 'Loading messages...', '');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
                           List<Widget> messages = docs
-                              .map((doc) => _messageChecker(
-                                  doc, identity, 'local_chat', widget.location))
+                              .map((doc) => _messageChecker(doc, identity,
+                                  'hotspot_chat', widget.location))
                               .toList();
 
-                          if (noLocalMessages)
+                          if (noHotspotMessages)
                             return messagePlaceholder(
-                                context, 'Start chatting!');
+                                context,
+                                'You can chat with others near you',
+                                'and discuss carpooling with them');
 
                           return Stack(
                             children: <Widget>[
@@ -249,7 +251,7 @@ class _MyChatPageState extends State<MyChatPage> {
                             controller: _messageController1,
                             textCapitalization: TextCapitalization.sentences,
                             decoration: InputDecoration(
-                              hintText: 'Message in local chat',
+                              hintText: 'Message in hotspot chat',
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: invertColorsStrong(context),
@@ -274,7 +276,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           elevation: 5.0,
                           tooltip: 'Send',
                           onPressed: () {
-                            _sendMessage(_messageController1, 'local_chat',
+                            _sendMessage(_messageController1, 'hotspot_chat',
                                 widget.location);
                             setState(() {
                               isScrollDownVisible1 = false;
@@ -312,13 +314,15 @@ class _MyChatPageState extends State<MyChatPage> {
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return messagePlaceholder(
-                                context, 'Loading messages...');
+                                context, 'Loading messages...', '');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
                           if (docs.isEmpty)
                             return messagePlaceholder(
-                                context, 'Start chatting!');
+                                context,
+                                'Chat with all Fliver users.',
+                                'This includes Drivers as well!');
 
                           List<Widget> messages = docs
                               .map((doc) => _messageChecker(doc, identity,
