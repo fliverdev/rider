@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/pages/chat_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
@@ -135,7 +136,8 @@ void showRateAlert(BuildContext context) {
   );
 }
 
-void showUserNameInputAlert(BuildContext context, SharedPreferences helper) {
+void showUserNameInputAlert(
+    BuildContext context, SharedPreferences helper, LatLng location) {
   TextEditingController _controller = TextEditingController();
   showDialog(
     context: context,
@@ -194,6 +196,7 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper) {
               Navigator.push(context, CupertinoPageRoute(builder: (context) {
                 return MyChatPage(
                   helper: helper,
+                  location: location,
                 );
               }));
             }

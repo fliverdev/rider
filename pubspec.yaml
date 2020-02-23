@@ -27,6 +27,10 @@ dependencies:
   url_launcher: ^5.2.4
   uuid: ^2.0.4
 
+  great_circle_distance:
+    git:
+      url: git://github.com/fliverdev/great_circle_distance.git
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

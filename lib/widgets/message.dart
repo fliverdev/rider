@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
@@ -8,6 +9,7 @@ class Message extends StatelessWidget {
   final String senderId;
   final String senderName;
   final String messageText;
+  final LatLng location;
   final String timestampIso;
   final DateTime timestamp;
 
@@ -17,6 +19,7 @@ class Message extends StatelessWidget {
     this.senderId,
     this.senderName,
     this.messageText,
+    this.location,
     this.timestampIso,
     this.timestamp,
   }) : super(key: key);

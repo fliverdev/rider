@@ -616,13 +616,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
                             if (userName == null) {
                               print('Username not set yet!');
-                              showUserNameInputAlert(context, widget.helper);
+                              showUserNameInputAlert(
+                                context,
+                                widget.helper,
+                                myMarkerLocation,
+                              );
                             } else {
                               print('$userName is logged in');
                               Navigator.push(context,
                                   CupertinoPageRoute(builder: (context) {
                                 return MyChatPage(
                                   helper: widget.helper,
+                                  location: myMarkerLocation,
                                 );
                               }));
                             }

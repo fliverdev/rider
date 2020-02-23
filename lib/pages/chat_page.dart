@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/message.dart';
@@ -8,7 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MyChatPage extends StatefulWidget {
   final SharedPreferences helper;
-  MyChatPage({Key key, @required this.helper}) : super(key: key);
+  final LatLng location;
+  MyChatPage({Key key, @required this.helper, @required this.location})
+      : super(key: key);
 
   @override
   _MyChatPageState createState() => _MyChatPageState();
@@ -31,46 +36,71 @@ class _MyChatPageState extends State<MyChatPage> {
     );
   }
 
-  Message _messageChecker(
-      DocumentSnapshot doc, String identity, String chatroom) {
+  Message _messageChecker(DocumentSnapshot doc, String identity,
+      String chatroom, LatLng myLocation) {
+    final chatRadius = 100.0;
     final messageTimestamp = doc.data['timestamp'].toDate();
     final timeDiff = DateTime.now().difference(messageTimestamp);
 
     if (timeDiff > messageExpireInterval) {
-      // delete the message
+      // if expired, delete the message
       final documentId = doc.documentID;
       Firestore.instance.collection(chatroom).document(documentId).delete();
-    } else if (true) {
-      // if nearby, return the message
+    } else if (chatroom == 'local_chat') {
+      final messageLocation = LatLng(doc.data['location']['geopoint'].latitude,
+          doc.data['position']['geopoint'].longitude);
+
+      final messageDistance = GreatCircleDistance.fromDegrees(
+        latitude1: myLocation.latitude,
+        longitude1: myLocation.longitude,
+        latitude2: messageLocation.latitude,
+        longitude2: messageLocation.longitude,
+      ).haversineDistance();
+
+      if (chatRadius >= messageDistance) {
+        // if nearby, return the message
+        return Message(
+          isMe: identity == doc.data['senderId'],
+          senderId: doc.data['senderId'],
+          senderName: doc.data['senderName'],
+          messageText: doc.data['messageText'],
+          location: messageLocation,
+          timestampIso: doc.data['timestampIso'],
+          timestamp: messageTimestamp,
+        );
+      }
+    } else {
       return Message(
         isMe: identity == doc.data['senderId'],
         senderId: doc.data['senderId'],
         senderName: doc.data['senderName'],
         messageText: doc.data['messageText'],
+        location: doc.data['location'],
         timestampIso: doc.data['timestampIso'],
         timestamp: messageTimestamp,
       );
-    } else {
-      return null;
     }
   }
 
   Future<void> _sendMessage(
-      TextEditingController ctrlr, String chatroom) async {
+      TextEditingController ctrlr, String chatroom, LatLng location) async {
     TextEditingController _messageController = ctrlr;
     String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
 
     if (_messageController.text.length > 0) {
       DateTime now = DateTime.now();
+      GeoFirePoint geoPoint = Geoflutterfire()
+          .point(latitude: location.latitude, longitude: location.longitude);
+
       await Firestore.instance.collection(chatroom).add({
         'senderId': identity,
         'senderName': name,
         'messageText': _messageController.text,
+        'location': geoPoint.data,
         'timestampIso': now.toIso8601String().toString(),
         'timestamp': now,
       });
-
       _messageController.clear();
       _scrollDown();
     }
@@ -158,19 +188,20 @@ class _MyChatPageState extends State<MyChatPage> {
                             .orderBy('timestampIso')
                             .snapshots(),
                         builder: (context, snapshot) {
+                          List<Widget> messages = [];
                           if (!snapshot.hasData)
                             return messagePlaceholder(
                                 context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
-                          if (docs.isEmpty)
+                          if (messages.isEmpty)
                             return messagePlaceholder(
                                 context, 'Start chatting!');
 
-                          List<Widget> messages = docs
-                              .map((doc) =>
-                                  _messageChecker(doc, identity, 'local_chat'))
+                          messages = docs
+                              .map((doc) => _messageChecker(
+                                  doc, identity, 'local_chat', widget.location))
                               .toList();
 
                           return Stack(
@@ -248,7 +279,8 @@ class _MyChatPageState extends State<MyChatPage> {
                           elevation: 5.0,
                           tooltip: 'Send',
                           onPressed: () {
-                            _sendMessage(_messageController1, 'local_chat');
+                            _sendMessage(_messageController1, 'local_chat',
+                                widget.location);
                             setState(() {
                               isScrollDownVisible1 = false;
                             });
@@ -283,19 +315,20 @@ class _MyChatPageState extends State<MyChatPage> {
                             .orderBy('timestampIso')
                             .snapshots(),
                         builder: (context, snapshot) {
+                          List<Widget> messages = [];
                           if (!snapshot.hasData)
                             return messagePlaceholder(
                                 context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
-                          if (docs.isEmpty)
+                          if (messages.isEmpty)
                             return messagePlaceholder(
                                 context, 'Start chatting!');
 
-                          List<Widget> messages = docs
-                              .map((doc) =>
-                                  _messageChecker(doc, identity, 'global_chat'))
+                          messages = docs
+                              .map((doc) => _messageChecker(
+                                  doc, identity, 'local_chat', widget.location))
                               .toList();
 
                           return Stack(
@@ -373,7 +406,8 @@ class _MyChatPageState extends State<MyChatPage> {
                           elevation: 5.0,
                           tooltip: 'Send',
                           onPressed: () {
-                            _sendMessage(_messageController2, 'global_chat');
+                            _sendMessage(_messageController2, 'global_chat',
+                                widget.location);
                             setState(() {
                               isScrollDownVisible2 = false;
                             });
