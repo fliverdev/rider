@@ -20,6 +20,8 @@ class _MyChatPageState extends State<MyChatPage> {
   ScrollController _scrollController = ScrollController();
   TextEditingController _messageController1 = TextEditingController();
   TextEditingController _messageController2 = TextEditingController();
+  final messageExpireInterval =
+      Duration(hours: 1); // timeout to delete old messages
 
   void _scrollDown() {
     _scrollController.animateTo(
@@ -29,6 +31,30 @@ class _MyChatPageState extends State<MyChatPage> {
     );
   }
 
+  Message _messageChecker(
+      DocumentSnapshot doc, String identity, String chatroom) {
+    final messageTimestamp = doc.data['timestamp'].toDate();
+    final timeDiff = DateTime.now().difference(messageTimestamp);
+
+    if (timeDiff > messageExpireInterval) {
+      // delete the message
+      final documentId = doc.documentID;
+      Firestore.instance.collection(chatroom).document(documentId).delete();
+    } else if (true) {
+      // if nearby, return the message
+      return Message(
+        isMe: identity == doc.data['senderId'],
+        senderId: doc.data['senderId'],
+        senderName: doc.data['senderName'],
+        messageText: doc.data['messageText'],
+        timestampIso: doc.data['timestampIso'],
+        timestamp: messageTimestamp,
+      );
+    } else {
+      return null;
+    }
+  }
+
   Future<void> _sendMessage(
       TextEditingController ctrlr, String chatroom) async {
     TextEditingController _messageController = ctrlr;
@@ -36,11 +62,13 @@ class _MyChatPageState extends State<MyChatPage> {
     String identity = widget.helper.getString('uuid');
 
     if (_messageController.text.length > 0) {
+      DateTime now = DateTime.now();
       await Firestore.instance.collection(chatroom).add({
         'senderId': identity,
         'senderName': name,
         'messageText': _messageController.text,
-        'timestamp': DateTime.now().toIso8601String().toString(),
+        'timestampIso': now.toIso8601String().toString(),
+        'timestamp': now,
       });
 
       _messageController.clear();
@@ -127,11 +155,12 @@ class _MyChatPageState extends State<MyChatPage> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
                             .collection('local_chat')
-                            .orderBy('timestamp')
+                            .orderBy('timestampIso')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
-                            return messagePlaceholder(context, 'Loading...');
+                            return messagePlaceholder(
+                                context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
@@ -140,13 +169,8 @@ class _MyChatPageState extends State<MyChatPage> {
                                 context, 'Start chatting!');
 
                           List<Widget> messages = docs
-                              .map((doc) => Message(
-                                    isMe: identity == doc.data['senderId'],
-                                    senderId: doc.data['senderId'],
-                                    senderName: doc.data['senderName'],
-                                    messageText: doc.data['messageText'],
-                                    timestamp: doc.data['timestamp'],
-                                  ))
+                              .map((doc) =>
+                                  _messageChecker(doc, identity, 'local_chat'))
                               .toList();
 
                           return Stack(
@@ -256,11 +280,12 @@ class _MyChatPageState extends State<MyChatPage> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
                             .collection('global_chat')
-                            .orderBy('timestamp')
+                            .orderBy('timestampIso')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
-                            return messagePlaceholder(context, 'Loading...');
+                            return messagePlaceholder(
+                                context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
@@ -269,13 +294,8 @@ class _MyChatPageState extends State<MyChatPage> {
                                 context, 'Start chatting!');
 
                           List<Widget> messages = docs
-                              .map((doc) => Message(
-                                    isMe: identity == doc.data['senderId'],
-                                    senderId: doc.data['senderId'],
-                                    senderName: doc.data['senderName'],
-                                    messageText: doc.data['messageText'],
-                                    timestamp: doc.data['timestamp'],
-                                  ))
+                              .map((doc) =>
+                                  _messageChecker(doc, identity, 'global_chat'))
                               .toList();
 
                           return Stack(

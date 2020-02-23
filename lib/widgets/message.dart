@@ -8,7 +8,8 @@ class Message extends StatelessWidget {
   final String senderId;
   final String senderName;
   final String messageText;
-  final String timestamp;
+  final String timestampIso;
+  final DateTime timestamp;
 
   const Message({
     Key key,
@@ -16,6 +17,7 @@ class Message extends StatelessWidget {
     this.senderId,
     this.senderName,
     this.messageText,
+    this.timestampIso,
     this.timestamp,
   }) : super(key: key);
 
