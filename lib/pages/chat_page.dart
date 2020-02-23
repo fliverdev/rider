@@ -327,8 +327,8 @@ class _MyChatPageState extends State<MyChatPage> {
                                 context, 'Start chatting!');
 
                           messages = docs
-                              .map((doc) => _messageChecker(
-                                  doc, identity, 'local_chat', widget.location))
+                              .map((doc) => _messageChecker(doc, identity,
+                                  'global_chat', widget.location))
                               .toList();
 
                           return Stack(
