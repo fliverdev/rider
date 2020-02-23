@@ -78,13 +78,15 @@ class _MyChatPageState extends State<MyChatPage> {
     }
   }
 
-  Future<void> _sendMessage(
-      TextEditingController ctrlr, String chatroom, LatLng location) async {
-    TextEditingController _messageController = ctrlr;
+  Future<void> _sendMessage(TextEditingController messageController,
+      String chatroom, LatLng location) async {
     String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
+    String messageText = messageController.text;
 
-    if (_messageController.text.length > 0) {
+    messageController.clear();
+
+    if (messageText.length > 0) {
       DateTime now = DateTime.now();
       GeoFirePoint geoPoint = Geoflutterfire()
           .point(latitude: location.latitude, longitude: location.longitude);
@@ -92,12 +94,11 @@ class _MyChatPageState extends State<MyChatPage> {
       await Firestore.instance.collection(chatroom).add({
         'senderId': identity,
         'senderName': name,
-        'messageText': _messageController.text,
+        'messageText': messageText,
         'location': geoPoint.data,
         'timestampIso': now.toIso8601String().toString(),
         'timestamp': now,
       });
-      _messageController.clear();
       _scrollDown();
     }
   }
