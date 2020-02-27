@@ -11,7 +11,6 @@ class Message extends StatelessWidget {
   final String senderName;
   final String messageText;
   final LatLng location;
-  final String timestampIso;
   final DateTime timestamp;
 
   const Message({
@@ -22,7 +21,6 @@ class Message extends StatelessWidget {
     this.senderName,
     this.messageText,
     this.location,
-    this.timestampIso,
     this.timestamp,
   }) : super(key: key);
 

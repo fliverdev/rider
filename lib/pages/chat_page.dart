@@ -51,6 +51,9 @@ class _MyChatPageState extends State<MyChatPage> {
       'penis',
       'cock',
       'ass',
+      'boob',
+      'breast',
+      'tits',
       'nigg',
       'whore',
       'prostitute',
@@ -78,8 +81,8 @@ class _MyChatPageState extends State<MyChatPage> {
     return messageText;
   }
 
-  Message _messageChecker(DocumentSnapshot doc, String identity,
-      String chatroom, LatLng myLocation) {
+  Message _messageChecker(DocumentSnapshot doc, List<DocumentSnapshot> docs,
+      String identity, String chatroom, LatLng myLocation) {
     bool isNear = false;
     final chatRadius = 100.0;
     final messageTimestamp = doc.data['timestamp'].toDate();
@@ -91,6 +94,17 @@ class _MyChatPageState extends State<MyChatPage> {
       // if expired, delete the message
       final documentId = doc.documentID;
       Firestore.instance.collection(chatroom).document(documentId).delete();
+      if (docs.length <= 1) {
+        return Message(
+          isMe: identity == doc.data['senderId'],
+          isNear: false,
+          senderId: null,
+          senderName: null,
+          messageText: null,
+          location: messageLocation,
+          timestamp: messageTimestamp,
+        );
+      }
     } else {
       if (chatroom == 'hotspot_chat') {
         final messageDistance = GreatCircleDistance.fromDegrees(
@@ -113,7 +127,6 @@ class _MyChatPageState extends State<MyChatPage> {
         senderName: doc.data['senderName'],
         messageText: doc.data['messageText'],
         location: messageLocation,
-        timestampIso: doc.data['timestampIso'],
         timestamp: messageTimestamp,
       );
     }
@@ -128,7 +141,6 @@ class _MyChatPageState extends State<MyChatPage> {
     messageController.clear();
 
     if (messageText.length > 0) {
-      DateTime now = DateTime.now();
       GeoFirePoint geoPoint = Geoflutterfire()
           .point(latitude: location.latitude, longitude: location.longitude);
       messageText = censor(messageText);
@@ -138,8 +150,7 @@ class _MyChatPageState extends State<MyChatPage> {
         'senderName': name,
         'messageText': messageText,
         'location': geoPoint.data,
-        'timestampIso': now.toIso8601String().toString(),
-        'timestamp': now,
+        'timestamp': DateTime.now(),
       });
       _scrollDown();
     }
@@ -224,7 +235,7 @@ class _MyChatPageState extends State<MyChatPage> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
                             .collection('hotspot_chat')
-                            .orderBy('timestampIso')
+                            .orderBy('timestamp')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
@@ -234,7 +245,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
                           List<Widget> messages = docs
-                              .map((doc) => _messageChecker(doc, identity,
+                              .map((doc) => _messageChecker(doc, docs, identity,
                                   'hotspot_chat', widget.location))
                               .toList();
 
@@ -352,7 +363,7 @@ class _MyChatPageState extends State<MyChatPage> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
                             .collection('global_chat')
-                            .orderBy('timestampIso')
+                            .orderBy('timestamp')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
@@ -368,7 +379,7 @@ class _MyChatPageState extends State<MyChatPage> {
                                 'This includes Drivers as well!');
 
                           List<Widget> messages = docs
-                              .map((doc) => _messageChecker(doc, identity,
+                              .map((doc) => _messageChecker(doc, docs, identity,
                                   'global_chat', widget.location))
                               .toList();
 
