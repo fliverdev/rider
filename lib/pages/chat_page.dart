@@ -102,7 +102,6 @@ class _MyChatPageState extends State<MyChatPage> {
           senderName: null,
           messageText: null,
           location: messageLocation,
-          timestampIso: doc.data['timestampIso'],
           timestamp: messageTimestamp,
         );
       }
@@ -128,7 +127,6 @@ class _MyChatPageState extends State<MyChatPage> {
         senderName: doc.data['senderName'],
         messageText: doc.data['messageText'],
         location: messageLocation,
-        timestampIso: doc.data['timestampIso'],
         timestamp: messageTimestamp,
       );
     }
@@ -143,7 +141,6 @@ class _MyChatPageState extends State<MyChatPage> {
     messageController.clear();
 
     if (messageText.length > 0) {
-      DateTime now = DateTime.now();
       GeoFirePoint geoPoint = Geoflutterfire()
           .point(latitude: location.latitude, longitude: location.longitude);
       messageText = censor(messageText);
@@ -153,8 +150,7 @@ class _MyChatPageState extends State<MyChatPage> {
         'senderName': name,
         'messageText': messageText,
         'location': geoPoint.data,
-        'timestampIso': now.toIso8601String().toString(),
-        'timestamp': now,
+        'timestamp': DateTime.now(),
       });
       _scrollDown();
     }
@@ -239,7 +235,7 @@ class _MyChatPageState extends State<MyChatPage> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
                             .collection('hotspot_chat')
-                            .orderBy('timestampIso')
+                            .orderBy('timestamp')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
@@ -367,7 +363,7 @@ class _MyChatPageState extends State<MyChatPage> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: Firestore.instance
                             .collection('global_chat')
-                            .orderBy('timestampIso')
+                            .orderBy('timestamp')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
