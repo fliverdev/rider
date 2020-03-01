@@ -125,8 +125,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     // TODO: improve this
     print('_fetchMarkersFromDb() called');
     Firestore.instance.collection('markers').getDocuments().then((docs) async {
-      var docLength = docs.documents.length;
-      var clients = List(docLength);
+      final docLength = docs.documents.length;
+      final clients = List(docLength);
       for (int i = 0; i < docLength; i++) {
         clients[i] = docs.documents[i];
       }
@@ -153,18 +153,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     for (int i = 0; i < clients.length; i++) {
       print('_populateMarkers() loop ${i + 1}/${clients.length}');
-      var documentId = clients[i].documentID;
-      var markerId = MarkerId(documentId);
-      var markerData = clients[i].data;
+      final documentId = clients[i].documentID;
+      final markerId = MarkerId(documentId);
+      final markerData = clients[i].data;
 
-      var markerPosition = LatLng(markerData['position']['geopoint'].latitude,
+      final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
-      var markerDestination = markerData['destination'];
-      var markerTimestamp = markerData['timestamp'].toDate();
+      final markerDestination = markerData['destination'];
+      final markerTimestamp = markerData['timestamp'].toDate();
 
-      var timeDiff = DateTime.now().difference(markerTimestamp);
+      final timeDiff = DateTime.now().difference(markerTimestamp);
 
-      var myMarkerDistance = await Geolocator().distanceBetween(
+      final myMarkerDistance = await Geolocator().distanceBetween(
         myMarkerLocation.latitude.toDouble(),
         myMarkerLocation.longitude.toDouble(),
         markerPosition.latitude.toDouble(),
@@ -229,7 +229,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       } else if (documentId == widget.identity) {
         // to check if user is moving
-        var currentLocationDistance = await Geolocator().distanceBetween(
+        final currentLocationDistance = await Geolocator().distanceBetween(
           currentLocation.latitude.toDouble(),
           currentLocation.longitude.toDouble(),
           markerPosition.latitude.toDouble(),
@@ -346,7 +346,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           infoWindowSnippet = 'A Rider not in your area';
         }
 
-        var marker = Marker(
+        final marker = Marker(
           markerId: markerId,
           position: markerPosition,
           icon: BitmapDescriptor.defaultMarkerWithHue(markerColor),
