@@ -58,7 +58,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   bool isFirstLaunch = true; // for dark mode fix
   bool isFirstCycle = true; // don't display swipe button in first cycle
   bool isButtonSwiped = false; // for showing/hiding certain widgets
-  bool isDestinationAlertShown = false;
+  bool isDestinationAlertShown = false; // to prevent multiple popups
+  bool isDestinationAlertClosed = false; // after user interacts somehow
   bool isMoving = false; // to check if moving
   bool isMarkerDeleted = false; // to check if marker was deleted
   bool isMyMarkerPlotted = false; // if user has already marked location
@@ -430,6 +431,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         !isDestinationAlertShown) {
       isDestinationAlertShown = true;
       destination = await showDestinationInputAlert(context);
+      setState(() {
+        isDestinationAlertClosed = true;
+      });
     }
 
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
@@ -552,7 +556,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       Visibility(
                         visible: !isFirstCycle &&
                             !isButtonSwiped &&
-                            !isMyMarkerPlotted,
+                            !isMyMarkerPlotted &&
+                            isDestinationAlertClosed,
                         child: Positioned(
                           top: 40.0,
                           right: 20.0,
@@ -575,7 +580,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       Visibility(
                         visible: !isFirstCycle &&
                             !isButtonSwiped &&
-                            !isMyMarkerPlotted,
+                            !isMyMarkerPlotted &&
+                            isDestinationAlertClosed,
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,
