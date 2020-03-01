@@ -16,14 +16,13 @@ void showNearbyRidersAlert(BuildContext context) {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
       title: Text(
-        'Nearby Riders',
+        'Congratulations!',
         style: isThemeCurrentlyDark(context)
             ? TitleStyles.white
             : TitleStyles.black,
       ),
       content: Text(
-        'Congratulations! There are 3 or more Fliver Riders in your area.'
-        '\n\nWhenever this happens, a hotspot is created which Drivers can see to come and pick you up.',
+        'There are enough Riders in your area. Drivers can now see your hotspot and come to pick you up.',
         style:
             isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
       ),
@@ -57,7 +56,7 @@ void showNotEnoughRidersAlert(BuildContext context) {
             : TitleStyles.black,
       ),
       content: Text(
-        'There aren\'t enough Fliver Riders in your area. Tell your friends to download the app and mark their locations!',
+        'There aren\'t enough Riders in your area. Tell your friends to download the app and mark their locations!',
         style:
             isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
       ),
@@ -81,7 +80,7 @@ void showNotEnoughRidersAlert(BuildContext context) {
           onPressed: () {
             Navigator.pop(context);
             Share.share(
-                'Download Fliver Rider now and help me get a Rickshaw! https://fliverdev.github.io/');
+                'Download Fliver Rider and help me get a Rickshaw! https://fliverdev.github.io/');
             logAnalyticsEvent('share_click');
           },
         ),
@@ -90,57 +89,12 @@ void showNotEnoughRidersAlert(BuildContext context) {
   );
 }
 
-void showRateAlert(BuildContext context) {
-  showDialog(
-    context: context,
-    child: AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))),
-      title: Text(
-        'Enjoying Fliver?',
-        style: isThemeCurrentlyDark(context)
-            ? TitleStyles.white
-            : TitleStyles.black,
-      ),
-      content: Text(
-        'Rate the app on Google Play!',
-        style:
-            isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('Nah'),
-          textColor: invertColorsStrong(context),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        RaisedButton(
-          child: Text('Okay'),
-          color: invertColorsTheme(context),
-          textColor: invertInvertColorsStrong(context),
-          elevation: 3.0,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          onPressed: () {
-            Navigator.pop(context);
-            launchUrl(
-                'https://play.google.com/store/apps/details?id=dev.fliver.rider');
-            logAnalyticsEvent('url_click_rate');
-          },
-        ),
-      ],
-    ),
-  );
-}
-
-void showUserNameInputAlert(
-    BuildContext context, SharedPreferences helper, LatLng location) {
+void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
+    LatLng location, String destination) {
   TextEditingController _controller = TextEditingController();
   showDialog(
     context: context,
+    barrierDismissible: false,
     child: AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -158,7 +112,7 @@ void showUserNameInputAlert(
           labelStyle: isThemeCurrentlyDark(context)
               ? LabelStyles.white
               : LabelStyles.black,
-          hintText: 'To display in the public chat',
+          hintText: 'To display in the chat',
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: invertColorsStrong(context),
@@ -179,10 +133,11 @@ void showUserNameInputAlert(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           onPressed: () {
             Navigator.pop(context);
+            logAnalyticsEvent('name_cancel');
           },
         ),
         RaisedButton(
-          child: Text('Confirm'),
+          child: Text('Okay'),
           color: invertColorsTheme(context),
           textColor: invertInvertColorsStrong(context),
           elevation: 3.0,
@@ -197,12 +152,80 @@ void showUserNameInputAlert(
                 return MyChatPage(
                   helper: helper,
                   location: location,
+                  destination: destination,
                 );
               }));
+              logAnalyticsEvent('name_entered');
             }
           },
         ),
       ],
     ),
   );
+}
+
+Future<String> showDestinationInputAlert(BuildContext context) async {
+  String destination;
+  TextEditingController _controller = TextEditingController();
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    child: AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      title: Text(
+        'Where do you want to go today?',
+        style: isThemeCurrentlyDark(context)
+            ? TitleStyles.white
+            : TitleStyles.black,
+      ),
+      content: TextField(
+        controller: _controller,
+        textCapitalization: TextCapitalization.sentences,
+        decoration: InputDecoration(
+          labelText: 'Enter a destination',
+          labelStyle: isThemeCurrentlyDark(context)
+              ? LabelStyles.white
+              : LabelStyles.black,
+          hintText: 'This will be public',
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: invertColorsStrong(context),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: MyColors.primary,
+            ),
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Cancel'),
+          textColor: invertColorsStrong(context),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          onPressed: () async {
+            Navigator.pop(context);
+            logAnalyticsEvent('destination_cancel');
+          },
+        ),
+        RaisedButton(
+          child: Text('Okay'),
+          color: invertColorsTheme(context),
+          textColor: invertInvertColorsStrong(context),
+          elevation: 3.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          onPressed: () async {
+            destination = _controller.text;
+            Navigator.pop(context);
+            logAnalyticsEvent('destination_entered');
+          },
+        ),
+      ],
+    ),
+  ).then((text) {});
+  return destination;
 }

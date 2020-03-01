@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
+import 'package:rider/services/censor.dart';
+import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/message.dart';
@@ -12,7 +14,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MyChatPage extends StatefulWidget {
   final SharedPreferences helper;
   final LatLng location;
-  MyChatPage({Key key, @required this.helper, @required this.location})
+  final String destination;
+  MyChatPage(
+      {Key key,
+      @required this.helper,
+      @required this.location,
+      @required this.destination})
       : super(key: key);
 
   @override
@@ -37,50 +44,6 @@ class _MyChatPageState extends State<MyChatPage> {
     );
   }
 
-  String censor(String messageText) {
-    final List profanity = [
-      'fuck',
-      'bitch',
-      'bastard',
-      'sex',
-      'shit',
-      'cunt',
-      'pussy',
-      'vagina',
-      'dick',
-      'penis',
-      'cock',
-      'ass',
-      'boob',
-      'breast',
-      'tits',
-      'nigg',
-      'whore',
-      'prostitute',
-      'retard',
-      'fag',
-      'chut',
-      'chod',
-      'gaand',
-      'bhosdike',
-      'kamina',
-      'kutta',
-      'rundi',
-      'randi',
-      'saala',
-      'bhungi',
-      'bhangi',
-    ]; // add more LOL
-
-    profanity.forEach((badWord) {
-      String lowerCaseMessage = messageText.toLowerCase();
-      if (lowerCaseMessage.contains(badWord)) {
-        messageText = lowerCaseMessage.replaceAll(badWord, '****');
-      }
-    });
-    return messageText;
-  }
-
   Message _messageChecker(DocumentSnapshot doc, List<DocumentSnapshot> docs,
       String identity, String chatroom, LatLng myLocation) {
     bool isNear = false;
@@ -101,6 +64,7 @@ class _MyChatPageState extends State<MyChatPage> {
           senderId: null,
           senderName: null,
           messageText: null,
+          destination: null,
           location: messageLocation,
           timestamp: messageTimestamp,
         );
@@ -126,6 +90,7 @@ class _MyChatPageState extends State<MyChatPage> {
         senderId: doc.data['senderId'],
         senderName: doc.data['senderName'],
         messageText: doc.data['messageText'],
+        destination: doc.data['destination'],
         location: messageLocation,
         timestamp: messageTimestamp,
       );
@@ -133,7 +98,7 @@ class _MyChatPageState extends State<MyChatPage> {
   }
 
   Future<void> _sendMessage(TextEditingController messageController,
-      String chatroom, LatLng location) async {
+      String chatroom, LatLng location, String destination) async {
     String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
     String messageText = messageController.text;
@@ -149,10 +114,12 @@ class _MyChatPageState extends State<MyChatPage> {
         'senderId': identity,
         'senderName': name,
         'messageText': messageText,
+        'destination': destination,
         'location': geoPoint.data,
         'timestamp': DateTime.now(),
       });
       _scrollDown();
+      logAnalyticsEvent('message_sent_$chatroom');
     }
   }
 
@@ -240,7 +207,7 @@ class _MyChatPageState extends State<MyChatPage> {
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return messagePlaceholder(
-                                context, 'Loading messages...', '');
+                                context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
@@ -250,10 +217,8 @@ class _MyChatPageState extends State<MyChatPage> {
                               .toList();
 
                           if (noHotspotMessages)
-                            return messagePlaceholder(
-                                context,
-                                'You can chat with others near you',
-                                'and discuss carpooling with them');
+                            return messagePlaceholder(context,
+                                'You can chat with Riders near you\nto discuss carpooling with them');
 
                           return Stack(
                             children: <Widget>[
@@ -331,7 +296,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           tooltip: 'Send',
                           onPressed: () {
                             _sendMessage(_messageController1, 'hotspot_chat',
-                                widget.location);
+                                widget.location, widget.destination);
                             setState(() {
                               isScrollDownVisible1 = false;
                             });
@@ -368,15 +333,13 @@ class _MyChatPageState extends State<MyChatPage> {
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return messagePlaceholder(
-                                context, 'Loading messages...', '');
+                                context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
                           if (docs.isEmpty)
-                            return messagePlaceholder(
-                                context,
-                                'Chat with all Fliver users.',
-                                'This includes Drivers as well!');
+                            return messagePlaceholder(context,
+                                'You can chat with all Fliver users\nto discuss traffic related issues');
 
                           List<Widget> messages = docs
                               .map((doc) => _messageChecker(doc, docs, identity,
@@ -459,7 +422,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           tooltip: 'Send',
                           onPressed: () {
                             _sendMessage(_messageController2, 'global_chat',
-                                widget.location);
+                                widget.location, null);
                             setState(() {
                               isScrollDownVisible2 = false;
                             });

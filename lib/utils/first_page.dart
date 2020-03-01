@@ -13,7 +13,7 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   void firstPageChecker() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+    bool isFirstLaunch = prefs.getBool('isFirstLaunchChat') ?? true;
     String uuid = prefs.getString('uuid') ?? Uuid().v4();
     // generates random uuid as string
 
