@@ -136,8 +136,8 @@ void showRateAlert(BuildContext context) {
   );
 }
 
-void showUserNameInputAlert(
-    BuildContext context, SharedPreferences helper, LatLng location) {
+void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
+    LatLng location, String destination) {
   TextEditingController _controller = TextEditingController();
   showDialog(
     context: context,
@@ -198,6 +198,7 @@ void showUserNameInputAlert(
                 return MyChatPage(
                   helper: helper,
                   location: location,
+                  destination: destination,
                 );
               }));
             }

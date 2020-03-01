@@ -10,6 +10,7 @@ class Message extends StatelessWidget {
   final String senderId;
   final String senderName;
   final String messageText;
+  final String destination;
   final LatLng location;
   final DateTime timestamp;
 
@@ -20,12 +21,16 @@ class Message extends StatelessWidget {
     this.senderId,
     this.senderName,
     this.messageText,
+    this.destination,
     this.location,
     this.timestamp,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String titleText = destination == null
+        ? '$senderName says:'
+        : '$senderName (going to $destination):';
     return Visibility(
       visible: isNear,
       child: Container(
@@ -48,7 +53,7 @@ class Message extends StatelessWidget {
                       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '$senderName says:',
+                      titleText,
                       style: isMe
                           ? MessageSenderStyles.black
                           : isThemeCurrentlyDark(context)
@@ -56,7 +61,7 @@ class Message extends StatelessWidget {
                               : MessageSenderStyles.black,
                     ),
                     Text(
-                      '$messageText',
+                      messageText,
                       style: isMe
                           ? MessageTextStyles.black
                           : isThemeCurrentlyDark(context)

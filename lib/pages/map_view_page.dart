@@ -313,9 +313,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         if (documentId == widget.identity) {
           // my marker
           isMyMarkerFetched = true;
+          destination = markerDestination;
 
           if (!isMyMarkerPlotted) {
             print('$documentId is plotted');
+            isMyMarkerPlotted = true;
             isMyMarkerPlotted = true;
             isButtonSwiped = true;
             locationAnimation = 1;
@@ -640,6 +642,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 context,
                                 widget.helper,
                                 myMarkerLocation,
+                                destination,
                               );
                             } else {
                               print('$userName is logged in');
@@ -648,6 +651,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                 return MyChatPage(
                                   helper: widget.helper,
                                   location: myMarkerLocation,
+                                  destination: destination,
                                 );
                               }));
                             }

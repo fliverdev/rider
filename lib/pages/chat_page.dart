@@ -13,7 +13,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MyChatPage extends StatefulWidget {
   final SharedPreferences helper;
   final LatLng location;
-  MyChatPage({Key key, @required this.helper, @required this.location})
+  final String destination;
+  MyChatPage(
+      {Key key,
+      @required this.helper,
+      @required this.location,
+      @required this.destination})
       : super(key: key);
 
   @override
@@ -58,6 +63,7 @@ class _MyChatPageState extends State<MyChatPage> {
           senderId: null,
           senderName: null,
           messageText: null,
+          destination: null,
           location: messageLocation,
           timestamp: messageTimestamp,
         );
@@ -83,6 +89,7 @@ class _MyChatPageState extends State<MyChatPage> {
         senderId: doc.data['senderId'],
         senderName: doc.data['senderName'],
         messageText: doc.data['messageText'],
+        destination: doc.data['destination'],
         location: messageLocation,
         timestamp: messageTimestamp,
       );
@@ -90,7 +97,7 @@ class _MyChatPageState extends State<MyChatPage> {
   }
 
   Future<void> _sendMessage(TextEditingController messageController,
-      String chatroom, LatLng location) async {
+      String chatroom, LatLng location, String destination) async {
     String name = widget.helper.getString('userName');
     String identity = widget.helper.getString('uuid');
     String messageText = messageController.text;
@@ -106,6 +113,7 @@ class _MyChatPageState extends State<MyChatPage> {
         'senderId': identity,
         'senderName': name,
         'messageText': messageText,
+        'destination': destination,
         'location': geoPoint.data,
         'timestamp': DateTime.now(),
       });
@@ -288,7 +296,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           tooltip: 'Send',
                           onPressed: () {
                             _sendMessage(_messageController1, 'hotspot_chat',
-                                widget.location);
+                                widget.location, widget.destination);
                             setState(() {
                               isScrollDownVisible1 = false;
                             });
@@ -416,7 +424,7 @@ class _MyChatPageState extends State<MyChatPage> {
                           tooltip: 'Send',
                           onPressed: () {
                             _sendMessage(_messageController2, 'global_chat',
-                                widget.location);
+                                widget.location, null);
                             setState(() {
                               isScrollDownVisible2 = false;
                             });
