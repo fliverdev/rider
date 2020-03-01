@@ -205,7 +205,7 @@ class _MyChatPageState extends State<MyChatPage> {
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return messagePlaceholder(
-                                context, 'Loading messages...', '');
+                                context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
@@ -215,10 +215,8 @@ class _MyChatPageState extends State<MyChatPage> {
                               .toList();
 
                           if (noHotspotMessages)
-                            return messagePlaceholder(
-                                context,
-                                'You can chat with others near you',
-                                'and discuss carpooling with them');
+                            return messagePlaceholder(context,
+                                'You can chat with Riders near you\nto discuss carpooling with them');
 
                           return Stack(
                             children: <Widget>[
@@ -333,15 +331,13 @@ class _MyChatPageState extends State<MyChatPage> {
                         builder: (context, snapshot) {
                           if (!snapshot.hasData)
                             return messagePlaceholder(
-                                context, 'Loading messages...', '');
+                                context, 'Loading messages...');
 
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
                           if (docs.isEmpty)
-                            return messagePlaceholder(
-                                context,
-                                'Chat with all Fliver users.',
-                                'This includes Drivers as well!');
+                            return messagePlaceholder(context,
+                                'You can chat with all Fliver users\nto discuss traffic related issues');
 
                           List<Widget> messages = docs
                               .map((doc) => _messageChecker(doc, docs, identity,

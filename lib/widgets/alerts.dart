@@ -172,7 +172,7 @@ Future<String> showDestinationInputAlert(BuildContext context) async {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
       title: Text(
-        'Where do you want to go?',
+        'Where do you want to go today?',
         style: isThemeCurrentlyDark(context)
             ? TitleStyles.white
             : TitleStyles.black,
@@ -181,11 +181,11 @@ Future<String> showDestinationInputAlert(BuildContext context) async {
         controller: _controller,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          labelText: 'Enter a destinaion',
+          labelText: 'Enter a destination',
           labelStyle: isThemeCurrentlyDark(context)
               ? LabelStyles.white
               : LabelStyles.black,
-          hintText: 'This will be shown to Drivers',
+          hintText: 'This will be public',
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: invertColorsStrong(context),
