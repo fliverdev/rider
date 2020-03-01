@@ -116,6 +116,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     Firestore.instance.collection('markers').document(widget.identity).setData({
       'position': geoPoint.data,
+      'destination': destination,
       'timestamp': DateTime.now(),
     });
   } // writes current location & time to firestore
@@ -158,6 +159,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
       var markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
+      var markerDestination = markerData['destination'];
       var markerTimestamp = markerData['timestamp'].toDate();
 
       var timeDiff = DateTime.now().difference(markerTimestamp);
@@ -334,7 +336,9 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           } else {
             markerColor = 165.0; // green
             infoWindowTitle = 'Nearby Rider';
-            infoWindowSnippet = 'Another Rider in your area';
+            infoWindowSnippet = markerDestination == null
+                ? 'Another Rider in your area'
+                : 'Wants to go to $markerDestination';
           }
         } else {
           markerColor = 34.0; //red
