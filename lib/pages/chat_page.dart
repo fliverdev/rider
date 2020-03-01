@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
+import 'package:rider/services/censor.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/message.dart';
@@ -35,50 +36,6 @@ class _MyChatPageState extends State<MyChatPage> {
       curve: Curves.easeOut,
       duration: Duration(milliseconds: 300),
     );
-  }
-
-  String censor(String messageText) {
-    final List profanity = [
-      'fuck',
-      'bitch',
-      'bastard',
-      'sex',
-      'shit',
-      'cunt',
-      'pussy',
-      'vagina',
-      'dick',
-      'penis',
-      'cock',
-      'ass',
-      'boob',
-      'breast',
-      'tits',
-      'nigg',
-      'whore',
-      'prostitute',
-      'retard',
-      'fag',
-      'chut',
-      'chod',
-      'gaand',
-      'bhosdike',
-      'kamina',
-      'kutta',
-      'rundi',
-      'randi',
-      'saala',
-      'bhungi',
-      'bhangi',
-    ]; // add more LOL
-
-    profanity.forEach((badWord) {
-      String lowerCaseMessage = messageText.toLowerCase();
-      if (lowerCaseMessage.contains(badWord)) {
-        messageText = lowerCaseMessage.replaceAll(badWord, '****');
-      }
-    });
-    return messageText;
   }
 
   Message _messageChecker(DocumentSnapshot doc, List<DocumentSnapshot> docs,
