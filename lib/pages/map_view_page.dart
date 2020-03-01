@@ -628,6 +628,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                           onPressed: () {
                             String userName =
                                 widget.helper.getString('userName');
+                            logAnalyticsEvent('chat_click');
 
                             if (userName == null) {
                               print('Username not set yet!');
@@ -666,6 +667,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             label: 'Recenter',
                             labelStyle: LabelStyles.black,
                             onTap: () async {
+                              logAnalyticsEvent('recenter_click');
                               locationAnimation == 0
                                   ? locationAnimation = 1
                                   : locationAnimation = 0;
@@ -680,6 +682,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                             label: toggleLightsText,
                             labelStyle: LabelStyles.black,
                             onTap: () {
+                              logAnalyticsEvent('brightness_click');
                               DynamicTheme.of(context).setBrightness(
                                   Theme.of(context).brightness ==
                                           Brightness.dark

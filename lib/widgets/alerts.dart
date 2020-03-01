@@ -112,7 +112,7 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
           labelStyle: isThemeCurrentlyDark(context)
               ? LabelStyles.white
               : LabelStyles.black,
-          hintText: 'To display in the public chat',
+          hintText: 'To display in the chat',
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: invertColorsStrong(context),
@@ -133,6 +133,7 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           onPressed: () {
             Navigator.pop(context);
+            logAnalyticsEvent('name_cancel');
           },
         ),
         RaisedButton(
@@ -154,6 +155,7 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
                   destination: destination,
                 );
               }));
+              logAnalyticsEvent('name_entered');
             }
           },
         ),
@@ -206,6 +208,7 @@ Future<String> showDestinationInputAlert(BuildContext context) async {
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           onPressed: () async {
             Navigator.pop(context);
+            logAnalyticsEvent('destination_cancel');
           },
         ),
         RaisedButton(
@@ -218,6 +221,7 @@ Future<String> showDestinationInputAlert(BuildContext context) async {
           onPressed: () async {
             destination = _controller.text;
             Navigator.pop(context);
+            logAnalyticsEvent('destination_entered');
           },
         ),
       ],

@@ -4,6 +4,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
 import 'package:rider/services/censor.dart';
+import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:rider/widgets/message.dart';
@@ -118,6 +119,7 @@ class _MyChatPageState extends State<MyChatPage> {
         'timestamp': DateTime.now(),
       });
       _scrollDown();
+      logAnalyticsEvent('message_sent_$chatroom');
     }
   }
 
