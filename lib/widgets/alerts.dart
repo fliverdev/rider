@@ -141,6 +141,7 @@ void showUserNameInputAlert(
   TextEditingController _controller = TextEditingController();
   showDialog(
     context: context,
+    barrierDismissible: false,
     child: AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -205,4 +206,68 @@ void showUserNameInputAlert(
       ],
     ),
   );
+}
+
+Future<String> showDestinationInputAlert(BuildContext context) async {
+  String destination;
+  TextEditingController _controller = TextEditingController();
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    child: AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      title: Text(
+        'Where do you want to go?',
+        style: isThemeCurrentlyDark(context)
+            ? TitleStyles.white
+            : TitleStyles.black,
+      ),
+      content: TextField(
+        controller: _controller,
+        textCapitalization: TextCapitalization.sentences,
+        decoration: InputDecoration(
+          labelText: 'Enter a destinaion',
+          labelStyle: isThemeCurrentlyDark(context)
+              ? LabelStyles.white
+              : LabelStyles.black,
+          hintText: 'This will be shown to Drivers',
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: invertColorsStrong(context),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: MyColors.primary,
+            ),
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Cancel'),
+          textColor: invertColorsStrong(context),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          onPressed: () async {
+            Navigator.pop(context);
+          },
+        ),
+        RaisedButton(
+          child: Text('Confirm'),
+          color: invertColorsTheme(context),
+          textColor: invertInvertColorsStrong(context),
+          elevation: 3.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          onPressed: () async {
+            destination = _controller.text;
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    ),
+  ).then((text) {});
+  return destination;
 }

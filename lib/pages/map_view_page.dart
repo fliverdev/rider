@@ -39,6 +39,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var infoWindowTitle;
   var infoWindowSnippet;
   var locationAnimation = 0; // used to switch between 2 kinds of animations
+  var destination;
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
   final bearing = [0.0, 90.0]; // bearing level (0/1)
@@ -57,6 +58,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   bool isFirstLaunch = true; // for dark mode fix
   bool isFirstCycle = true; // don't display swipe button in first cycle
   bool isButtonSwiped = false; // for showing/hiding certain widgets
+  bool isDestinationAlertShown = false;
   bool isMoving = false; // to check if moving
   bool isMarkerDeleted = false; // to check if marker was deleted
   bool isMyMarkerPlotted = false; // if user has already marked location
@@ -416,6 +418,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         }
       }
+    }
+
+    if (!isFirstCycle &&
+        !isButtonSwiped &&
+        !isMyMarkerPlotted &&
+        !isDestinationAlertShown) {
+      isDestinationAlertShown = true;
+      destination = await showDestinationInputAlert(context);
     }
 
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
