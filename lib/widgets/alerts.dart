@@ -16,14 +16,13 @@ void showNearbyRidersAlert(BuildContext context) {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
       title: Text(
-        'Nearby Riders',
+        'Congratulations!',
         style: isThemeCurrentlyDark(context)
             ? TitleStyles.white
             : TitleStyles.black,
       ),
       content: Text(
-        'Congratulations! There are 3 or more Fliver Riders in your area.'
-        '\n\nWhenever this happens, a hotspot is created which Drivers can see to come and pick you up.',
+        'There are enough Riders in your area. Drivers can now see your hotspot and come to pick you up.',
         style:
             isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
       ),
@@ -57,7 +56,7 @@ void showNotEnoughRidersAlert(BuildContext context) {
             : TitleStyles.black,
       ),
       content: Text(
-        'There aren\'t enough Fliver Riders in your area. Tell your friends to download the app and mark their locations!',
+        'There aren\'t enough Riders in your area. Tell your friends to download the app and mark their locations!',
         style:
             isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
       ),
@@ -81,54 +80,8 @@ void showNotEnoughRidersAlert(BuildContext context) {
           onPressed: () {
             Navigator.pop(context);
             Share.share(
-                'Download Fliver Rider now and help me get a Rickshaw! https://fliverdev.github.io/');
+                'Download Fliver Rider and help me get a Rickshaw! https://fliverdev.github.io/');
             logAnalyticsEvent('share_click');
-          },
-        ),
-      ],
-    ),
-  );
-}
-
-void showRateAlert(BuildContext context) {
-  showDialog(
-    context: context,
-    child: AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))),
-      title: Text(
-        'Enjoying Fliver?',
-        style: isThemeCurrentlyDark(context)
-            ? TitleStyles.white
-            : TitleStyles.black,
-      ),
-      content: Text(
-        'Rate the app on Google Play!',
-        style:
-            isThemeCurrentlyDark(context) ? BodyStyles.white : BodyStyles.black,
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('Nah'),
-          textColor: invertColorsStrong(context),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        RaisedButton(
-          child: Text('Okay'),
-          color: invertColorsTheme(context),
-          textColor: invertInvertColorsStrong(context),
-          elevation: 3.0,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          onPressed: () {
-            Navigator.pop(context);
-            launchUrl(
-                'https://play.google.com/store/apps/details?id=dev.fliver.rider');
-            logAnalyticsEvent('url_click_rate');
           },
         ),
       ],
@@ -183,7 +136,7 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
           },
         ),
         RaisedButton(
-          child: Text('Confirm'),
+          child: Text('Okay'),
           color: invertColorsTheme(context),
           textColor: invertInvertColorsStrong(context),
           elevation: 3.0,
@@ -256,7 +209,7 @@ Future<String> showDestinationInputAlert(BuildContext context) async {
           },
         ),
         RaisedButton(
-          child: Text('Confirm'),
+          child: Text('Okay'),
           color: invertColorsTheme(context),
           textColor: invertInvertColorsStrong(context),
           elevation: 3.0,

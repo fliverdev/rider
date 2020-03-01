@@ -185,7 +185,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'When 3 or more Riders in an area mark their location, a hotspot is created and Drivers get notified.',
+                              'When many Riders in an area mark their location, a hotspot is created which Drivers can see.',
                               style: BodyStyles.black,
                             ),
                           ],

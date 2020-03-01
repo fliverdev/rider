@@ -143,7 +143,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     print('_populateMarkers() called');
     bool isTipShown1 = widget.helper.getBool('isTipShown1') ?? false;
     bool isTipShown2 = widget.helper.getBool('isTipShown2') ?? false;
-    bool isTipShown3 = widget.helper.getBool('isTipShown3') ?? false;
 
     var previousMarkersWithinRadius = 0;
     var currentMarkersWithinRadius = 0;
@@ -397,12 +396,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             widget.helper.setBool('isTipShown2', true);
             await Future.delayed(showAlertDelay);
             showNearbyRidersAlert(context);
-          }
-          if (isTipShown1 && isTipShown2 && !isTipShown3) {
-            // display a tip only once
-            widget.helper.setBool('isTipShown3', true);
-            await Future.delayed(showAlertDelay);
-            showRateAlert(context);
           }
         } else {
           // if less than 3 markers are nearby
@@ -727,7 +720,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                           : TitleStyles.black,
                                     ),
                                     content: Text(
-                                      'Fliver was developed by three Computer Engineering students from NMIMS MPSTME, Mumbai.'
+                                      'Fliver was developed by three Computer Engineering students from NMIMS, Mumbai.'
                                       '\n\nTap anyone\'s name to open their profile!',
                                       style: isThemeCurrentlyDark(context)
                                           ? BodyStyles.white
