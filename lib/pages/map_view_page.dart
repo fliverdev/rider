@@ -195,9 +195,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'Markers get deleted automatically after 15 minutes.'
-                '\n\nIf you\'re still looking for a Rickshaw, please mark '
-                'your location again!',
+                'Markers get deleted after 15 minutes. Please mark your location again!',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -256,8 +254,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'You moved outside your hotspot, so your marker has been deleted.'
-                '\n\nDid you manage to find a Rickshaw?',
+                'You moved outside your hotspot, so your marker has been deleted. Did you manage to find a Rickshaw?',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -723,8 +720,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                           : TitleStyles.black,
                                     ),
                                     content: Text(
-                                      'Fliver was developed by three Computer Engineering students from NMIMS, Mumbai.'
-                                      '\n\nTap anyone\'s name to open their profile!',
+                                      'Fliver was developed by three Computer Engineering students. Tap anyone\'s name to open their profile!',
                                       style: isThemeCurrentlyDark(context)
                                           ? BodyStyles.white
                                           : BodyStyles.black,
