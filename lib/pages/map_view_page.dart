@@ -377,17 +377,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         print('Current markers: $currentMarkersWithinRadius');
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
-          scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              content: Text(
-                'There are $currentMarkersWithinRadius Riders in your area!',
-                style: isThemeCurrentlyDark(context)
-                    ? BodyStyles.primary
-                    : BodyStyles.white,
-              ),
-              backgroundColor: MyColors.black,
-            ),
-          );
+//          scaffoldKey.currentState.showSnackBar(
+//            SnackBar(
+//              content: Text(
+//                'There are $currentMarkersWithinRadius Riders in your area!',
+//                style: isThemeCurrentlyDark(context)
+//                    ? BodyStyles.primary
+//                    : BodyStyles.white,
+//              ),
+//              backgroundColor: MyColors.black,
+//            ),
+//          );
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown2', true);
@@ -396,17 +396,17 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         } else {
           // if less than 3 markers are nearby
-          scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              content: Text(
-                'Waiting for ${3 - currentMarkersWithinRadius} more Riders',
-                style: isThemeCurrentlyDark(context)
-                    ? BodyStyles.primary
-                    : BodyStyles.white,
-              ),
-              backgroundColor: MyColors.black,
-            ),
-          );
+//          scaffoldKey.currentState.showSnackBar(
+//            SnackBar(
+//              content: Text(
+//                'Waiting for ${3 - currentMarkersWithinRadius} more Riders',
+//                style: isThemeCurrentlyDark(context)
+//                    ? BodyStyles.primary
+//                    : BodyStyles.white,
+//              ),
+//              backgroundColor: MyColors.black,
+//            ),
+//          );
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown1', true);
