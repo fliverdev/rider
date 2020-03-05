@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         applicationId "dev.fliver.rider"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
