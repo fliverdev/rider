@@ -40,6 +40,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var infoWindowSnippet;
   var locationAnimation = 0; // used to switch between 2 kinds of animations
   var destination;
+  var nearbyRiders = 1;
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
   final bearing = [0.0, 90.0]; // bearing level (0/1)
@@ -331,18 +332,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (documentId == widget.identity) {
             markerColor = 218.0; // blue
             infoWindowTitle = 'Your Marker';
-            infoWindowSnippet = 'This is your current location';
+            infoWindowSnippet = markerDestination == null
+                ? 'This is your current location'
+                : 'You want to go to $markerDestination';
           } else {
             markerColor = 165.0; // green
             infoWindowTitle = 'Nearby Rider';
             infoWindowSnippet = markerDestination == null
-                ? 'Another Rider in your area'
+                ? 'Another Rider near you'
                 : 'Wants to go to $markerDestination';
           }
         } else {
           markerColor = 34.0; //red
           infoWindowTitle = 'Distant Rider';
-          infoWindowSnippet = 'A Rider not in your area';
+          infoWindowSnippet = 'A Rider far from you';
         }
 
         final marker = Marker(
@@ -431,9 +434,12 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
       _generateHotspot();
     }
+
     print('Previous markers: $previousMarkersWithinRadius');
     print('Cycle complete');
+
     previousMarkersWithinRadius = currentMarkersWithinRadius;
+    nearbyRiders = previousMarkersWithinRadius;
   } // populates & manages markers within 5km
 
   void _generateHotspot() {
@@ -640,6 +646,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                                   CupertinoPageRoute(builder: (context) {
                                 return MyChatPage(
                                   helper: widget.helper,
+                                  nearbyRiders: nearbyRiders,
                                   location: myMarkerLocation,
                                   destination: destination,
                                 );

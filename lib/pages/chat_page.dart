@@ -13,11 +13,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MyChatPage extends StatefulWidget {
   final SharedPreferences helper;
+  final int nearbyRiders;
   final LatLng location;
   final String destination;
   MyChatPage(
       {Key key,
       @required this.helper,
+      @required this.nearbyRiders,
       @required this.location,
       @required this.destination})
       : super(key: key);
@@ -217,8 +219,11 @@ class _MyChatPageState extends State<MyChatPage> {
                               .toList();
 
                           if (noHotspotMessages)
-                            return messagePlaceholder(context,
-                                'You can chat with Riders near you\nto discuss carpooling with them');
+                            return messagePlaceholder(
+                                context,
+                                widget.nearbyRiders == 1
+                                    ? 'No Riders nearby to chat with!'
+                                    : 'Chat with ${widget.nearbyRiders - 1} others near you');
 
                           return Stack(
                             children: <Widget>[
@@ -339,7 +344,7 @@ class _MyChatPageState extends State<MyChatPage> {
 
                           if (docs.isEmpty)
                             return messagePlaceholder(context,
-                                'You can chat with all Fliver users\nto discuss traffic related issues');
+                                'Chat with all Fliver users\nto discuss traffic issues etc.');
 
                           List<Widget> messages = docs
                               .map((doc) => _messageChecker(doc, docs, identity,
