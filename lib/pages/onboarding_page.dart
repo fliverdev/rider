@@ -320,7 +320,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'You can use the new chat feature to talk to other Fliver users!',
+                              'You can use the new chat feature to talk to other Fliver users.',
                               style: BodyStyles.black,
                             ),
                           ],
@@ -365,7 +365,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'You can privately talk to others within your hotspot to discuss carpooling with them.',
+                              'Privately talk to Riders within your hotspot to discuss carpooling with them.',
                               style: BodyStyles.black,
                             ),
                           ],
@@ -410,7 +410,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'This allows you to talk to all Fliver users, including Drivers.',
+                              'Talk to all Fliver Riders and Drivers!',
                               style: BodyStyles.black,
                             ),
                           ],

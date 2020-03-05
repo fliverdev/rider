@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rider/pages/chat_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/text_styles.dart';
 import 'package:rider/utils/ui_helpers.dart';
 import 'package:share/share.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void showNearbyRidersAlert(BuildContext context) {
   showDialog(
@@ -89,10 +86,10 @@ void showNotEnoughRidersAlert(BuildContext context) {
   );
 }
 
-void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
-    LatLng location, String destination) {
+Future<String> showUsernameInputAlert(BuildContext context) async {
+  String name;
   TextEditingController _controller = TextEditingController();
-  showDialog(
+  await showDialog(
     context: context,
     barrierDismissible: false,
     child: AlertDialog(
@@ -131,7 +128,7 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
           textColor: invertColorsStrong(context),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          onPressed: () {
+          onPressed: () async {
             Navigator.pop(context);
             logAnalyticsEvent('name_cancel');
           },
@@ -143,25 +140,16 @@ void showUserNameInputAlert(BuildContext context, SharedPreferences helper,
           elevation: 3.0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          onPressed: () {
-            var inputText = _controller.text;
-            if (inputText != '') {
-              helper.setString('userName', inputText);
-              Navigator.pop(context);
-              Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                return MyChatPage(
-                  helper: helper,
-                  location: location,
-                  destination: destination,
-                );
-              }));
-              logAnalyticsEvent('name_entered');
-            }
+          onPressed: () async {
+            name = _controller.text;
+            Navigator.pop(context);
+            logAnalyticsEvent('name_entered');
           },
         ),
       ],
     ),
-  );
+  ).then((text) {});
+  return name;
 }
 
 Future<String> showDestinationInputAlert(BuildContext context) async {
