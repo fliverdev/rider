@@ -622,21 +622,20 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                           child: Icon(Icons.message),
                           elevation: 5.0,
                           tooltip: 'Chatroom',
-                          onPressed: () {
+                          onPressed: () async {
                             String userName =
                                 widget.helper.getString('userName');
-                            logAnalyticsEvent('chat_click');
 
                             if (userName == null) {
                               print('Username not set yet!');
-                              showUserNameInputAlert(
-                                context,
-                                widget.helper,
-                                myMarkerLocation,
-                                destination,
-                              );
-                            } else {
+                              userName = await showUsernameInputAlert(context);
+                              widget.helper.setString('userName', userName);
+                              print('$userName received');
+                            }
+
+                            if (userName != null) {
                               print('$userName is logged in');
+                              logAnalyticsEvent('chat_click');
                               Navigator.push(context,
                                   CupertinoPageRoute(builder: (context) {
                                 return MyChatPage(
