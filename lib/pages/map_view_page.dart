@@ -217,6 +217,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                     });
                     logAnalyticsEvent('marker_expired');
                     // displays swipe button etc. again
@@ -274,6 +276,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                       isMoving = false;
                     });
                     logAnalyticsEvent('user_moved');
@@ -295,6 +299,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                       isMoving = false;
                     });
                     logAnalyticsEvent('user_moved');
