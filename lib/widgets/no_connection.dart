@@ -8,7 +8,7 @@ class NoConnection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        color: MyColors.light,
+        color: MyColors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

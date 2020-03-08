@@ -22,7 +22,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
             Padding(
               padding: EdgeInsets.only(
                 top: 40.0,
-                left: 20.0,
+                left: 15.0,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -93,7 +93,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      launchUrl('https://urmilshroff.tech');
+                      launchUrl('https://urmilshroff.tech/');
                       logAnalyticsEvent('url_click_urmil');
                     },
                   ),
@@ -141,7 +141,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      launchUrl('https://github.com/prince1998');
+                      launchUrl('https://www.linkedin.com/in/priyanshr/');
                       logAnalyticsEvent('url_click_priyansh');
                     },
                   ),
@@ -188,7 +188,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      launchUrl('http://www.decaf.co.in');
+                      launchUrl('http://www.decaf.co.in/');
                       logAnalyticsEvent('url_click_vinay');
                     },
                   ),
@@ -243,6 +243,48 @@ class _MyAboutPageState extends State<MyAboutPage> {
                                 launchUrl('mailto:urmilshroff@gmail'
                                     '.com?subject=Fliver Rider feedback');
                                 logAnalyticsEvent('url_click_feedback');
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            FlatButton(
+                              child: Text('GitHub'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                launchUrl('https://github.com/fliverdev/rider');
+                                logAnalyticsEvent('url_click_github');
+                              },
+                            ),
+                            FlatButton(
+                              child: Text('App Store'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                launchUrl(
+                                    'https://apps.apple.com/us/app/fliver-rider/id1498074830?ls=1');
+                                logAnalyticsEvent('url_click_rate');
+                              },
+                            ),
+                            FlatButton(
+                              child: Text('Fliver Driver'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                launchUrl(
+                                    'https://play.google.com/store/apps/details?id=dev.fliver.driver');
+                                logAnalyticsEvent(
+                                    'url_click_driver_play_store');
                               },
                             ),
                           ],

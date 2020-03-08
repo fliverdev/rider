@@ -1,4 +1,5 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:rider/pages/map_view_page.dart';
@@ -118,7 +119,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                             width: 36.0,
                             height: 36.0,
                             child: Image.asset(
-                              'assets/other/arrow.png',
+                              'assets/other/swipe_button.png',
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -133,14 +134,14 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Waiting for a Rickshaw?',
+                              'Looking for a Rickshaw?',
                               style: SubHeadingStyles.black,
                             ),
                             SizedBox(
                               height: 5.0,
                             ),
                             Text(
-                              'Swipe the button to let nearby Drivers know about your location.',
+                              'Swipe the button to let Drivers know about your location.',
                               style: BodyStyles.black,
                             ),
                           ],
@@ -185,7 +186,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'When 3 or more Riders in an area mark their location, a hotspot is created and Drivers get notified.',
+                              'When many Riders in an area mark their location, a hotspot is created for Drivers to see.',
                               style: BodyStyles.black,
                             ),
                           ],
@@ -230,7 +231,186 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                               height: 5.0,
                             ),
                             Text(
-                              'Drivers will see the areas of high demand and come to pick you and your friends up!',
+                              'Drivers will see the high demand and come to pick you up!',
+                              style: BodyStyles.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  RaisedButton(
+                    child: Text('FAQ'),
+                    color: MyColors.black,
+                    textColor: MyColors.white,
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    onPressed: () async {
+                      launchUrl('https://fliverdev.github.io/faq/');
+                      logAnalyticsEvent('url_click_faq');
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      Container(
+        color: MyColors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 60.0,
+                  ),
+                  Container(
+                    width: 300.0,
+                    height: 140.0,
+                    child: FlareActor(
+                      'assets/flare/messages-light.flr',
+                      animation: 'animation',
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 36.0,
+                            height: 36.0,
+                            child: Image.asset(
+                              'assets/other/messages.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Chatroom',
+                              style: SubHeadingStyles.black,
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Text(
+                              'You can use the new chat feature to talk to other Fliver users.',
+                              style: BodyStyles.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 36.0,
+                            height: 38.0,
+                            child: Image.asset(
+                              'assets/other/people.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Hotspot Chat',
+                              style: SubHeadingStyles.black,
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Text(
+                              'Privately talk to Riders within your hotspot to discuss carpooling with them.',
+                              style: BodyStyles.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 38.0,
+                            height: 36.0,
+                            child: Image.asset(
+                              'assets/other/rickshaws.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Global Chat',
+                              style: SubHeadingStyles.black,
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Text(
+                              'Talk to all Fliver Riders and Drivers!',
                               style: BodyStyles.black,
                             ),
                           ],
@@ -348,7 +528,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                         borderRadius: BorderRadius.all(Radius.circular(50.0)),
                       ),
                       onPressed: () async {
-                        widget.helper.setBool('isFirstLaunch', false);
+                        widget.helper.setBool('isFirstLaunchChat', false);
                         widget.helper.setString('uuid', widget.identity);
 
                         DynamicTheme.of(context).setBrightness(

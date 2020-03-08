@@ -11,6 +11,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider/pages/about_page.dart';
+import 'package:rider/pages/chat_page.dart';
 import 'package:rider/services/firebase_analytics.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/map_styles.dart';
@@ -40,6 +41,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   var infoWindowSnippet;
   var bottomPadding;
   var locationAnimation = 0; // used to switch between 2 kinds of animations
+  var destination;
+  var nearbyRiders = 1;
 
   final zoom = [15.0, 17.5]; // zoom levels (0/1)
   final bearing = [0.0, 90.0]; // bearing level (0/1)
@@ -58,6 +61,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
   bool isFirstLaunch = true; // for dark mode fix
   bool isFirstCycle = true; // don't display swipe button in first cycle
   bool isButtonSwiped = false; // for showing/hiding certain widgets
+  bool isDestinationAlertShown = false; // to prevent multiple popups
+  bool isDestinationAlertClosed = false; // after user interacts somehow
   bool isMoving = false; // to check if moving
   bool isMarkerDeleted = false; // to check if marker was deleted
   bool isMyMarkerPlotted = false; // if user has already marked location
@@ -120,6 +125,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     Firestore.instance.collection('markers').document(widget.identity).setData({
       'position': geoPoint.data,
+      'destination': destination,
       'timestamp': DateTime.now(),
     });
   } // writes current location & time to firestore
@@ -128,8 +134,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     // TODO: improve this
     print('_fetchMarkersFromDb() called');
     Firestore.instance.collection('markers').getDocuments().then((docs) async {
-      var docLength = docs.documents.length;
-      var clients = List(docLength);
+      final docLength = docs.documents.length;
+      final clients = List(docLength);
       for (int i = 0; i < docLength; i++) {
         clients[i] = docs.documents[i];
       }
@@ -145,7 +151,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
     print('_populateMarkers() called');
     bool isTipShown1 = widget.helper.getBool('isTipShown1') ?? false;
     bool isTipShown2 = widget.helper.getBool('isTipShown2') ?? false;
-//    bool isTipShown3 = widget.helper.getBool('isTipShown3') ?? false;
 
     var previousMarkersWithinRadius = 0;
     var currentMarkersWithinRadius = 0;
@@ -156,17 +161,18 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
 
     for (int i = 0; i < clients.length; i++) {
       print('_populateMarkers() loop ${i + 1}/${clients.length}');
-      var documentId = clients[i].documentID;
-      var markerId = MarkerId(documentId);
-      var markerData = clients[i].data;
+      final documentId = clients[i].documentID;
+      final markerId = MarkerId(documentId);
+      final markerData = clients[i].data;
 
-      var markerPosition = LatLng(markerData['position']['geopoint'].latitude,
+      final markerPosition = LatLng(markerData['position']['geopoint'].latitude,
           markerData['position']['geopoint'].longitude);
-      var markerTimestamp = markerData['timestamp'].toDate();
+      final markerDestination = markerData['destination'];
+      final markerTimestamp = markerData['timestamp'].toDate();
 
-      var timeDiff = DateTime.now().difference(markerTimestamp);
+      final timeDiff = DateTime.now().difference(markerTimestamp);
 
-      var myMarkerDistance = await Geolocator().distanceBetween(
+      final myMarkerDistance = await Geolocator().distanceBetween(
         myMarkerLocation.latitude.toDouble(),
         myMarkerLocation.longitude.toDouble(),
         markerPosition.latitude.toDouble(),
@@ -197,9 +203,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'Markers get deleted automatically after 15 minutes.'
-                '\n\nIf you\'re still looking for a Rickshaw, please mark '
-                'your location again!',
+                'Please mark your location again!',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -220,6 +224,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                     });
                     logAnalyticsEvent('marker_expired');
                     // displays swipe button etc. again
@@ -231,7 +237,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         }
       } else if (documentId == widget.identity) {
         // to check if user is moving
-        var currentLocationDistance = await Geolocator().distanceBetween(
+        final currentLocationDistance = await Geolocator().distanceBetween(
           currentLocation.latitude.toDouble(),
           currentLocation.longitude.toDouble(),
           markerPosition.latitude.toDouble(),
@@ -258,8 +264,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'You moved outside your hotspot, so your marker has been deleted.'
-                '\n\nDid you manage to find a Rickshaw?',
+                'Did you manage to find a Rickshaw?',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -278,6 +283,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                       isMoving = false;
                     });
                     logAnalyticsEvent('user_moved');
@@ -299,6 +306,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                       isMoving = false;
                     });
                     logAnalyticsEvent('user_moved');
@@ -314,9 +323,11 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         if (documentId == widget.identity) {
           // my marker
           isMyMarkerFetched = true;
+          destination = markerDestination;
 
           if (!isMyMarkerPlotted) {
             print('$documentId is plotted');
+            isMyMarkerPlotted = true;
             isMyMarkerPlotted = true;
             isButtonSwiped = true;
             locationAnimation = 1;
@@ -334,19 +345,23 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           if (documentId == widget.identity) {
             markerColor = 218.0; // blue
             infoWindowTitle = 'Your Marker';
-            infoWindowSnippet = 'This is your current location';
+            infoWindowSnippet = markerDestination == null
+                ? 'This is your current location'
+                : 'You want to go to $markerDestination';
           } else {
             markerColor = 165.0; // green
             infoWindowTitle = 'Nearby Rider';
-            infoWindowSnippet = 'Another Rider in your area';
+            infoWindowSnippet = markerDestination == null
+                ? 'Another Rider near you'
+                : 'Wants to go to $markerDestination';
           }
         } else {
           markerColor = 34.0; //red
           infoWindowTitle = 'Distant Rider';
-          infoWindowSnippet = 'A Rider not in your area';
+          infoWindowSnippet = 'A Rider far from you';
         }
 
-        var marker = Marker(
+        final marker = Marker(
           markerId: markerId,
           position: markerPosition,
           icon: BitmapDescriptor.defaultMarkerWithHue(markerColor),
@@ -378,42 +393,14 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         print('Current markers: $currentMarkersWithinRadius');
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
-          scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              content: Text(
-                'There are $currentMarkersWithinRadius Riders in your area!',
-                style: isThemeCurrentlyDark(context)
-                    ? BodyStyles.primary
-                    : BodyStyles.white,
-              ),
-              backgroundColor: MyColors.black,
-            ),
-          );
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown2', true);
             await Future.delayed(showAlertDelay);
             showNearbyRidersAlert(context);
           }
-//          if (isTipShown1 && isTipShown2 && !isTipShown3) {
-//            // display a tip only once
-//            widget.helper.setBool('isTipShown3', true);
-//            await Future.delayed(showAlertDelay);
-//            showRateAlert(context);
-//          }
         } else {
           // if less than 3 markers are nearby
-          scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              content: Text(
-                'Waiting for ${3 - currentMarkersWithinRadius} more Riders',
-                style: isThemeCurrentlyDark(context)
-                    ? BodyStyles.primary
-                    : BodyStyles.white,
-              ),
-              backgroundColor: MyColors.black,
-            ),
-          );
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown1', true);
@@ -421,15 +408,42 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             showNotEnoughRidersAlert(context);
           }
         }
+        scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text(
+              currentMarkersWithinRadius == 1
+                  ? 'There are no Riders near you!'
+                  : 'There are $currentMarkersWithinRadius Riders in your area!',
+              style: isThemeCurrentlyDark(context)
+                  ? BodyStyles.primary
+                  : BodyStyles.white,
+            ),
+            backgroundColor: MyColors.black,
+          ),
+        );
       }
+    }
+
+    if (!isFirstCycle &&
+        !isButtonSwiped &&
+        !isMyMarkerPlotted &&
+        !isDestinationAlertShown) {
+      isDestinationAlertShown = true;
+      destination = await showDestinationInputAlert(context);
+      setState(() {
+        isDestinationAlertClosed = true;
+      });
     }
 
     if (currentMarkersWithinRadius >= 3 && isButtonSwiped) {
       _generateHotspot();
     }
+
     print('Previous markers: $previousMarkersWithinRadius');
     print('Cycle complete');
+
     previousMarkersWithinRadius = currentMarkersWithinRadius;
+    nearbyRiders = previousMarkersWithinRadius;
   } // populates & manages markers within 5km
 
   void _generateHotspot() {
@@ -544,7 +558,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       Visibility(
                         visible: !isFirstCycle &&
                             !isButtonSwiped &&
-                            !isMyMarkerPlotted,
+                            !isMyMarkerPlotted &&
+                            isDestinationAlertClosed,
                         child: Positioned(
                           top: 40.0,
                           right: 20.0,
@@ -567,7 +582,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       Visibility(
                         visible: !isFirstCycle &&
                             !isButtonSwiped &&
-                            !isMyMarkerPlotted,
+                            !isMyMarkerPlotted &&
+                            isDestinationAlertClosed,
                         child: Positioned(
                           left: 15.0,
                           right: 15.0,
@@ -604,114 +620,157 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                 ),
                 floatingActionButton: Visibility(
                   visible: isButtonSwiped || isMyMarkerPlotted,
-                  child: SpeedDial(
-                    heroTag: 'fab',
-                    closeManually: false,
-                    foregroundColor: invertInvertColorsTheme(context),
-                    backgroundColor: invertColorsTheme(context),
-                    animatedIcon: AnimatedIcons.menu_close,
-                    elevation: 5.0,
-                    children: [
-                      SpeedDialChild(
-                        child: Icon(Icons.my_location),
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: 'Recenter',
-                        labelStyle: LabelStyles.black,
-                        onTap: () async {
-                          locationAnimation == 0
-                              ? locationAnimation = 1
-                              : locationAnimation = 0;
-                          _animateToLocation(
-                              currentLocation, locationAnimation);
-                        },
-                      ),
-                      SpeedDialChild(
-                        child: toggleLightsIcon,
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: toggleLightsText,
-                        labelStyle: LabelStyles.black,
-                        onTap: () {
-                          DynamicTheme.of(context).setBrightness(
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Brightness.light
-                                  : Brightness.dark);
-                          _onMapCreated(mapController);
-                        },
-                      ),
-                      SpeedDialChild(
-                        child: Icon(Icons.info),
-                        foregroundColor: invertColorsTheme(context),
-                        backgroundColor: invertInvertColorsTheme(context),
-                        label: 'About',
-                        labelStyle: LabelStyles.black,
-                        onTap: () async {
-                          bool isTipShown3 =
-                              widget.helper.getBool('isTipShown3') ?? false;
-                          logAnalyticsEvent('about_click');
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        bottom: 65.0,
+                        right: 5.0,
+                        child: FloatingActionButton(
+                          heroTag: 'chat',
+                          foregroundColor: invertInvertColorsTheme(context),
+                          backgroundColor: invertColorsTheme(context),
+                          child: Icon(Icons.message),
+                          elevation: 5.0,
+                          tooltip: 'Chatroom',
+                          onPressed: () async {
+                            String userName =
+                                widget.helper.getString('userName');
 
-                          if (isTipShown3) {
-                            Navigator.push(context,
-                                CupertinoPageRoute(builder: (context) {
-                              return MyAboutPage();
-                            }));
-                          } else {
-                            // display a tip only once
-                            widget.helper.setBool('isTipShown3', true);
-                            showDialog(
-                              context: context,
-                              child: AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                title: Text(
-                                  'About',
-                                  style: isThemeCurrentlyDark(context)
-                                      ? TitleStyles.white
-                                      : TitleStyles.black,
-                                ),
-                                content: Text(
-                                  'Fliver was developed by three Computer Engineering students from NMIMS MPSTME, Mumbai.'
-                                  '\n\nTap anyone\'s name to open their profile!',
-                                  style: isThemeCurrentlyDark(context)
-                                      ? BodyStyles.white
-                                      : BodyStyles.black,
-                                ),
-                                actions: <Widget>[
-                                  RaisedButton(
-                                    child: Text('Okay'),
-                                    color: invertColorsTheme(context),
-                                    textColor:
-                                        invertInvertColorsStrong(context),
-                                    elevation: 3.0,
+                            if (userName == null) {
+                              print('Username not set yet!');
+                              userName = await showUsernameInputAlert(context);
+                              widget.helper.setString('userName', userName);
+                              print('$userName received');
+                            }
+
+                            if (userName != null) {
+                              print('$userName is logged in');
+                              logAnalyticsEvent('chat_click');
+                              Navigator.push(context,
+                                  CupertinoPageRoute(builder: (context) {
+                                return MyChatPage(
+                                  helper: widget.helper,
+                                  nearbyRiders: nearbyRiders,
+                                  location: myMarkerLocation,
+                                  destination: destination,
+                                );
+                              }));
+                            }
+                          },
+                        ),
+                      ),
+                      SpeedDial(
+                        heroTag: 'fab',
+                        closeManually: false,
+                        foregroundColor: invertInvertColorsTheme(context),
+                        backgroundColor: invertColorsTheme(context),
+                        animatedIcon: AnimatedIcons.menu_close,
+                        elevation: 5.0,
+                        children: [
+                          SpeedDialChild(
+                            child: Icon(Icons.my_location),
+                            foregroundColor: invertColorsTheme(context),
+                            backgroundColor: invertInvertColorsTheme(context),
+                            label: 'Recenter',
+                            labelStyle: LabelStyles.black,
+                            onTap: () async {
+                              logAnalyticsEvent('recenter_click');
+                              locationAnimation == 0
+                                  ? locationAnimation = 1
+                                  : locationAnimation = 0;
+                              _animateToLocation(
+                                  currentLocation, locationAnimation);
+                            },
+                          ),
+                          SpeedDialChild(
+                            child: toggleLightsIcon,
+                            foregroundColor: invertColorsTheme(context),
+                            backgroundColor: invertInvertColorsTheme(context),
+                            label: toggleLightsText,
+                            labelStyle: LabelStyles.black,
+                            onTap: () {
+                              logAnalyticsEvent('brightness_click');
+                              DynamicTheme.of(context).setBrightness(
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Brightness.light
+                                      : Brightness.dark);
+                              _onMapCreated(mapController);
+                            },
+                          ),
+                          SpeedDialChild(
+                            child: Icon(Icons.info),
+                            foregroundColor: invertColorsTheme(context),
+                            backgroundColor: invertInvertColorsTheme(context),
+                            label: 'About',
+                            labelStyle: LabelStyles.black,
+                            onTap: () async {
+                              bool isTipShown3 =
+                                  widget.helper.getBool('isTipShown3') ?? false;
+                              logAnalyticsEvent('about_click');
+
+                              if (isTipShown3) {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                  return MyAboutPage();
+                                }));
+                              } else {
+                                // display a tip only once
+                                widget.helper.setBool('isTipShown3', true);
+                                showDialog(
+                                  context: context,
+                                  child: AlertDialog(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0))),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Navigator.push(context,
-                                          CupertinoPageRoute(
-                                              builder: (context) {
-                                        return MyAboutPage();
-                                      }));
-                                    },
+                                            Radius.circular(10.0))),
+                                    title: Text(
+                                      'About',
+                                      style: isThemeCurrentlyDark(context)
+                                          ? TitleStyles.white
+                                          : TitleStyles.black,
+                                    ),
+                                    content: Text(
+                                      'Fliver was developed by three Computer Engineering students. Tap anyone\'s name to open their profile!',
+                                      style: isThemeCurrentlyDark(context)
+                                          ? BodyStyles.white
+                                          : BodyStyles.black,
+                                    ),
+                                    actions: <Widget>[
+                                      RaisedButton(
+                                        child: Text('Okay'),
+                                        color: invertColorsTheme(context),
+                                        textColor:
+                                            invertInvertColorsStrong(context),
+                                        elevation: 3.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0))),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.push(context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) {
+                                            return MyAboutPage();
+                                          }));
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      SpeedDialChild(
-                        child: Icon(Icons.warning),
-                        foregroundColor: MyColors.white,
-                        backgroundColor: MaterialColors.red,
-                        label: 'Emergency',
-                        labelStyle: LabelStyles.black,
-                        onTap: () {
-                          showEmergencyPopup(context);
-                        },
+                                );
+                              }
+                            },
+                          ),
+                          SpeedDialChild(
+                            child: Icon(Icons.warning),
+                            foregroundColor: MyColors.white,
+                            backgroundColor: MaterialColors.red,
+                            label: 'Emergency',
+                            labelStyle: LabelStyles.black,
+                            onTap: () {
+                              showEmergencyPopup(context);
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

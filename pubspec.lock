@@ -193,6 +193,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.21+7"
+  great_circle_distance:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "3dc87e3d1abbde1bf91a1d3d19d5cd935adff448"
+      url: "git://github.com/fliverdev/great_circle_distance.git"
+    source: git
+    version: "1.0.1"
   image:
     dependency: transitive
     description:
@@ -242,13 +251,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.4"
-  pedantic:
-    dependency: transitive
-    description:
-      name: pedantic
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.8.0+1"
   petitparser:
     dependency: transitive
     description:
@@ -344,7 +346,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.11"
+    version: "0.2.15"
   typed_data:
     dependency: transitive
     description:

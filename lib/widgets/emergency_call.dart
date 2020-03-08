@@ -19,8 +19,7 @@ void showEmergencyPopup(BuildContext context) {
                 : TitleStyles.black,
           ),
           content: Text(
-            'You can call Emergency Services or the RTO of India to file a complaint in case of accident, rude behaviour of drivers, etc.'
-            '\n\nPlease note that we, the Developers of Fliver, do not guarantee your complaint being lodged as we have no affiliation with these government organizations.',
+            'You can call Emergency Services or the RTO of India to file a complaint in case of accident, rude behaviour of drivers, etc.',
             style: isThemeCurrentlyDark(context)
                 ? BodyStyles.white
                 : BodyStyles.black,

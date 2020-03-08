@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rider/utils/colors.dart';
 import 'package:rider/utils/first_page.dart';
-import 'package:rider/utils/notification_helpers.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  initNotifications();
-
-  createDailyNotification(0, Time(17, 0, 0));
-
+  FlutterLocalNotificationsPlugin().cancelAll();
   runApp(MyApp());
 }
 
