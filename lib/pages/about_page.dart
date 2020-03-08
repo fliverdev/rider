@@ -93,7 +93,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      launchUrl('https://urmilshroff.tech');
+                      launchUrl('https://urmilshroff.tech/');
                       logAnalyticsEvent('url_click_urmil');
                     },
                   ),
@@ -141,7 +141,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      launchUrl('https://github.com/prince1998');
+                      launchUrl('https://www.linkedin.com/in/priyanshr/');
                       logAnalyticsEvent('url_click_priyansh');
                     },
                   ),
@@ -188,7 +188,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                     ),
                     splashColor: MyColors.primary,
                     onTap: () {
-                      launchUrl('http://www.decaf.co.in');
+                      launchUrl('http://www.decaf.co.in/');
                       logAnalyticsEvent('url_click_vinay');
                     },
                   ),
@@ -272,6 +272,19 @@ class _MyAboutPageState extends State<MyAboutPage> {
                                 launchUrl(
                                     'https://play.google.com/store/apps/details?id=dev.fliver.rider');
                                 logAnalyticsEvent('url_click_rate');
+                              },
+                            ),
+                            FlatButton(
+                              child: Text('Fliver Driver'),
+                              textColor: invertColorsStrong(context),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0))),
+                              onPressed: () {
+                                launchUrl(
+                                    'https://play.google.com/store/apps/details?id=dev.fliver.driver');
+                                logAnalyticsEvent(
+                                    'url_click_driver_play_store');
                               },
                             ),
                           ],

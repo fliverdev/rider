@@ -196,7 +196,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'Markers get deleted after 15 minutes. Please mark your location again!',
+                'Please mark your location again!',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -217,6 +217,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                     });
                     logAnalyticsEvent('marker_expired');
                     // displays swipe button etc. again
@@ -255,7 +257,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'You moved outside your hotspot, so your marker has been deleted. Did you manage to find a Rickshaw?',
+                'Did you manage to find a Rickshaw?',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -274,6 +276,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                       isMoving = false;
                     });
                     logAnalyticsEvent('user_moved');
@@ -295,6 +299,8 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                       isFirstCycle = true;
                       isButtonSwiped = false;
                       isMyMarkerPlotted = false;
+                      isDestinationAlertShown = false;
+                      isDestinationAlertClosed = false;
                       isMoving = false;
                     });
                     logAnalyticsEvent('user_moved');
@@ -380,17 +386,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
         print('Current markers: $currentMarkersWithinRadius');
         if (currentMarkersWithinRadius >= 3) {
           // if a marker is added nearby
-//          scaffoldKey.currentState.showSnackBar(
-//            SnackBar(
-//              content: Text(
-//                'There are $currentMarkersWithinRadius Riders in your area!',
-//                style: isThemeCurrentlyDark(context)
-//                    ? BodyStyles.primary
-//                    : BodyStyles.white,
-//              ),
-//              backgroundColor: MyColors.black,
-//            ),
-//          );
           if (!isTipShown2 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown2', true);
@@ -399,17 +394,6 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
           }
         } else {
           // if less than 3 markers are nearby
-//          scaffoldKey.currentState.showSnackBar(
-//            SnackBar(
-//              content: Text(
-//                'Waiting for ${3 - currentMarkersWithinRadius} more Riders',
-//                style: isThemeCurrentlyDark(context)
-//                    ? BodyStyles.primary
-//                    : BodyStyles.white,
-//              ),
-//              backgroundColor: MyColors.black,
-//            ),
-//          );
           if (!isTipShown1 && !isMoving) {
             // display a tip only once
             widget.helper.setBool('isTipShown1', true);
@@ -417,6 +401,19 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
             showNotEnoughRidersAlert(context);
           }
         }
+        scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text(
+              currentMarkersWithinRadius == 1
+                  ? 'There are no Riders near you!'
+                  : 'There are $currentMarkersWithinRadius Riders in your area!',
+              style: isThemeCurrentlyDark(context)
+                  ? BodyStyles.primary
+                  : BodyStyles.white,
+            ),
+            backgroundColor: MyColors.black,
+          ),
+        );
       }
     }
 
