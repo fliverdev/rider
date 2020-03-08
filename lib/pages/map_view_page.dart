@@ -196,7 +196,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'Markers get deleted after 15 minutes. Please mark your location again!',
+                'Please mark your location again!',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
@@ -255,7 +255,7 @@ class _MyMapViewPageState extends State<MyMapViewPage> {
                     : TitleStyles.black,
               ),
               content: Text(
-                'You moved outside your hotspot, so your marker has been deleted. Did you manage to find a Rickshaw?',
+                'Did you manage to find a Rickshaw?',
                 style: isThemeCurrentlyDark(context)
                     ? BodyStyles.white
                     : BodyStyles.black,
