@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_circle_distance/great_circle_distance.dart';
@@ -128,6 +129,13 @@ class _MyChatPageState extends State<MyChatPage> {
   @override
   Widget build(BuildContext context) {
     String identity = widget.helper.getString('uuid');
+    double bottomPadding;
+
+    if (Device.get().isIphoneX) {
+      bottomPadding = 20.0;
+    } else {
+      bottomPadding = 10.0;
+    }
 
     return DefaultTabController(
       length: 2,
@@ -314,7 +322,7 @@ class _MyChatPageState extends State<MyChatPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 10.0,
+                    height: bottomPadding,
                   ),
                 ],
               ),
@@ -343,8 +351,8 @@ class _MyChatPageState extends State<MyChatPage> {
                           List<DocumentSnapshot> docs = snapshot.data.documents;
 
                           if (docs.isEmpty)
-                            return messagePlaceholder(context,
-                                'Chat with all Fliver users');
+                            return messagePlaceholder(
+                                context, 'Chat with all Fliver users');
 
                           List<Widget> messages = docs
                               .map((doc) => _messageChecker(doc, docs, identity,
@@ -440,7 +448,7 @@ class _MyChatPageState extends State<MyChatPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 10.0,
+                    height: bottomPadding,
                   ),
                 ],
               ),
