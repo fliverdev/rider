@@ -222,7 +222,7 @@ class _MyChatPageState extends State<MyChatPage> {
                             return messagePlaceholder(
                                 context,
                                 widget.nearbyRiders == 1
-                                    ? 'No Riders nearby to chat with!'
+                                    ? 'No Riders nearby to chat with😔'
                                     : 'Chat with ${widget.nearbyRiders - 1} others near you');
 
                           return Stack(
@@ -344,7 +344,7 @@ class _MyChatPageState extends State<MyChatPage> {
 
                           if (docs.isEmpty)
                             return messagePlaceholder(context,
-                                'Chat with all Fliver users\nto discuss traffic issues etc.');
+                                'Chat with all Fliver users');
 
                           List<Widget> messages = docs
                               .map((doc) => _messageChecker(doc, docs, identity,
