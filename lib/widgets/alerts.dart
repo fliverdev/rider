@@ -105,11 +105,11 @@ Future<String> showUsernameInputAlert(BuildContext context) async {
         controller: _controller,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          labelText: 'Enter a name',
+          labelText: 'Enter name',
           labelStyle: isThemeCurrentlyDark(context)
               ? LabelStyles.white
               : LabelStyles.black,
-          hintText: 'To display in the chat',
+          hintText: 'Will be shown in chat',
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: invertColorsStrong(context),
@@ -162,7 +162,7 @@ Future<String> showDestinationInputAlert(BuildContext context) async {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
       title: Text(
-        'Where do you want to go today?',
+        'Where are you going?',
         style: isThemeCurrentlyDark(context)
             ? TitleStyles.white
             : TitleStyles.black,
@@ -171,11 +171,11 @@ Future<String> showDestinationInputAlert(BuildContext context) async {
         controller: _controller,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          labelText: 'Enter a destination',
+          labelText: 'Enter destination',
           labelStyle: isThemeCurrentlyDark(context)
               ? LabelStyles.white
               : LabelStyles.black,
-          hintText: 'This will be public',
+          hintText: 'Optional, will be public',
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: invertColorsStrong(context),
