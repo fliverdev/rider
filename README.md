@@ -17,7 +17,7 @@ This is the Rider app repository for Riders to mark their locations and notify a
 
 ## Screenshots
 
-<p><img height="306px" width="170px" src="./branding/screener/01.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/02.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/03.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/04.png" alt="Rider for Android"/> <img height="306px" width="170px" src="./branding/screener/05.png" alt="Rider for Android"/></p>
+<p><img height="345px" width="160px" src="./branding/screenshots/01.png" alt="Rider for iOS"/> <img height="345px" width="160px" src="./branding/screenshots/02.png" alt="Rider for iOS"/> <img height="345px" width="160px" src="./branding/screenshots/03.png" alt="Rider for iOS"/> <img height="345px" width="160px" src="./branding/screenshots/04.png" alt="Rider for iOS"/> <img height="345px" width="160px" src="./branding/screenshots/05.png" alt="Rider for iOS"/></p>
 
 ## Building
 
