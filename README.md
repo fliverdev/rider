@@ -7,9 +7,9 @@
 [![Issues](https://img.shields.io/github/issues/fliverdev/rider.svg)](https://github.com/fliverdev/rider/issues)
 [![License](https://img.shields.io/github/license/fliverdev/rider.svg)](https://opensource.org/licenses/GPL-3.0)
 
-Fliver is an app to help you get a Rickshaw easily. Whenever you need one, you can simply open the app and mark your location. When there are 3 or more Riders in the same area, Drivers get notified and can see the areas of high demand, and then come to pick you up.
+Fliver is an app to help you find Rickshaws easily. Simply open the app and enter your location and destination. Nearby Drivers will then see the areas of high demand and come to pick you up. You can also use the Hotspot Chat to discuss carpooling with others near you, or let others know about accidents, traffic, etc. via the Global Chat.
 
-The entire project is Open Source and free of charge. There are no additional costs for Riders besides for the regular metered Rickshaw fare, and there is no commission that Drivers need to pay. Fliver is a completely free and non-profit project, created to benefit Indian citizens. Check out our [FAQ](https://fliverdev.github.io/faq/) to learn more.
+The entire project is open source and free of charge. There are no additional costs for Riders besides for the regular metered Rickshaw fare, and there is no commission that Drivers need to pay. Fliver is simply created to benefit Indian citizens. Check out our [FAQ](https://fliverdev.github.io/faq/) to learn more.
 
 This is the Rider app repository for Riders to mark their locations and notify a Driver. It is part of the Final Year Project of three Computer Engineering students.
 
@@ -28,7 +28,8 @@ To build and run the app on your device, do the following:
 -   Install Flutter by following the instructions on their [website](https://flutter.dev/docs/get-started/install/).
 -   Clone this repo to your local machine using `git clone https://github.com/fliverdev/rider.git`.
 -   Replace all the encrypted files with your own as explained in [ENCRYPTION.md](ENCRYPTION.md).
--   Connect your devices/emulators and run the app using `flutter run` in the root of the project directory.
+-   Android: Connect your devices/emulators and run the app using `flutter run` in the root of the project directory.
+-   iOS: Switch to the `ios` branch using `git checkout ios`. Then connect your devices/simulators and run the app using `flutter run` in the root of the project directory.
 
 **Note:** you can also run it in release mode using `flutter run --release` to improve performance and stability, however, debugging features will be disabled.
 
